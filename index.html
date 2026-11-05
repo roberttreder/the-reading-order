@@ -331,6 +331,87 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
     }
 
+    /* Chunk 3.1: Hover / Selection Timespan Highlighter Band & Rail Callout */
+    .timespan-highlight-band {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      z-index: 12;
+      pointer-events: none;
+      background: linear-gradient(
+        90deg,
+        rgba(245, 158, 11, 0.22) 0%,
+        rgba(56, 189, 248, 0.12) 45%,
+        rgba(245, 158, 11, 0.16) 100%
+      );
+      border-top: 1.5px solid rgba(250, 204, 21, 0.85);
+      border-bottom: 1.5px solid rgba(250, 204, 21, 0.85);
+      box-shadow: 0 0 28px rgba(245, 158, 11, 0.18);
+      display: none;
+    }
+
+    .timespan-lane-spotlight {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background: rgba(250, 204, 21, 0.14);
+      border-left: 2px solid rgba(250, 204, 21, 0.85);
+      border-right: 2px solid rgba(250, 204, 21, 0.85);
+    }
+
+    .rail-span-highlight {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      background: rgba(245, 158, 11, 0.28);
+      border-top: 2px solid #facc15;
+      border-bottom: 2px solid #facc15;
+      border-right: 3px solid #facc15;
+      z-index: 90;
+      display: none;
+      pointer-events: none;
+    }
+
+    .rail-span-pill {
+      position: absolute;
+      right: 4px;
+      background: #111520;
+      color: #facc15;
+      border: 1px solid #facc15;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.66rem;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
+    }
+
+    .rail-span-pill.start {
+      top: -11px;
+    }
+
+    .rail-span-pill.end {
+      bottom: -11px;
+    }
+
+    .rail-span-summary {
+      position: absolute;
+      left: 100%;
+      margin-left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(17, 21, 32, 0.96);
+      color: #fef08a;
+      border: 1px solid rgba(250, 204, 21, 0.75);
+      border-radius: 5px;
+      padding: 3px 9px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+    }
+
     /* Background Swimlane Columns */
     .lane-bg-grid {
       position: absolute;
@@ -373,6 +454,41 @@
       z-index: 15;
     }
 
+    .svg-spotlight-overlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 42;
+    }
+
+    @keyframes threadFlow {
+      from {
+        stroke-dashoffset: 28;
+      }
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    .spotlight-next-path {
+      animation: threadFlow 0.9s linear infinite;
+    }
+
+    @keyframes pairedPulse {
+      from {
+        stroke-dashoffset: 20;
+      }
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    .spotlight-paired-path {
+      animation: pairedPulse 1.15s linear infinite;
+    }
+
     /* Historical Duration Span Bars */
     .duration-bar {
       position: absolute;
@@ -381,7 +497,25 @@
       opacity: 0.45;
       z-index: 10;
       pointer-events: none;
-      transition: opacity 0.2s;
+      transition: opacity 0.18s ease, width 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    .duration-bar.dimmed-bar {
+      opacity: 0.08 !important;
+    }
+
+    .duration-bar.active-bar {
+      opacity: 1 !important;
+      width: 9px;
+      z-index: 44;
+      box-shadow: 0 0 14px rgba(250, 204, 21, 0.9);
+    }
+
+    .duration-bar.paired-bar {
+      opacity: 0.92 !important;
+      width: 8px;
+      z-index: 43;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.85);
     }
 
     /* Book Node Cards */
@@ -393,7 +527,7 @@
       border: 1px solid var(--border);
       background: var(--panel-2);
       cursor: pointer;
-      transition: transform 0.14s ease, box-shadow 0.14s ease, opacity 0.2s ease;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, opacity 0.18s ease, border-color 0.14s ease;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
       overflow: hidden;
       user-select: none;
@@ -401,7 +535,7 @@
 
     .book-card:hover {
       transform: translateY(-2px) scale(1.015);
-      z-index: 50;
+      z-index: 55;
       box-shadow: 0 8px 22px rgba(0, 0, 0, 0.65);
     }
 
@@ -428,9 +562,66 @@
     }
 
     .book-card.dimmed {
-      opacity: 0.18;
+      opacity: 0.16;
       filter: grayscale(80%);
       pointer-events: none;
+    }
+
+    /* Phase 3 Focus & Spotlight Card States */
+    .book-card.spotlight-muted {
+      opacity: 0.32;
+    }
+
+    .book-card.spotlight-active {
+      z-index: 60 !important;
+      transform: translateY(-2px) scale(1.025);
+      border-color: #facc15 !important;
+      box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.65), 0 10px 28px rgba(0, 0, 0, 0.75) !important;
+    }
+
+    .book-card.spotlight-neighbor {
+      z-index: 52 !important;
+      border-color: #f59e0b !important;
+      box-shadow: 0 0 0 1.5px rgba(245, 158, 11, 0.6), 0 6px 18px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    .book-card.spotlight-paired {
+      z-index: 53 !important;
+      border-color: #38bdf8 !important;
+      border-style: solid !important;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.65), 0 6px 18px rgba(0, 0, 0, 0.65) !important;
+    }
+
+    .role-pill {
+      display: none;
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-left: 4px;
+    }
+
+    .book-card.spotlight-prev .role-pill.prev-pill {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.25);
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.6);
+    }
+
+    .book-card.spotlight-next .role-pill.next-pill {
+      display: inline-block;
+      background: rgba(250, 204, 21, 0.28);
+      color: #fef08a;
+      border: 1px solid #facc15;
+    }
+
+    .book-card.spotlight-paired .role-pill.paired-pill {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.22);
+      color: #7dd3fc;
+      border: 1px solid #38bdf8;
     }
 
     .card-top {
@@ -458,7 +649,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 65%;
+      max-width: 55%;
     }
 
     .card-title {
@@ -548,7 +739,37 @@
     .drawer .author {
       font-size: 0.9rem;
       color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .drawer-nav-row {
+      display: flex;
+      gap: 8px;
       margin-bottom: 14px;
+    }
+
+    .drawer-nav-btn {
+      flex: 1;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .drawer-nav-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: rgba(224, 177, 83, 0.12);
+    }
+
+    .drawer-nav-btn:disabled {
+      opacity: 0.35;
+      cursor: default;
     }
 
     .meta-grid {
@@ -574,6 +795,32 @@
       color: var(--text);
       font-weight: 600;
       margin-top: 2px;
+    }
+
+    .paired-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .paired-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: rgba(56, 189, 248, 0.09);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+
+    .paired-chip:hover {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: #38bdf8;
     }
 
     .notes-box {
@@ -661,7 +908,8 @@
         <option value="owned">Highlight: Owned Status</option>
       </select>
 
-      <button id="btnToggleThread" class="active" title="Show/hide the Reading Order narrative thread">🧵 Read Thread</button>
+      <button id="btnToggleThread" class="active" title="Show/hide the global Reading Order narrative thread">🧵 Global Thread</button>
+      <button id="btnTogglePairings" class="active" title="Show/hide Bidirectional Mapping arcs (Primary <-> History/Scholarly) on hover/select">🔗 Paired Arcs</button>
       <button id="btnToggleSpans" class="active" title="Show/hide History duration bars">📏 Era Spans</button>
 
       <!-- Chunk 2.3 Zoom Controls -->
@@ -672,7 +920,7 @@
       </div>
       <button id="btnWheelZoomMode" title="When active, scrolling the mouse wheel zooms directly without holding Ctrl/Shift">🔍 Wheel Zoom</button>
 
-      <input type="text" id="searchInput" placeholder="Search title, author, region..." style="width:175px;" />
+      <input type="text" id="searchInput" placeholder="Search title, author, region..." style="width:165px;" />
     </div>
   </div>
 
@@ -761,12 +1009,34 @@
       xMode: "macro",
       colorMode: "tier",
       showThread: true,
+      showPairings: true,
       showSpans: true,
       searchQuery: "",
       hiddenTiers: new Set(),
       selectedRowId: null,
+      hoveredRowId: null,
       zoom: 1.0,
       directWheelZoom: false
+    };
+
+    // Runtime lookup caches populated during renderChart() for instant Phase 3 hover updates
+    let runtimeLayout = {
+      nodesById: new Map(),
+      nodesByReadOrderKey: new Map(),
+      visibleOrderedNodes: [],
+      cardElsById: new Map(),
+      barElsById: new Map(),
+      scaler: null,
+      laneWidth: 235,
+      timeAxisWidth: 115,
+      cardHeight: 68,
+      totalWidth: 1280,
+      totalStageHeight: 1000,
+      spotlightSvg: null,
+      globalThreadPath: null,
+      timespanBandEl: null,
+      timespanLaneBoxEl: null,
+      railHighlightEl: null
     };
 
     // Track drag-pan state so clicks don't misfire after dragging
@@ -890,8 +1160,22 @@
       return { macro: "Europe", inter: "—", sub: "Europe (Inferred)" };
     }
 
+    function normalizeReadOrderKey(val) {
+      const num = parseFloat(String(val).trim());
+      if (isNaN(num)) return "";
+      return String(num);
+    }
+
+    function parsePairedTokens(pairedStr) {
+      if (!pairedStr || pairedStr === "—") return [];
+      return pairedStr
+        .split(/[;,]/)
+        .map(s => normalizeReadOrderKey(s))
+        .filter(Boolean);
+    }
+
     /*************************************************************************
-     * 4. FETCH & NORMALIZE SCHEMA (Columns A–S + Optional T–X)
+     * 4. FETCH & NORMALIZE SCHEMA (Columns A–S + Phase 1 Expanded Cols T–X)
      *************************************************************************/
     function buildCsvUrl(tab) {
       if (tab.gid.startsWith("http")) return tab.gid;
@@ -962,7 +1246,7 @@
             sub = infReg.sub;
           }
 
-          // Optional Phase 1 Expanded Columns (Cols T–X, Indices 19–23)
+          // Phase 1 Expanded Columns (Cols T–X, Indices 19–23)
           const scopeSubtitle = (r[19] || "").trim();
           const workGroupId = (r[20] || "").trim();
           const pairedReadOrders = (r[21] || "").trim();
@@ -972,6 +1256,7 @@
           parsed.push({
             id: `row-${i}-${roRaw}`,
             readOrder: roRaw,
+            readOrderKey: normalizeReadOrderKey(roRaw),
             eraDate,
             title,
             author,
@@ -990,17 +1275,20 @@
             inter,
             sub,
             secRegions,
-            scopeSubtitle,
-            workGroupId,
-            pairedReadOrders,
-            themeTags,
-            authorBio,
+            scopeSubtitle: scopeSubtitle === "—" ? "" : scopeSubtitle,
+            workGroupId: workGroupId === "—" ? "" : workGroupId,
+            pairedReadOrders: pairedReadOrders === "—" ? "" : pairedReadOrders,
+            pairedKeys: parsePairedTokens(pairedReadOrders),
+            themeTags: themeTags === "—" ? "" : themeTags,
+            authorBio: authorBio === "—" ? "" : authorBio,
             hasExplicitCoords
           });
         }
 
         parsed.sort((a, b) => a.readOrder - b.readOrder);
         state.rows = parsed;
+        state.selectedRowId = null;
+        state.hoveredRowId = null;
         renderChart();
       } catch (err) {
         document.getElementById("statsBar").innerHTML =
@@ -1017,6 +1305,14 @@
       if (y < 0) return `${Math.abs(Math.round(y)).toLocaleString()} BCE`;
       if (y === 0) return `1 CE`;
       return `${Math.round(y)} CE`;
+    }
+
+    function formatSpanDuration(yStart, yEnd) {
+      const diff = Math.abs(yEnd - yStart);
+      if (diff === 0) return "Single-Point Date";
+      if (diff >= 1e9) return `${(diff / 1e9).toFixed(2)} Billion Yr Span`;
+      if (diff >= 1e6) return `${(diff / 1e6).toFixed(1)} Million Yr Span`;
+      return `${Math.round(diff).toLocaleString()} Yr Span`;
     }
 
     function buildChronoScaler(rows, zoomFactor) {
@@ -1132,17 +1428,16 @@
     }
 
     /*************************************************************************
-     * 6. RENDER SWIMLANES, STICKY Y-AXIS, 1-N NUMBERS & NARRATIVE THREAD
+     * 6. RENDER SWIMLANES, STICKY Y-AXIS, 1-N NUMBERS & PHASE 3 LAYERS
      *************************************************************************/
     function renderChart() {
       const rows = state.rows;
       const lanes = getActiveLanes(rows);
       const z = state.zoom;
 
-      // Update Zoom UI Readout
       document.getElementById("zoomReadout").textContent = `${Math.round(z * 100)}%`;
 
-      const timeAxisWidth = 115; // Sticky left column stays crisp & readable at all zoom levels
+      const timeAxisWidth = 115;
       const baseMinLaneWidth = state.xMode === "macro" ? 235 : 210;
       const minLaneWidth = Math.round(baseMinLaneWidth * z);
 
@@ -1152,7 +1447,7 @@
 
       const gridTemplate = `${timeAxisWidth}px repeat(${lanes.length}, minmax(${minLaneWidth}px, 1fr))`;
 
-      // 1. Render Sticky Swimlane Headers (with Double-Pinned Top-Left Corner Header)
+      // 1. Sticky Swimlane Headers
       const laneHeaders = document.getElementById("laneHeaders");
       laneHeaders.style.gridTemplateColumns = gridTemplate;
       laneHeaders.innerHTML = `<div class="time-axis-header">${
@@ -1177,7 +1472,7 @@
       const isRowVisible = (n) => {
         if (state.hiddenTiers.has(n.tier)) return false;
         if (q) {
-          const hay = `${n.title} ${n.author} ${n.sub} ${n.macro} ${n.origLang} ${n.notes} ${n.scopeSubtitle || ""}`.toLowerCase();
+          const hay = `${n.title} ${n.author} ${n.sub} ${n.macro} ${n.origLang} ${n.notes} ${n.scopeSubtitle || ""} ${n.themeTags || ""}`.toLowerCase();
           if (!hay.includes(q)) return false;
         }
         if (state.colorMode === "read" && !n.readStatus) return false;
@@ -1185,7 +1480,6 @@
         return true;
       };
 
-      // Assign dynamic 1..N reading numbers strictly across visible rows in Read Order sequence
       const dynamicSeqMap = new Map();
       let seqCounter = 1;
       rows.forEach(r => {
@@ -1225,15 +1519,19 @@
         let laneIdx = laneIndexMap.get(laneKey);
         if (laneIdx === undefined) laneIdx = 0;
 
-        let idealY = state.yMode === "chrono"
+        const trueStartY = state.yMode === "chrono"
           ? scaler.yearToY(r.yStart)
           : Math.round(40 * z) + idx * (CARD_HEIGHT + Math.round(14 * z));
 
-        const actualY = Math.max(idealY, laneBottomTracker[laneIdx]);
+        const trueEndY = state.yMode === "chrono"
+          ? Math.max(trueStartY + 6, scaler.yearToY(r.yEnd))
+          : trueStartY + CARD_HEIGHT;
+
+        const actualY = Math.max(trueStartY, laneBottomTracker[laneIdx]);
         laneBottomTracker[laneIdx] = actualY + CARD_HEIGHT + CARD_GAP;
 
-        const endY = state.yMode === "chrono"
-          ? Math.max(actualY + 16, scaler.yearToY(r.yEnd))
+        const barEndY = state.yMode === "chrono"
+          ? Math.max(actualY + 14, trueEndY)
           : actualY + CARD_HEIGHT;
 
         const laneLeft = timeAxisWidth + laneIdx * laneWidth;
@@ -1244,9 +1542,12 @@
         positionedNodes.push({
           ...r,
           laneIdx,
-          idealY,
+          laneLeft,
+          laneWidth,
+          trueStartY,
+          trueEndY,
           top: actualY,
-          endY,
+          endY: barEndY,
           left: cardLeft,
           width: cardWidth,
           centerX: cardLeft + cardWidth / 2,
@@ -1259,6 +1560,27 @@
       totalStageHeight = Math.max(totalStageHeight, Math.max(...laneBottomTracker) + 120);
       stage.style.height = `${totalStageHeight}px`;
 
+      // Populate runtime lookup maps for Phase 3 spotlighting
+      runtimeLayout.nodesById.clear();
+      runtimeLayout.nodesByReadOrderKey.clear();
+      runtimeLayout.cardElsById.clear();
+      runtimeLayout.barElsById.clear();
+      runtimeLayout.scaler = scaler;
+      runtimeLayout.laneWidth = laneWidth;
+      runtimeLayout.timeAxisWidth = timeAxisWidth;
+      runtimeLayout.cardHeight = CARD_HEIGHT;
+      runtimeLayout.totalWidth = totalWidth;
+      runtimeLayout.totalStageHeight = totalStageHeight;
+
+      positionedNodes.forEach(n => {
+        runtimeLayout.nodesById.set(n.id, n);
+        runtimeLayout.nodesByReadOrderKey.set(n.readOrderKey, n);
+      });
+
+      runtimeLayout.visibleOrderedNodes = positionedNodes
+        .filter(n => n.visible)
+        .sort((a, b) => a.readOrder - b.readOrder);
+
       // 4. Background Swimlane Grid
       const bgGrid = document.createElement("div");
       bgGrid.className = "lane-bg-grid";
@@ -1266,7 +1588,17 @@
       bgGrid.innerHTML = `<div class="lane-bg-col"></div>` + lanes.map(() => `<div class="lane-bg-col"></div>`).join("");
       stage.appendChild(bgGrid);
 
-      // 5. Chunk 2.1: Sticky Floating Chronology Rail (Pinned Left Y-Axis) + Stage Gridlines
+      // 5. Chunk 3.1: Full-Width Timespan Highlighter Band on Stage
+      const timespanBand = document.createElement("div");
+      timespanBand.className = "timespan-highlight-band";
+      const timespanLaneBox = document.createElement("div");
+      timespanLaneBox.className = "timespan-lane-spotlight";
+      timespanBand.appendChild(timespanLaneBox);
+      stage.appendChild(timespanBand);
+      runtimeLayout.timespanBandEl = timespanBand;
+      runtimeLayout.timespanLaneBoxEl = timespanLaneBox;
+
+      // 6. Chunk 2.1: Sticky Floating Chronology Rail (Pinned Left Y-Axis) + Stage Gridlines
       const stickyRail = document.createElement("div");
       stickyRail.className = "sticky-chrono-rail";
       stickyRail.style.width = `${timeAxisWidth}px`;
@@ -1274,13 +1606,11 @@
 
       if (state.yMode === "chrono" && scaler) {
         scaler.bands.forEach(b => {
-          // Full-width horizontal gridline on stage
           const bandDiv = document.createElement("div");
           bandDiv.className = "time-tick epoch-divider";
           bandDiv.style.top = `${b.topPx}px`;
           stage.appendChild(bandDiv);
 
-          // Sticky label & floating epoch banner inside the pinned left rail
           const railEpoch = document.createElement("div");
           railEpoch.style.position = "absolute";
           railEpoch.style.top = `${b.topPx}px`;
@@ -1292,7 +1622,6 @@
           `;
           stickyRail.appendChild(railEpoch);
 
-          // Intermediate ticks inside band
           const steps = 4;
           for (let s = 1; s < steps; s++) {
             const yVal = b.yMin + ((b.yMax - b.yMin) * s) / steps;
@@ -1311,61 +1640,69 @@
           }
         });
       } else {
-        // Ordinal Read-Order sequence markers on the sticky rail
-        positionedNodes
-          .filter(n => n.visible)
-          .forEach((n, idx) => {
-            if (idx === 0 || (idx + 1) % 5 === 0) {
-              const tickLine = document.createElement("div");
-              tickLine.className = "time-tick";
-              tickLine.style.top = `${n.centerY}px`;
-              stage.appendChild(tickLine);
+        runtimeLayout.visibleOrderedNodes.forEach((n, idx) => {
+          if (idx === 0 || (idx + 1) % 5 === 0) {
+            const tickLine = document.createElement("div");
+            tickLine.className = "time-tick";
+            tickLine.style.top = `${n.centerY}px`;
+            stage.appendChild(tickLine);
 
-              const tickLbl = document.createElement("div");
-              tickLbl.className = "rail-tick-label";
-              tickLbl.style.top = `${n.centerY}px`;
-              tickLbl.textContent = `#${n.displaySeq} (${formatYearLabel(n.yStart)})`;
-              stickyRail.appendChild(tickLbl);
-            }
-          });
+            const tickLbl = document.createElement("div");
+            tickLbl.className = "rail-tick-label";
+            tickLbl.style.top = `${n.centerY}px`;
+            tickLbl.textContent = `#${n.displaySeq} (${formatYearLabel(n.yStart)})`;
+            stickyRail.appendChild(tickLbl);
+          }
+        });
       }
+
+      // Chunk 3.1 Sticky Rail Span Callout Box (Shows Start/End Year Pills on Left Axis)
+      const railHighlight = document.createElement("div");
+      railHighlight.className = "rail-span-highlight";
+      stickyRail.appendChild(railHighlight);
+      runtimeLayout.railHighlightEl = railHighlight;
 
       stage.appendChild(stickyRail);
 
-      // 6. SVG Layer for Read Order Narrative Thread (Connects visible #1 -> #2 -> ... -> #N)
+      // 7. Base SVG Layer for Global Read Order Thread
       const svgNS = "http://www.w3.org/2000/svg";
       const svg = document.createElementNS(svgNS, "svg");
       svg.setAttribute("class", "svg-overlay");
       svg.setAttribute("width", totalWidth);
       svg.setAttribute("height", totalStageHeight);
 
-      const visibleSorted = positionedNodes
-        .filter(n => n.visible)
-        .sort((a, b) => a.readOrder - b.readOrder);
-
-      if (state.showThread && visibleSorted.length > 1) {
+      let globalThreadPath = null;
+      if (state.showThread && runtimeLayout.visibleOrderedNodes.length > 1) {
         let d = "";
-        visibleSorted.forEach((pt, idx) => {
+        runtimeLayout.visibleOrderedNodes.forEach((pt, idx) => {
           if (idx === 0) {
             d += `M ${pt.centerX} ${pt.centerY} `;
           } else {
-            const prev = visibleSorted[idx - 1];
+            const prev = runtimeLayout.visibleOrderedNodes[idx - 1];
             const midY = (prev.centerY + pt.centerY) / 2;
             d += `C ${prev.centerX} ${midY}, ${pt.centerX} ${midY}, ${pt.centerX} ${pt.centerY} `;
           }
         });
-        const path = document.createElementNS(svgNS, "path");
-        path.setAttribute("d", d);
-        path.setAttribute("fill", "none");
-        path.setAttribute("stroke", "rgba(245, 158, 11, 0.44)");
-        path.setAttribute("stroke-width", String(Math.max(1.5, 2.2 * z)));
-        path.setAttribute("stroke-dasharray", "5,4");
-        svg.appendChild(path);
+        globalThreadPath = document.createElementNS(svgNS, "path");
+        globalThreadPath.setAttribute("d", d);
+        globalThreadPath.setAttribute("fill", "none");
+        globalThreadPath.setAttribute("stroke", "rgba(245, 158, 11, 0.36)");
+        globalThreadPath.setAttribute("stroke-width", String(Math.max(1.4, 2.0 * z)));
+        globalThreadPath.setAttribute("stroke-dasharray", "5,5");
+        svg.appendChild(globalThreadPath);
       }
-
+      runtimeLayout.globalThreadPath = globalThreadPath;
       stage.appendChild(svg);
 
-      // 7. Render Duration Bars & Book Cards (with Dynamic #1–N Badge)
+      // 8. Top SVG Layer for Phase 3 Spotlight Threads (Prev -> Current -> Next & Paired Arcs)
+      const spotlightSvg = document.createElementNS(svgNS, "svg");
+      spotlightSvg.setAttribute("class", "svg-spotlight-overlay");
+      spotlightSvg.setAttribute("width", totalWidth);
+      spotlightSvg.setAttribute("height", totalStageHeight);
+      stage.appendChild(spotlightSvg);
+      runtimeLayout.spotlightSvg = spotlightSvg;
+
+      // 9. Render Duration Bars & Book Cards
       let visibleCount = 0;
       let readCount = 0;
       let ownedCount = 0;
@@ -1375,16 +1712,28 @@
         if (n.ownedStatus) ownedCount++;
         if (n.visible) visibleCount++;
 
-        // Duration ribbon for multi-year History (Narrative) / Supporting (Scholarly)
-        if (state.showSpans && state.yMode === "chrono" && n.endY - n.top > CARD_HEIGHT + 8) {
+        // Duration bar for every entry in chronological mode (even short-span works get a bar for hover highlighting)
+        if (state.showSpans && state.yMode === "chrono") {
+          const isMultiYear = (n.yEnd - n.yStart) > 0 || (n.endY - n.top > CARD_HEIGHT + 4);
           const bar = document.createElement("div");
           bar.className = "duration-bar";
           bar.style.left = `${n.left - 8}px`;
-          bar.style.top = `${n.top}px`;
-          bar.style.height = `${n.endY - n.top}px`;
-          bar.style.background = n.tier.includes("History") ? "var(--tier-hist-border)" : "var(--tier-schol-border)";
-          if (!n.visible) bar.style.opacity = "0.08";
+          bar.style.top = `${Math.min(n.trueStartY, n.top)}px`;
+          const barHeight = Math.max(CARD_HEIGHT, Math.max(n.endY, n.trueEndY) - Math.min(n.trueStartY, n.top));
+          bar.style.height = `${barHeight}px`;
+          bar.style.background = n.tier.includes("History")
+            ? "var(--tier-hist-border)"
+            : n.tier.includes("Supporting")
+              ? "var(--tier-schol-border)"
+              : "var(--tier-main-border)";
+
+          if (!n.visible) {
+            bar.style.opacity = "0.05";
+          } else if (!isMultiYear) {
+            bar.style.opacity = "0.18";
+          }
           stage.appendChild(bar);
+          runtimeLayout.barElsById.set(n.id, bar);
         }
 
         const card = document.createElement("div");
@@ -1400,9 +1749,18 @@
           ? `Reading Sequence #${n.displaySeq} (Master Sheet Read Order: ${n.readOrder})`
           : `Filtered Out (Master Sheet Read Order: ${n.readOrder})`;
 
+        const subtitleHtml = n.scopeSubtitle
+          ? `<span style="color:var(--accent);font-weight:600;">[${n.scopeSubtitle}]</span> `
+          : "";
+
         card.innerHTML = `
           <div class="card-top">
-            <span class="ro-badge" title="${badgeTooltip}">${badgeLabel}</span>
+            <span>
+              <span class="ro-badge" title="${badgeTooltip}">${badgeLabel}</span>
+              <span class="role-pill prev-pill">← Prev</span>
+              <span class="role-pill next-pill">Next →</span>
+              <span class="role-pill paired-pill">⇄ Paired</span>
+            </span>
             <span class="subregion-pill" title="${n.macro} > ${n.inter} > ${n.sub}">${n.sub || n.macro}</span>
             <span class="status-dots">
               ${n.readStatus ? '<span class="dot read" title="Read"></span>' : ""}
@@ -1410,36 +1768,329 @@
             </span>
           </div>
           <div class="card-title" title="${n.title.replace(/"/g, '&quot;')}">${n.title}</div>
-          <div class="card-meta">${n.author} • ${n.eraDate}</div>
+          <div class="card-meta">${subtitleHtml}${n.author} • ${n.eraDate}</div>
         `;
 
-        card.addEventListener("click", (e) => {
-          if (Date.now() < panState.suppressClickUntil) {
-            e.stopPropagation();
-            return;
-          }
-          openDrawer(n);
+        card.addEventListener("mouseenter", () => {
+          if (panState.isDown) return;
+          state.hoveredRowId = n.id;
+          updatePhase3Spotlight();
         });
+
+        card.addEventListener("mouseleave", () => {
+          if (state.hoveredRowId === n.id) {
+            state.hoveredRowId = null;
+            updatePhase3Spotlight();
+          }
+        });
+
+        card.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (Date.now() < panState.suppressClickUntil) return;
+          state.selectedRowId = n.id;
+          openDrawer(n);
+          updatePhase3Spotlight();
+        });
+
         stage.appendChild(card);
+        runtimeLayout.cardElsById.set(n.id, card);
       });
 
       const coordCount = rows.filter(r => r.hasExplicitCoords).length;
+      const pairedCount = rows.filter(r => r.pairedKeys && r.pairedKeys.length > 0).length;
       document.getElementById("statsBar").innerHTML = `
         <span>Showing <strong>1–${visibleCount}</strong> of ${rows.length} Works</span>
         <span>Read: <strong>${readCount}</strong></span>
         <span>Owned: <strong>${ownedCount}</strong></span>
         <span>Coords: <strong>${coordCount}/${rows.length}</strong></span>
-        <span class="nav-hint">🖐️ Drag canvas to pan • Ctrl/Shift + Wheel to zoom</span>
+        <span>Paired: <strong>${pairedCount}/${rows.length}</strong></span>
+        <span class="nav-hint">🖐️ Hover/click card for Span &amp; Thread Spotlight • Drag to pan • Ctrl+Wheel to zoom</span>
       `;
+
+      updatePhase3Spotlight();
     }
 
     /*************************************************************************
-     * 7. SLIDE-OUT SCHOLARLY INSPECTOR DRAWER
+     * 7. PHASE 3 ENGINE: TIMESPAN HIGHLIGHTER, PREV->NEXT THREAD & PAIRED ARCS
+     *************************************************************************/
+    function buildBezierPath(x1, y1, x2, y2) {
+      const dy = Math.abs(y2 - y1);
+      const dx = Math.abs(x2 - x1);
+      if (dy < 35 && dx > 80) {
+        const arcHeight = Math.max(40, Math.min(130, dx * 0.22));
+        const ctrlY = Math.min(y1, y2) - arcHeight;
+        return `M ${x1} ${y1} C ${x1} ${ctrlY}, ${x2} ${ctrlY}, ${x2} ${y2}`;
+      }
+      const midY = (y1 + y2) / 2;
+      return `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
+    }
+
+    function updatePhase3Spotlight() {
+      const activeId = state.hoveredRowId || state.selectedRowId;
+      const activeNode = activeId ? runtimeLayout.nodesById.get(activeId) : null;
+      const svg = runtimeLayout.spotlightSvg;
+      if (!svg) return;
+
+      svg.innerHTML = "";
+
+      // Reset all cards and duration bars to default state when nothing is hovered or selected
+      if (!activeNode) {
+        if (runtimeLayout.globalThreadPath) {
+          runtimeLayout.globalThreadPath.setAttribute("stroke", "rgba(245, 158, 11, 0.36)");
+        }
+        if (runtimeLayout.timespanBandEl) {
+          runtimeLayout.timespanBandEl.style.display = "none";
+        }
+        if (runtimeLayout.railHighlightEl) {
+          runtimeLayout.railHighlightEl.style.display = "none";
+        }
+        runtimeLayout.cardElsById.forEach(el => {
+          el.classList.remove(
+            "spotlight-muted",
+            "spotlight-active",
+            "spotlight-neighbor",
+            "spotlight-prev",
+            "spotlight-next",
+            "spotlight-paired"
+          );
+        });
+        runtimeLayout.barElsById.forEach(bar => {
+          bar.classList.remove("dimmed-bar", "active-bar", "paired-bar");
+        });
+        return;
+      }
+
+      // Dim global background thread so the focused Prev -> Current -> Next spotlight pops cleanly
+      if (runtimeLayout.globalThreadPath) {
+        runtimeLayout.globalThreadPath.setAttribute("stroke", "rgba(245, 158, 11, 0.10)");
+      }
+
+      // Identify Previous (#N-1) and Next (#N+1) visible books in the active Reading Order
+      const visList = runtimeLayout.visibleOrderedNodes;
+      const curIdx = visList.findIndex(n => n.id === activeNode.id);
+      const prevNode = curIdx > 0 ? visList[curIdx - 1] : null;
+      const nextNode = curIdx >= 0 && curIdx < visList.length - 1 ? visList[curIdx + 1] : null;
+
+      // Identify Bidirectionally Paired Works (Col V)
+      const pairedNodes = [];
+      if (state.showPairings && activeNode.pairedKeys && activeNode.pairedKeys.length > 0) {
+        activeNode.pairedKeys.forEach(k => {
+          const target = runtimeLayout.nodesByReadOrderKey.get(k);
+          if (target && target.id !== activeNode.id) {
+            pairedNodes.push(target);
+          }
+        });
+      }
+
+      const pairedIdSet = new Set(pairedNodes.map(p => p.id));
+
+      // 1. Chunk 3.1: Project Horizontal Timespan Highlighter Band across Chronology Rail & Swimlanes
+      if (runtimeLayout.timespanBandEl && runtimeLayout.railHighlightEl) {
+        let bandTop = activeNode.top;
+        let bandBottom = activeNode.top + runtimeLayout.cardHeight;
+
+        if (state.yMode === "chrono" && runtimeLayout.scaler) {
+          const y1 = runtimeLayout.scaler.yearToY(activeNode.yStart);
+          const y2 = runtimeLayout.scaler.yearToY(activeNode.yEnd);
+          bandTop = Math.min(y1, y2);
+          bandBottom = Math.max(y1, y2, bandTop + 26);
+        }
+
+        const bandHeight = Math.max(26, bandBottom - bandTop);
+
+        runtimeLayout.timespanBandEl.style.display = "block";
+        runtimeLayout.timespanBandEl.style.top = `${bandTop}px`;
+        runtimeLayout.timespanBandEl.style.height = `${bandHeight}px`;
+
+        if (runtimeLayout.timespanLaneBoxEl) {
+          runtimeLayout.timespanLaneBoxEl.style.left = `${activeNode.laneLeft}px`;
+          runtimeLayout.timespanLaneBoxEl.style.width = `${activeNode.laneWidth}px`;
+        }
+
+        const startText = formatYearLabel(activeNode.yStart);
+        const endText = formatYearLabel(activeNode.yEnd);
+        const durationDesc = formatSpanDuration(activeNode.yStart, activeNode.yEnd);
+        const isPoint = activeNode.yStart === activeNode.yEnd;
+
+        runtimeLayout.railHighlightEl.style.display = "block";
+        runtimeLayout.railHighlightEl.style.top = `${bandTop}px`;
+        runtimeLayout.railHighlightEl.style.height = `${bandHeight}px`;
+        runtimeLayout.railHighlightEl.innerHTML = isPoint
+          ? `
+            <span class="rail-span-pill start">${startText}</span>
+            <span class="rail-span-summary">${startText} (${durationDesc})</span>
+          `
+          : `
+            <span class="rail-span-pill start">${startText}</span>
+            <span class="rail-span-pill end">${endText}</span>
+            <span class="rail-span-summary">${startText} → ${endText} (${durationDesc})</span>
+          `;
+      }
+
+      // 2. Update Card & Duration Bar CSS Highlights
+      runtimeLayout.cardElsById.forEach((el, id) => {
+        el.classList.remove(
+          "spotlight-muted",
+          "spotlight-active",
+          "spotlight-neighbor",
+          "spotlight-prev",
+          "spotlight-next",
+          "spotlight-paired"
+        );
+
+        if (id === activeNode.id) {
+          el.classList.add("spotlight-active");
+        } else if (prevNode && id === prevNode.id) {
+          el.classList.add("spotlight-neighbor", "spotlight-prev");
+        } else if (nextNode && id === nextNode.id) {
+          el.classList.add("spotlight-neighbor", "spotlight-next");
+        } else if (pairedIdSet.has(id)) {
+          el.classList.add("spotlight-paired");
+        } else {
+          el.classList.add("spotlight-muted");
+        }
+      });
+
+      runtimeLayout.barElsById.forEach((bar, id) => {
+        bar.classList.remove("dimmed-bar", "active-bar", "paired-bar");
+        if (id === activeNode.id) {
+          bar.classList.add("active-bar");
+        } else if (pairedIdSet.has(id)) {
+          bar.classList.add("paired-bar");
+        } else {
+          bar.classList.add("dimmed-bar");
+        }
+      });
+
+      // 3. Chunk 3.2 & 3.3: Draw Focused SVG Curves & Arrowheads
+      const svgNS = "http://www.w3.org/2000/svg";
+      const defs = document.createElementNS(svgNS, "defs");
+      defs.innerHTML = `
+        <marker id="arrow-prev" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#f59e0b" />
+        </marker>
+        <marker id="arrow-next" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#facc15" />
+        </marker>
+        <marker id="arrow-paired" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
+        </marker>
+      `;
+      svg.appendChild(defs);
+
+      // Chunk 3.3: Bidirectional Mapping Connectors (Cyan Dashed Arcs)
+      pairedNodes.forEach(target => {
+        const d = buildBezierPath(activeNode.centerX, activeNode.centerY, target.centerX, target.centerY);
+
+        const glow = document.createElementNS(svgNS, "path");
+        glow.setAttribute("d", d);
+        glow.setAttribute("fill", "none");
+        glow.setAttribute("stroke", "rgba(56, 189, 248, 0.25)");
+        glow.setAttribute("stroke-width", "7");
+        svg.appendChild(glow);
+
+        const arc = document.createElementNS(svgNS, "path");
+        arc.setAttribute("d", d);
+        arc.setAttribute("class", "spotlight-paired-path");
+        arc.setAttribute("fill", "none");
+        arc.setAttribute("stroke", "#38bdf8");
+        arc.setAttribute("stroke-width", "2.4");
+        arc.setAttribute("stroke-dasharray", "6,4");
+        arc.setAttribute("marker-end", "url(#arrow-paired)");
+        svg.appendChild(arc);
+      });
+
+      // Chunk 3.2: Incoming Path from Previous Book (#N-1 -> #N)
+      if (prevNode) {
+        const dPrev = buildBezierPath(prevNode.centerX, prevNode.centerY, activeNode.centerX, activeNode.centerY);
+        const prevPath = document.createElementNS(svgNS, "path");
+        prevPath.setAttribute("d", dPrev);
+        prevPath.setAttribute("fill", "none");
+        prevPath.setAttribute("stroke", "#f59e0b");
+        prevPath.setAttribute("stroke-width", "2.8");
+        prevPath.setAttribute("stroke-dasharray", "6,4");
+        prevPath.setAttribute("marker-end", "url(#arrow-prev)");
+        svg.appendChild(prevPath);
+      }
+
+      // Chunk 3.2: Outgoing Animated Path to Next Book (#N -> #N+1)
+      if (nextNode) {
+        const dNext = buildBezierPath(activeNode.centerX, activeNode.centerY, nextNode.centerX, nextNode.centerY);
+
+        const nextGlow = document.createElementNS(svgNS, "path");
+        nextGlow.setAttribute("d", dNext);
+        nextGlow.setAttribute("fill", "none");
+        nextGlow.setAttribute("stroke", "rgba(250, 204, 21, 0.28)");
+        nextGlow.setAttribute("stroke-width", "8");
+        svg.appendChild(nextGlow);
+
+        const nextPath = document.createElementNS(svgNS, "path");
+        nextPath.setAttribute("d", dNext);
+        nextPath.setAttribute("class", "spotlight-next-path");
+        nextPath.setAttribute("fill", "none");
+        nextPath.setAttribute("stroke", "#facc15");
+        nextPath.setAttribute("stroke-width", "3.2");
+        nextPath.setAttribute("stroke-dasharray", "9,5");
+        nextPath.setAttribute("marker-end", "url(#arrow-next)");
+        svg.appendChild(nextPath);
+      }
+    }
+
+    function focusAndPanToNode(targetId) {
+      const node = runtimeLayout.nodesById.get(targetId);
+      if (!node) return;
+      state.selectedRowId = node.id;
+      openDrawer(node);
+      updatePhase3Spotlight();
+
+      const targetLeft = Math.max(0, node.centerX - (window.innerWidth - 420) / 2);
+      const targetTop = Math.max(0, node.centerY - window.innerHeight / 2);
+      window.scrollTo({
+        left: targetLeft,
+        top: targetTop,
+        behavior: "smooth"
+      });
+    }
+
+    /*************************************************************************
+     * 8. SLIDE-OUT SCHOLARLY INSPECTOR DRAWER (With Prev/Next & Paired Links)
      *************************************************************************/
     function openDrawer(n) {
       const drawer = document.getElementById("drawer");
       const content = document.getElementById("drawerContent");
       const seqText = n.displaySeq ? `#${n.displaySeq}` : "Filtered";
+
+      const visList = runtimeLayout.visibleOrderedNodes;
+      const curIdx = visList.findIndex(item => item.id === n.id);
+      const prevNode = curIdx > 0 ? visList[curIdx - 1] : null;
+      const nextNode = curIdx >= 0 && curIdx < visList.length - 1 ? visList[curIdx + 1] : null;
+
+      const pairedNodes = (n.pairedKeys || [])
+        .map(k => runtimeLayout.nodesByReadOrderKey.get(k))
+        .filter(Boolean);
+
+      const pairedHtml = pairedNodes.length > 0
+        ? `
+          <div style="font-size:0.75rem;text-transform:uppercase;color:var(--sec-thread);margin-bottom:6px;letter-spacing:0.05em;font-weight:700;">
+            ⇄ Bidirectional Companion Works (${pairedNodes.length})
+          </div>
+          <div class="paired-list">
+            ${pairedNodes.map(p => `
+              <div class="paired-chip" data-target-id="${p.id}">
+                <div>
+                  <div style="font-weight:700;color:var(--text);">
+                    ${p.displaySeq ? `#${p.displaySeq}` : `RO ${p.readOrder}`} — ${p.title}
+                  </div>
+                  <div style="font-size:0.7rem;color:var(--muted);">
+                    ${p.author} • ${p.tier} (${formatYearLabel(p.yStart)} → ${formatYearLabel(p.yEnd)})
+                  </div>
+                </div>
+                <span style="color:var(--sec-thread);font-weight:700;font-size:0.78rem;">Jump →</span>
+              </div>
+            `).join("")}
+          </div>
+        `
+        : "";
 
       content.innerHTML = `
         <div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -1450,7 +2101,17 @@
           <span style="font-size:0.78rem;color:var(--muted);">${n.tier}</span>
         </div>
         <h2>${n.title}</h2>
-        <div class="author">${n.author}</div>
+        <div class="author">${n.author}${n.authorBio ? ` <span style="color:var(--muted);font-size:0.78rem;">— ${n.authorBio}</span>` : ""}</div>
+
+        <!-- Chunk 3.2: Prev / Next Reading Order Jump Buttons -->
+        <div class="drawer-nav-row">
+          <button class="drawer-nav-btn" id="btnDrawerPrev" ${prevNode ? "" : "disabled"} title="${prevNode ? prevNode.title.replace(/"/g, '&quot;') : ""}">
+            ${prevNode ? `← Prev (#${prevNode.displaySeq}): ${prevNode.title}` : "← Start of Filter"}
+          </button>
+          <button class="drawer-nav-btn" id="btnDrawerNext" ${nextNode ? "" : "disabled"} title="${nextNode ? nextNode.title.replace(/"/g, '&quot;') : ""}">
+            ${nextNode ? `Next (#${nextNode.displaySeq}): ${nextNode.title} →` : "End of Filter →"}
+          </button>
+        </div>
 
         <div class="meta-grid">
           <div class="meta-cell">
@@ -1459,15 +2120,15 @@
           </div>
           <div class="meta-cell">
             <div class="label">Plot Window (Y-Axis)</div>
-            <div class="val">${formatYearLabel(n.yStart)} → ${formatYearLabel(n.yEnd)}</div>
+            <div class="val">${formatYearLabel(n.yStart)} → ${formatYearLabel(n.yEnd)} (${formatSpanDuration(n.yStart, n.yEnd)})</div>
           </div>
           <div class="meta-cell">
             <div class="label">Primary Geoscheme</div>
             <div class="val">${n.macro} &rsaquo; ${n.sub || "—"}</div>
           </div>
           <div class="meta-cell">
-            <div class="label">Intermediary Region</div>
-            <div class="val">${n.inter || "—"}</div>
+            <div class="label">Scope / Subtitle</div>
+            <div class="val">${n.scopeSubtitle || "Full Work"}</div>
           </div>
           <div class="meta-cell">
             <div class="label">Original Language</div>
@@ -1487,16 +2148,35 @@
           </div>
         </div>
 
+        ${pairedHtml}
+
         <div style="font-size:0.75rem;text-transform:uppercase;color:var(--muted);margin-bottom:6px;letter-spacing:0.05em;">
           Curatorial &amp; Edition Notes
         </div>
         <div class="notes-box">${n.notes || "No curatorial notes recorded for this entry."}</div>
       `;
+
+      const prevBtn = document.getElementById("btnDrawerPrev");
+      if (prevBtn && prevNode) {
+        prevBtn.addEventListener("click", () => focusAndPanToNode(prevNode.id));
+      }
+      const nextBtn = document.getElementById("btnDrawerNext");
+      if (nextBtn && nextNode) {
+        nextBtn.addEventListener("click", () => focusAndPanToNode(nextNode.id));
+      }
+
+      content.querySelectorAll(".paired-chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+          const targetId = chip.getAttribute("data-target-id");
+          if (targetId) focusAndPanToNode(targetId);
+        });
+      });
+
       drawer.classList.add("open");
     }
 
     /*************************************************************************
-     * 8. CHUNK 2.3: INTERACTIVE 2D CLICK-AND-DRAG PAN & CURSOR-CENTERED ZOOM
+     * 9. CHUNK 2.3: INTERACTIVE 2D CLICK-AND-DRAG PAN & CURSOR-CENTERED ZOOM
      *************************************************************************/
     function applyZoomAtPoint(newZoom, clientX, clientY) {
       const clamped = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Number(newZoom.toFixed(2))));
@@ -1505,7 +2185,6 @@
       const oldZoom = state.zoom;
       const ratio = clamped / oldZoom;
 
-      // Keep cursor point anchored across the sticky 115px chronology rail and 93px top headers
       const timeAxisWidth = 115;
       const headerOffset = 135;
 
@@ -1534,7 +2213,7 @@
 
       // 1. Click-and-Drag 2D Canvas Grabbing
       viewport.addEventListener("mousedown", (e) => {
-        if (e.button !== 0) return; // Left-click only
+        if (e.button !== 0) return;
         if (e.target.closest(".lane-headers")) return;
 
         panState.isDown = true;
@@ -1575,6 +2254,16 @@
         document.body.classList.remove("is-panning");
       });
 
+      // Clicking empty canvas clears pinned selection & closes drawer
+      viewport.addEventListener("click", (e) => {
+        if (Date.now() < panState.suppressClickUntil) return;
+        if (!e.target.closest(".book-card") && !e.target.closest(".lane-headers")) {
+          state.selectedRowId = null;
+          document.getElementById("drawer").classList.remove("open");
+          updatePhase3Spotlight();
+        }
+      });
+
       // 2. Mouse-Wheel Zoom (Ctrl/Cmd + Wheel, Shift + Wheel, or Direct Wheel Zoom Mode)
       window.addEventListener("wheel", (e) => {
         if (e.target.closest(".drawer") || e.target.closest(".modal")) return;
@@ -1608,7 +2297,7 @@
     }
 
     /*************************************************************************
-     * 9. UI EVENT LISTENERS & TAB MANAGEMENT
+     * 10. UI EVENT LISTENERS & TAB MANAGEMENT
      *************************************************************************/
     function populateTabDropdown() {
       const sel = document.getElementById("tabSelect");
@@ -1643,6 +2332,12 @@
       renderChart();
     });
 
+    document.getElementById("btnTogglePairings").addEventListener("click", (e) => {
+      state.showPairings = !state.showPairings;
+      e.currentTarget.classList.toggle("active", state.showPairings);
+      updatePhase3Spotlight();
+    });
+
     document.getElementById("btnToggleSpans").addEventListener("click", (e) => {
       state.showSpans = !state.showSpans;
       e.currentTarget.classList.toggle("active", state.showSpans);
@@ -1669,7 +2364,9 @@
     });
 
     document.getElementById("drawerClose").addEventListener("click", () => {
+      state.selectedRowId = null;
       document.getElementById("drawer").classList.remove("open");
+      updatePhase3Spotlight();
     });
 
     // Sheet Tab Configuration Modal
