@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Reading Order — Synoptic Visual Companion</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --panel: #171a24;
+      --panel-2: #1f2433;
+      --border: #2c3347;
+      --text: #e8ecf4;
+      --muted: #9aa4bf;
+      --accent: #e0b153;
+      --thread: #f59e0b;
+      --sec-thread: #38bdf8;
+
+      /* Collection Tier Colors */
+      --tier-main-bg: #2b2212;
+      --tier-main-border: #eab308;
+      --tier-main-badge: #facc15;
+
+      --tier-supp-bg: #1e2430;
+      --tier-supp-border: #94a3b8;
+      --tier-supp-badge: #cbd5e1;
+
+      --tier-hist-bg: #132338;
+      --tier-hist-border: #38bdf8;
+      --tier-hist-badge: #7dd3fc;
+
+      --tier-schol-bg: #231834;
+      --tier-schol-border: #c084fc;
+      --tier-schol-badge: #d8b4fe;
+
+      --tier-ref-bg: #142e27;
+      --tier-ref-border: #34d399;
+      --tier-ref-badge: #6ee7b7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      overflow-x: auto;
+      min-height: 100vh;
+    }
+
+    /* Top Control Bar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      background: rgba(23, 26, 36, 0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--accent);
+    }
+
+    .brand span {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    select, input[type="text"], button {
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.82rem;
+      outline: none;
+    }
+
+    select:focus, input[type="text"]:focus, button:hover {
+      border-color: var(--accent);
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    button.active {
+      background: var(--accent);
+      color: #111;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Legend & Stats Bar */
+    .subbar {
+      position: sticky;
+      top: 57px;
+      left: 0;
+      z-index: 99;
+      background: rgba(15, 17, 23, 0.94);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .legend-item.muted {
+      opacity: 0.35;
+    }
+
+    .swatch {
+      width: 11px;
+      height: 11px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .stats {
+      color: var(--muted);
+      display: flex;
+      gap: 14px;
+    }
+
+    /* Main Timeline Viewport */
+    .viewport {
+      position: relative;
+      min-width: 1280px;
+      padding-bottom: 120px;
+    }
+
+    /* Sticky Swimlane Header Row */
+    .lane-headers {
+      position: sticky;
+      top: 93px;
+      z-index: 90;
+      display: grid;
+      background: var(--panel);
+      border-bottom: 2px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    .time-axis-header {
+      padding: 10px 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .lane-header {
+      padding: 10px 12px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .lane-header .macro {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .lane-header .sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Canvas Container */
+    .chart-stage {
+      position: relative;
+      width: 100%;
+    }
+
+    /* Background Swimlane Columns */
+    .lane-bg-grid {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      pointer-events: none;
+    }
+
+    .lane-bg-col {
+      border-right: 1px dashed rgba(255, 255, 255, 0.06);
+      height: 100%;
+    }
+
+    .lane-bg-col:nth-child(even) {
+      background: rgba(255, 255, 255, 0.012);
+    }
+
+    /* Time Axis Ticks & Horizontal Gridlines */
+    .time-tick {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      pointer-events: none;
+    }
+
+    .time-tick.epoch-divider {
+      border-top: 1px solid rgba(224, 177, 83, 0.35);
+      background: linear-gradient(90deg, rgba(224, 177, 83, 0.1), transparent 35%);
+    }
+
+    .time-tick-label {
+      position: absolute;
+      left: 0;
+      width: 110px;
+      padding: 4px 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-align: right;
+      transform: translateY(-50%);
+      background: rgba(15, 17, 23, 0.85);
+    }
+
+    .epoch-banner-label {
+      position: absolute;
+      left: 120px;
+      top: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      background: rgba(15, 17, 23, 0.85);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* SVG Overlay for Read Order Thread & Connectors */
+    .svg-overlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 15;
+    }
+
+    /* Historical Duration Span Bars */
+    .duration-bar {
+      position: absolute;
+      width: 6px;
+      border-radius: 3px;
+      opacity: 0.45;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    /* Book Node Cards */
+    .book-card {
+      position: absolute;
+      z-index: 20;
+      border-radius: 7px;
+      padding: 7px 9px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      cursor: pointer;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, opacity 0.2s ease;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+    }
+
+    .book-card:hover {
+      transform: translateY(-2px) scale(1.015);
+      z-index: 50;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.65);
+    }
+
+    .book-card.tier-main {
+      background: var(--tier-main-bg);
+      border-color: var(--tier-main-border);
+    }
+    .book-card.tier-supp {
+      background: var(--tier-supp-bg);
+      border-color: var(--tier-supp-border);
+    }
+    .book-card.tier-hist {
+      background: var(--tier-hist-bg);
+      border-color: var(--tier-hist-border);
+    }
+    .book-card.tier-schol {
+      background: var(--tier-schol-bg);
+      border-color: var(--tier-schol-border);
+      border-style: dashed;
+    }
+    .book-card.tier-ref {
+      background: var(--tier-ref-bg);
+      border-color: var(--tier-ref-border);
+    }
+
+    .book-card.dimmed {
+      opacity: 0.22;
+      filter: grayscale(75%);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 0.66rem;
+      margin-bottom: 3px;
+    }
+
+    .ro-badge {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .subregion-pill {
+      color: var(--muted);
+      font-size: 0.64rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 65%;
+    }
+
+    .card-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-meta {
+      margin-top: 3px;
+      font-size: 0.68rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status-dots {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot.read { background: #22c55e; }
+    .dot.owned { background: #3b82f6; }
+
+    /* Slide-out Inspector Drawer */
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -460px;
+      width: 440px;
+      max-width: 92vw;
+      height: 100vh;
+      background: var(--panel);
+      border-left: 1px solid var(--border);
+      z-index: 200;
+      padding: 22px;
+      overflow-y: auto;
+      transition: right 0.22s ease;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .drawer.open {
+      right: 0;
+    }
+
+    .drawer-close {
+      float: right;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .drawer h2 {
+      font-size: 1.15rem;
+      line-height: 1.35;
+      margin: 12px 0 6px;
+      color: var(--text);
+    }
+
+    .drawer .author {
+      font-size: 0.9rem;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: var(--panel-2);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+      font-size: 0.78rem;
+    }
+
+    .meta-cell .label {
+      color: var(--muted);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .meta-cell .val {
+      color: var(--text);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .notes-box {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 0.85rem;
+      line-height: 1.55;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    /* Modal for Adding/Managing Sheet Tabs */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    .modal {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      width: 560px;
+      max-width: 94vw;
+      padding: 20px;
+    }
+    .modal h3 {
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+    .modal p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .modal textarea, .modal input {
+      width: 100%;
+      margin-bottom: 12px;
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Controls -->
+  <div class="topbar">
+    <div class="brand">
+      <h1>THE READING ORDER</h1>
+      <span>Synoptic World Literature &amp; History Companion</span>
+    </div>
+
+    <div class="controls">
+      <label style="font-size:0.78rem;color:var(--muted);">Era Tab:</label>
+      <select id="tabSelect"></select>
+      <button id="btnManageTabs" title="Add or switch Google Sheet tab GIDs">⚙️ Sheet Tabs</button>
+
+      <select id="yModeSelect" title="Switch Y-Axis between True Chronological Time and Read Order">
+        <option value="chrono">Y-Axis: Chronological Time</option>
+        <option value="ordinal">Y-Axis: Read Order Sequence</option>
+      </select>
+
+      <select id="xModeSelect" title="Switch X-Axis between 6 Macro-Regions and Granular UN Subregions">
+        <option value="macro">X-Axis: 6 UN Macro-Regions</option>
+        <option value="subregion">X-Axis: Granular Subregions</option>
+      </select>
+
+      <select id="colorModeSelect" title="Highlight reading progress or library ownership">
+        <option value="tier">Color: Collection Tier</option>
+        <option value="read">Highlight: Read Status</option>
+        <option value="owned">Highlight: Owned Status</option>
+      </select>
+
+      <button id="btnToggleThread" class="active" title="Show/hide the Reading Order narrative thread">🧵 Read Thread</button>
+      <button id="btnToggleSpans" class="active" title="Show/hide History duration bars">📏 Era Spans</button>
+
+      <input type="text" id="searchInput" placeholder="Search title, author, region..." style="width:185px;" />
+    </div>
+  </div>
+
+  <!-- Legend & Live Counts -->
+  <div class="subbar">
+    <div class="legend" id="tierLegend">
+      <span style="color:var(--muted);font-weight:600;">Filter Tiers:</span>
+      <div class="legend-item" data-tier="Main">
+        <span class="swatch" style="background:var(--tier-main-border)"></span>Main
+      </div>
+      <div class="legend-item" data-tier="Supplemental">
+        <span class="swatch" style="background:var(--tier-supp-border)"></span>Supplemental
+      </div>
+      <div class="legend-item" data-tier="History (Narrative)">
+        <span class="swatch" style="background:var(--tier-hist-border)"></span>History (Narrative)
+      </div>
+      <div class="legend-item" data-tier="Supporting (Scholarly)">
+        <span class="swatch" style="background:var(--tier-schol-border)"></span>Supporting (Scholarly)
+      </div>
+      <div class="legend-item" data-tier="General Reference">
+        <span class="swatch" style="background:var(--tier-ref-border)"></span>General Reference
+      </div>
+    </div>
+    <div class="stats" id="statsBar">Loading live Google Sheet...</div>
+  </div>
+
+  <!-- Main Timeline Stage -->
+  <div class="viewport" id="viewport">
+    <div class="lane-headers" id="laneHeaders"></div>
+    <div class="chart-stage" id="chartStage"></div>
+  </div>
+
+  <!-- Slide-out Book Inspector Drawer -->
+  <aside class="drawer" id="drawer">
+    <button class="drawer-close" id="drawerClose">✕ Close</button>
+    <div id="drawerContent"></div>
+  </aside>
+
+  <!-- Modal for Adding/Switching Tab GIDs or Custom CSV URL -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <h3>Configure Published Google Sheet Tabs</h3>
+      <p>
+        Your published Google Sheet base URL is pre-configured. You can paste any published CSV link below, or add additional tabs using their <code>gid=</code> number from your Google Sheet browser URL (e.g., <code>01. Prehistory &amp; Bronze Age | 429450416</code>).
+      </p>
+      <label style="font-size:0.75rem;color:var(--muted);">Published Base CSV URL:</label>
+      <input type="text" id="baseCsvUrlInput" />
+      <label style="font-size:0.75rem;color:var(--muted);">Tab List (One per line: <code>Tab Name | GID or Full CSV URL</code>):</label>
+      <textarea id="tabsConfigTextarea" rows="8"></textarea>
+      <div style="display:flex;justify-content:flex-end;gap:8px;">
+        <button id="btnCancelModal">Cancel</button>
+        <button id="btnSaveModal" class="active">Save &amp; Reload</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*************************************************************************
+     * 1. DEFAULT CONFIGURATION (Pre-linked to your published Google Sheet)
+     *************************************************************************/
+    const DEFAULT_PUBLISHED_BASE =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1at2lgur-bO7C2rC1VWtHmhGgi2nD8OTASKWDnAE_dq2Of_nRblgbNKL4URoZs26U7-xzuK3O1WVK/pub";
+
+    const DEFAULT_TABS = [
+      { name: "Default Published Tab (gid=429450416)", gid: "429450416" }
+    ];
+
+    const MACRO_LANES = [
+      { id: "Off-Grid", label: "Off-Grid & Cosmic", sub: "Space, Geologic, Polar, Global" },
+      { id: "Africa", label: "Africa", sub: "Northern & Sub-Saharan Africa" },
+      { id: "Europe", label: "Europe", sub: "Southern, Western, Northern, Eastern" },
+      { id: "Asia", label: "Asia", sub: "Western, Central, South, East & SE Asia" },
+      { id: "Oceania", label: "Oceania", sub: "Australia, NZ, Melanesia, Polynesia" },
+      { id: "Americas", label: "The Americas", sub: "Latin America, Caribbean & North America" }
+    ];
+
+    let state = {
+      baseCsvUrl: localStorage.getItem("ro_base_csv") || DEFAULT_PUBLISHED_BASE,
+      tabs: JSON.parse(localStorage.getItem("ro_tabs_v1") || "null") || DEFAULT_TABS,
+      activeTabIndex: 0,
+      rows: [],
+      yMode: "chrono",
+      xMode: "macro",
+      colorMode: "tier",
+      showThread: true,
+      showSpans: true,
+      searchQuery: "",
+      hiddenTiers: new Set(),
+      selectedRowId: null
+    };
+
+    /*************************************************************************
+     * 2. RFC-4180 CSV PARSER (Handles multi-line quotes & commas cleanly)
+     *************************************************************************/
+    function parseCSV(text) {
+      const rows = [];
+      let curRow = [];
+      let curVal = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        const next = text[i + 1];
+
+        if (inQuotes) {
+          if (ch === '"' && next === '"') {
+            curVal += '"';
+            i++;
+          } else if (ch === '"') {
+            inQuotes = false;
+          } else {
+            curVal += ch;
+          }
+        } else {
+          if (ch === '"') {
+            inQuotes = true;
+          } else if (ch === ",") {
+            curRow.push(curVal.trim());
+            curVal = "";
+          } else if (ch === "\n" || (ch === "\r" && next === "\n")) {
+            if (ch === "\r") i++;
+            curRow.push(curVal.trim());
+            if (curRow.some(cell => cell !== "")) rows.push(curRow);
+            curRow = [];
+            curVal = "";
+          } else {
+            curVal += ch;
+          }
+        }
+      }
+      if (curVal.length > 0 || curRow.length > 0) {
+        curRow.push(curVal.trim());
+        if (curRow.some(cell => cell !== "")) rows.push(curRow);
+      }
+      return rows;
+    }
+
+    /*************************************************************************
+     * 3. FALLBACK DATE & GEOSCHEME INFERENCE (For 13-Column Unmigrated Tabs)
+     *************************************************************************/
+    function inferYearsFromEraString(eraStr, readOrder) {
+      if (!eraStr) return { start: Math.round(readOrder), end: Math.round(readOrder) };
+      const s = eraStr.replace(/,/g, "");
+
+      // Check Billion / Million years (Ga / Ma / Billion / Million)
+      const bilMatch = s.match(/(\d+(?:\.\d+)?)\s*(?:Billion|Ga)/i);
+      if (bilMatch) {
+        const y = -Math.round(parseFloat(bilMatch[1]) * 1e9);
+        return { start: y, end: y };
+      }
+      const milMatch = s.match(/(\d+(?:\.\d+)?)\s*(?:Million|Ma)/i);
+      if (milMatch) {
+        const y = -Math.round(parseFloat(milMatch[1]) * 1e6);
+        return { start: y, end: y };
+      }
+
+      // Check century notation e.g. "5th C. BCE"
+      const centMatch = s.match(/(\d+)(?:st|nd|rd|th)\s*C(?:entury|\.)?\s*(BCE|BC|CE|AD)?/i);
+      if (centMatch) {
+        const c = parseInt(centMatch[1], 10);
+        const isBCE = /BCE|BC/i.test(centMatch[2] || s);
+        const year = isBCE ? -((c - 1) * 100 + 50) : (c - 1) * 100 + 50;
+        return { start: year, end: year };
+      }
+
+      // Remove "(Pub. YYYY)" so modern publication date isn't mistaken for historical era
+      const clean = s.replace(/\(Pub\.?\s*\d{4}\)/gi, "");
+      const nums = [...clean.matchAll(/(\d{1,6})\s*(BCE|BC|CE|AD)?/gi)];
+      if (nums.length > 0) {
+        const hasGlobalBCE = /BCE|BC/i.test(clean);
+        const parseToken = (m) => {
+          let val = parseInt(m[1], 10);
+          const tag = m[2] ? m[2].toUpperCase() : "";
+          if (tag === "BCE" || tag === "BC" || (!tag && hasGlobalBCE)) val = -val;
+          return val;
+        };
+        const y1 = parseToken(nums[0]);
+        const y2 = nums.length > 1 ? parseToken(nums[1]) : y1;
+        return { start: Math.min(y1, y2), end: Math.max(y1, y2) };
+      }
+
+      return { start: 0, end: 0 };
+    }
+
+    function inferRegionFallback(lang, lcc, title, notes) {
+      const blob = `${lang} ${lcc} ${title} ${notes}`.toLowerCase();
+      if (/egypt|nubia|aksum|ethiopia|swahili|yoruba|mali|sundiata|africa|coptic|ge'ez|amharic|arabic.*ibb|maghreb/.test(blob)) {
+        return { macro: "Africa", inter: "Northern / Sub-Saharan", sub: "Africa (Inferred)" };
+      }
+      if (/maya|aztec|inca|nahuatl|quiche|popol vuh|americas|united states|american|mexico|brazil|caribbean|andes/.test(blob)) {
+        return { macro: "Americas", inter: "Americas", sub: "Americas (Inferred)" };
+      }
+      if (/polynesia|maori|aboriginal|australia|oceania|hawaii|pacific|melanesia/.test(blob)) {
+        return { macro: "Oceania", inter: "—", sub: "Oceania (Inferred)" };
+      }
+      if (/sumer|akkad|babylon|assyria|ugarit|hebrew|persia|iran|arabic|turk|sanskrit|pali|india|china|chinese|japan|japanese|korea|vietnam|tibetan|mongol/.test(blob)) {
+        return { macro: "Asia", inter: "—", sub: "Asia (Inferred)" };
+      }
+      if (/cosmic|universe|big bang|paleo|geolog|antarctica|arctic|biosphere/.test(blob)) {
+        return { macro: "Off-Grid", inter: "Global / Cosmic", sub: "Off-Grid (Inferred)" };
+      }
+      return { macro: "Europe", inter: "—", sub: "Europe (Inferred)" };
+    }
+
+    /*************************************************************************
+     * 4. FETCH & NORMALIZE 19-COLUMN SCHEMA (Columns A–S)
+     *************************************************************************/
+    function buildCsvUrl(tab) {
+      if (tab.gid.startsWith("http")) return tab.gid;
+      const base = state.baseCsvUrl.split("?")[0];
+      return `${base}?gid=${encodeURIComponent(tab.gid)}&single=true&output=csv`;
+    }
+
+    async function loadActiveTab() {
+      const tab = state.tabs[state.activeTabIndex] || state.tabs[0];
+      const url = buildCsvUrl(tab);
+      document.getElementById("statsBar").textContent = `Fetching live CSV (${tab.name})...`;
+
+      try {
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const csvText = await res.text();
+        const rawGrid = parseCSV(csvText);
+
+        // Locate header row or start at row 1
+        let startIdx = 0;
+        for (let i = 0; i < Math.min(5, rawGrid.length); i++) {
+          if (/read\s*order/i.test(rawGrid[i][0] || "") || /title/i.test(rawGrid[i][2] || "")) {
+            startIdx = i + 1;
+            break;
+          }
+        }
+
+        const parsed = [];
+        for (let i = startIdx; i < rawGrid.length; i++) {
+          const r = rawGrid[i];
+          const roRaw = parseFloat(r[0]);
+          const title = (r[2] || "").trim();
+          if (isNaN(roRaw) || !title) continue;
+
+          const eraDate = r[1] || "";
+          const author = r[3] || "";
+          const type = r[4] || "";
+          const tier = r[5] || "Main";
+          const origLang = r[6] || "";
+          const lcc = r[7] || "";
+          const readStatus = /^(yes|true|1|y)$/i.test((r[8] || "").trim());
+          const dateCompleted = r[9] || "";
+          const notes = r[10] || "";
+          const rating = r[11] || "";
+          const ownedStatus = /^(yes|true|1|y)$/i.test((r[12] || "").trim());
+
+          // Columns N–S (Indices 13–18)
+          let yStart = parseFloat((r[13] || "").replace(/,/g, ""));
+          let yEnd = parseFloat((r[14] || "").replace(/,/g, ""));
+          const hasExplicitCoords = !isNaN(yStart);
+
+          if (isNaN(yStart)) {
+            const inf = inferYearsFromEraString(eraDate, roRaw);
+            yStart = inf.start;
+            yEnd = inf.end;
+          } else if (isNaN(yEnd)) {
+            yEnd = yStart;
+          }
+
+          let macro = (r[15] || "").trim();
+          let inter = (r[16] || "").trim();
+          let sub = (r[17] || "").trim();
+          let secRegions = (r[18] || "").trim();
+
+          if (!macro) {
+            const infReg = inferRegionFallback(origLang, lcc, title, notes);
+            macro = infReg.macro;
+            inter = infReg.inter;
+            sub = infReg.sub;
+          }
+
+          parsed.push({
+            id: `row-${i}-${roRaw}`,
+            readOrder: roRaw,
+            eraDate,
+            title,
+            author,
+            type,
+            tier,
+            origLang,
+            lcc,
+            readStatus,
+            dateCompleted,
+            notes,
+            rating,
+            ownedStatus,
+            yStart,
+            yEnd: Math.max(yStart, yEnd),
+            macro,
+            inter,
+            sub,
+            secRegions,
+            hasExplicitCoords
+          });
+        }
+
+        parsed.sort((a, b) => a.readOrder - b.readOrder);
+        state.rows = parsed;
+        renderChart();
+      } catch (err) {
+        document.getElementById("statsBar").innerHTML =
+          `<span style="color:#f87171;">Failed to fetch CSV: ${err.message}. Check your published link in ⚙️ Sheet Tabs.</span>`;
+      }
+    }
+
+    /*************************************************************************
+     * 5. PIECEWISE CHRONOLOGICAL TIME AXIS & SWIMLANE LAYOUT ENGINE
+     *************************************************************************/
+    function formatYearLabel(y) {
+      if (y <= -1e9) return `${(Math.abs(y) / 1e9).toFixed(1)} Ga`;
+      if (y <= -1e6) return `${(Math.abs(y) / 1e6).toFixed(0)} Ma`;
+      if (y < 0) return `${Math.abs(Math.round(y)).toLocaleString()} BCE`;
+      if (y === 0) return `1 CE`;
+      return `${Math.round(y)} CE`;
+    }
+
+    function buildChronoScaler(rows) {
+      // Adaptive piecewise epoch segmentation so deep time + historical centuries both breathe cleanly
+      const years = [];
+      rows.forEach(r => {
+        years.push(r.yStart);
+        years.push(r.yEnd);
+      });
+      const minY = Math.min(...years);
+      const maxY = Math.max(...years);
+
+      // Define candidate breakpoints
+      const rawBreaks = [
+        { min: -15e9, max: -1e6, label: "Cosmic & Geologic Deep Time (Ga – Ma)", pxPerItem: 75, minPx: 260 },
+        { min: -1e6, max: -10000, label: "Paleolithic & Pleistocene (1 Ma – 10,000 BCE)", pxPerItem: 75, minPx: 220 },
+        { min: -10000, max: -3500, label: "Neolithic & Early Horizon (10,000 – 3500 BCE)", pxPerItem: 75, minPx: 220 },
+        { min: -3500, max: -1100, label: "Bronze Age Civilizations (3500 – 1100 BCE)", pxPerItem: 68, minPx: 420 },
+        { min: -1100, max: -200, label: "Axial & Classical Age (1100 – 200 BCE)", pxPerItem: 68, minPx: 420 },
+        { min: -200, max: 500, label: "Imperial & Late Antiquity (200 BCE – 500 CE)", pxPerItem: 68, minPx: 420 },
+        { min: 500, max: 1450, label: "Post-Classical & Medieval World (500 – 1450 CE)", pxPerItem: 68, minPx: 420 },
+        { min: 1450, max: 1800, label: "Early Modern & Enlightenment (1450 – 1800 CE)", pxPerItem: 68, minPx: 420 },
+        { min: 1800, max: 2030, label: "Modern & Contemporary Era (1800 CE – Present)", pxPerItem: 68, minPx: 420 }
+      ];
+
+      const activeBands = [];
+      let currentTop = 40;
+
+      for (const b of rawBreaks) {
+        if (maxY < b.min || minY > b.max) continue;
+        const bandMin = Math.max(minY, b.min);
+        const bandMax = Math.min(maxY, b.max);
+        const countInBand = rows.filter(r => r.yStart >= b.min && r.yStart <= b.max).length;
+        if (countInBand === 0 && activeBands.length === 0) continue;
+
+        const height = Math.max(b.minPx, countInBand * b.pxPerItem);
+        activeBands.push({
+          yMin: bandMin,
+          yMax: bandMax === bandMin ? bandMin + 1 : bandMax,
+          topPx: currentTop,
+          heightPx: height,
+          label: b.label
+        });
+        currentTop += height;
+      }
+
+      if (activeBands.length === 0) {
+        activeBands.push({
+          yMin: minY,
+          yMax: maxY === minY ? minY + 100 : maxY,
+          topPx: 40,
+          heightPx: Math.max(800, rows.length * 72),
+          label: "Timeline"
+        });
+        currentTop = 40 + activeBands[0].heightPx;
+      }
+
+      const yearToY = (y) => {
+        for (const band of activeBands) {
+          if (y >= band.yMin && y <= band.yMax) {
+            // Use log compression for Cosmic/Geologic band if span > 1,000,000 years
+            if (band.yMax - band.yMin > 1e6 && band.yMin < -1e6) {
+              const logMin = Math.log10(Math.abs(band.yMin) + 1);
+              const logMax = Math.log10(Math.abs(band.yMax) + 1);
+              const logVal = Math.log10(Math.abs(y) + 1);
+              const t = (logMin - logVal) / Math.max(0.0001, logMin - logMax);
+              return band.topPx + t * band.heightPx;
+            }
+            const t = (y - band.yMin) / Math.max(1, band.yMax - band.yMin);
+            return band.topPx + t * band.heightPx;
+          }
+        }
+        if (y < activeBands[0].yMin) return activeBands[0].topPx;
+        const last = activeBands[activeBands.length - 1];
+        return last.topPx + last.heightPx;
+      };
+
+      return { yearToY, bands: activeBands, totalHeight: currentTop + 120 };
+    }
+
+    function getActiveLanes(rows) {
+      if (state.xMode === "macro") return MACRO_LANES;
+
+      // Dynamic Subregional Swimlanes ordered by Macro-Region
+      const macroOrder = ["Off-Grid", "Africa", "Europe", "Asia", "Oceania", "Americas"];
+      const seen = new Map();
+      rows.forEach(r => {
+        const subName = r.sub || r.macro || "Unclassified";
+        const key = `${r.macro}|||${subName}`;
+        if (!seen.has(key)) {
+          seen.set(key, {
+            id: key,
+            macro: r.macro,
+            label: subName,
+            sub: r.macro
+          });
+        }
+      });
+
+      return [...seen.values()].sort((a, b) => {
+        const ma = macroOrder.indexOf(a.macro);
+        const mb = macroOrder.indexOf(b.macro);
+        if (ma !== mb) return (ma === -1 ? 99 : ma) - (mb === -1 ? 99 : mb);
+        return a.label.localeCompare(b.label);
+      });
+    }
+
+    function getTierClass(tier) {
+      const t = (tier || "").toLowerCase();
+      if (t.includes("history")) return "tier-hist";
+      if (t.includes("supporting") || t.includes("scholar")) return "tier-schol";
+      if (t.includes("supplemental")) return "tier-supp";
+      if (t.includes("reference")) return "tier-ref";
+      return "tier-main";
+    }
+
+    /*************************************************************************
+     * 6. RENDER SWIMLANES, CARDS, DURATION BARS & SVG NARRATIVE THREAD
+     *************************************************************************/
+    function renderChart() {
+      const rows = state.rows;
+      const lanes = getActiveLanes(rows);
+      const timeAxisWidth = 115;
+      const minLaneWidth = state.xMode === "macro" ? 235 : 210;
+
+      const viewport = document.getElementById("viewport");
+      const totalWidth = Math.max(window.innerWidth, timeAxisWidth + lanes.length * minLaneWidth);
+      viewport.style.width = `${totalWidth}px`;
+
+      const gridTemplate = `${timeAxisWidth}px repeat(${lanes.length}, minmax(${minLaneWidth}px, 1fr))`;
+
+      // 1. Render Sticky Swimlane Headers
+      const laneHeaders = document.getElementById("laneHeaders");
+      laneHeaders.style.gridTemplateColumns = gridTemplate;
+      laneHeaders.innerHTML = `<div class="time-axis-header">${
+        state.yMode === "chrono" ? "Chronology" : "Read Order"
+      }</div>` + lanes.map(l => `
+        <div class="lane-header">
+          <div class="macro">${l.label}</div>
+          <div class="sub">${l.sub || ""}</div>
+        </div>
+      `).join("");
+
+      const stage = document.getElementById("chartStage");
+      stage.innerHTML = "";
+
+      if (rows.length === 0) {
+        stage.style.height = "400px";
+        return;
+      }
+
+      // 2. Calculate Y-positions (Chronological vs. Ordinal Read Order)
+      const CARD_HEIGHT = 68;
+      const CARD_GAP = 10;
+      let totalStageHeight = 1000;
+      let scaler = null;
+
+      if (state.yMode === "chrono") {
+        scaler = buildChronoScaler(rows);
+        totalStageHeight = scaler.totalHeight;
+      } else {
+        totalStageHeight = rows.length * (CARD_HEIGHT + 16) + 120;
+      }
+
+      // Compute lane geometry
+      const usableWidth = totalWidth - timeAxisWidth;
+      const laneWidth = usableWidth / lanes.length;
+
+      const laneIndexMap = new Map();
+      lanes.forEach((l, idx) => laneIndexMap.set(l.id, idx));
+
+      // Place each row and resolve same-lane vertical collisions
+      const laneBottomTracker = new Array(lanes.length).fill(20);
+      const positionedNodes = [];
+
+      // In chronological mode, sort placement pass by yStart then readOrder so simultaneous items align across lanes
+      const placementOrder = state.yMode === "chrono"
+        ? [...rows].sort((a, b) => a.yStart - b.yStart || a.readOrder - b.readOrder)
+        : [...rows];
+
+      placementOrder.forEach((r, idx) => {
+        const laneKey = state.xMode === "macro" ? r.macro : `${r.macro}|||${r.sub || r.macro || "Unclassified"}`;
+        let laneIdx = laneIndexMap.get(laneKey);
+        if (laneIdx === undefined) laneIdx = 0;
+
+        let idealY = state.yMode === "chrono"
+          ? scaler.yearToY(r.yStart)
+          : 40 + idx * (CARD_HEIGHT + 14);
+
+        const actualY = Math.max(idealY, laneBottomTracker[laneIdx]);
+        laneBottomTracker[laneIdx] = actualY + CARD_HEIGHT + CARD_GAP;
+
+        const endY = state.yMode === "chrono" ? Math.max(actualY + 16, scaler.yearToY(r.yEnd)) : actualY + CARD_HEIGHT;
+
+        const laneLeft = timeAxisWidth + laneIdx * laneWidth;
+        const cardLeft = laneLeft + 14;
+        const cardWidth = laneWidth - 24;
+
+        positionedNodes.push({
+          ...r,
+          laneIdx,
+          idealY,
+          top: actualY,
+          endY,
+          left: cardLeft,
+          width: cardWidth,
+          centerX: cardLeft + cardWidth / 2,
+          centerY: actualY + CARD_HEIGHT / 2
+        });
+      });
+
+      totalStageHeight = Math.max(totalStageHeight, Math.max(...laneBottomTracker) + 120);
+      stage.style.height = `${totalStageHeight}px`;
+
+      // 3. Background Swimlane Grid
+      const bgGrid = document.createElement("div");
+      bgGrid.className = "lane-bg-grid";
+      bgGrid.style.gridTemplateColumns = gridTemplate;
+      bgGrid.innerHTML = `<div class="lane-bg-col"></div>` + lanes.map(() => `<div class="lane-bg-col"></div>`).join("");
+      stage.appendChild(bgGrid);
+
+      // 4. Time Ticks & Epoch Dividers
+      if (state.yMode === "chrono" && scaler) {
+        scaler.bands.forEach(b => {
+          const bandDiv = document.createElement("div");
+          bandDiv.className = "time-tick epoch-divider";
+          bandDiv.style.top = `${b.topPx}px`;
+          bandDiv.innerHTML = `
+            <span class="time-tick-label">${formatYearLabel(b.yMin)}</span>
+            <span class="epoch-banner-label">${b.label}</span>
+          `;
+          stage.appendChild(bandDiv);
+
+          // Intermediate ticks inside band
+          const steps = 4;
+          for (let s = 1; s < steps; s++) {
+            const yVal = b.yMin + ((b.yMax - b.yMin) * s) / steps;
+            const yPx = scaler.yearToY(yVal);
+            const tick = document.createElement("div");
+            tick.className = "time-tick";
+            tick.style.top = `${yPx}px`;
+            tick.innerHTML = `<span class="time-tick-label">${formatYearLabel(yVal)}</span>`;
+            stage.appendChild(tick);
+          }
+        });
+      }
+
+      // 5. SVG Layer for Read Order Narrative Thread & Duration Bars
+      const svgNS = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("class", "svg-overlay");
+      svg.setAttribute("width", totalWidth);
+      svg.setAttribute("height", totalStageHeight);
+
+      // Filter check helper
+      const q = state.searchQuery.trim().toLowerCase();
+      const isRowVisible = (n) => {
+        if (state.hiddenTiers.has(n.tier)) return false;
+        if (q) {
+          const hay = `${n.title} ${n.author} ${n.sub} ${n.macro} ${n.origLang} ${n.notes}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        if (state.colorMode === "read" && !n.readStatus) return false;
+        if (state.colorMode === "owned" && !n.ownedStatus) return false;
+        return true;
+      };
+
+      // Draw Reading Order Thread sorted by Read Order
+      const roSorted = [...positionedNodes].sort((a, b) => a.readOrder - b.readOrder);
+      if (state.showThread && roSorted.length > 1) {
+        let d = "";
+        roSorted.forEach((pt, idx) => {
+          if (idx === 0) {
+            d += `M ${pt.centerX} ${pt.centerY} `;
+          } else {
+            const prev = roSorted[idx - 1];
+            const midY = (prev.centerY + pt.centerY) / 2;
+            d += `C ${prev.centerX} ${midY}, ${pt.centerX} ${midY}, ${pt.centerX} ${pt.centerY} `;
+          }
+        });
+        const path = document.createElementNS(svgNS, "path");
+        path.setAttribute("d", d);
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", "rgba(245, 158, 11, 0.42)");
+        path.setAttribute("stroke-width", "2.2");
+        path.setAttribute("stroke-dasharray", "5,4");
+        svg.appendChild(path);
+      }
+
+      stage.appendChild(svg);
+
+      // 6. Render Duration Bars & Book Cards
+      let visibleCount = 0;
+      let readCount = 0;
+      let ownedCount = 0;
+
+      positionedNodes.forEach(n => {
+        if (n.readStatus) readCount++;
+        if (n.ownedStatus) ownedCount++;
+        const visible = isRowVisible(n);
+        if (visible) visibleCount++;
+
+        // Duration ribbon for multi-year History (Narrative) / Supporting (Scholarly)
+        if (state.showSpans && state.yMode === "chrono" && n.endY - n.top > CARD_HEIGHT + 8) {
+          const bar = document.createElement("div");
+          bar.className = "duration-bar";
+          bar.style.left = `${n.left - 9}px`;
+          bar.style.top = `${n.top}px`;
+          bar.style.height = `${n.endY - n.top}px`;
+          bar.style.background = n.tier.includes("History") ? "var(--tier-hist-border)" : "var(--tier-schol-border)";
+          if (!visible) bar.style.opacity = "0.08";
+          stage.appendChild(bar);
+        }
+
+        const card = document.createElement("div");
+        card.className = `book-card ${getTierClass(n.tier)} ${visible ? "" : "dimmed"}`;
+        card.style.left = `${n.left}px`;
+        card.style.top = `${n.top}px`;
+        card.style.width = `${n.width}px`;
+        card.style.height = `${CARD_HEIGHT}px`;
+
+        card.innerHTML = `
+          <div class="card-top">
+            <span class="ro-badge">#${n.readOrder}</span>
+            <span class="subregion-pill" title="${n.macro} > ${n.inter} > ${n.sub}">${n.sub || n.macro}</span>
+            <span class="status-dots">
+              ${n.readStatus ? '<span class="dot read" title="Read"></span>' : ""}
+              ${n.ownedStatus ? '<span class="dot owned" title="Owned"></span>' : ""}
+            </span>
+          </div>
+          <div class="card-title" title="${n.title.replace(/"/g, '&quot;')}">${n.title}</div>
+          <div class="card-meta">${n.author} • ${n.eraDate}</div>
+        `;
+
+        card.addEventListener("click", () => openDrawer(n));
+        stage.appendChild(card);
+      });
+
+      const coordCount = rows.filter(r => r.hasExplicitCoords).length;
+      document.getElementById("statsBar").innerHTML = `
+        <span><strong>${visibleCount}</strong> / ${rows.length} Works Shown</span>
+        <span>Read: <strong>${readCount}</strong></span>
+        <span>Owned: <strong>${ownedCount}</strong></span>
+        <span>19-Col Coordinates Populated: <strong>${coordCount}/${rows.length}</strong></span>
+      `;
+    }
+
+    /*************************************************************************
+     * 7. SLIDE-OUT SCHOLARLY INSPECTOR DRAWER
+     *************************************************************************/
+    function openDrawer(n) {
+      const drawer = document.getElementById("drawer");
+      const content = document.getElementById("drawerContent");
+      content.innerHTML = `
+        <div style="margin-top:6px;">
+          <span class="ro-badge" style="font-size:0.8rem;padding:3px 8px;">Read Order #${n.readOrder}</span>
+          <span style="font-size:0.78rem;color:var(--muted);margin-left:8px;">${n.tier}</span>
+        </div>
+        <h2>${n.title}</h2>
+        <div class="author">${n.author}</div>
+
+        <div class="meta-grid">
+          <div class="meta-cell">
+            <div class="label">Era / Date</div>
+            <div class="val">${n.eraDate || "—"}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Plot Window (Y-Axis)</div>
+            <div class="val">${formatYearLabel(n.yStart)} → ${formatYearLabel(n.yEnd)}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Primary Geoscheme</div>
+            <div class="val">${n.macro} &rsaquo; ${n.sub || "—"}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Intermediary Region</div>
+            <div class="val">${n.inter || "—"}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Original Language</div>
+            <div class="val">${n.origLang || "—"}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">LCC &amp; Genre</div>
+            <div class="val">${n.lcc || "—"} (${n.type || "—"})</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Secondary Regions</div>
+            <div class="val">${n.secRegions || "—"}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Personal Status</div>
+            <div class="val">Read: ${n.readStatus ? "Yes" : "No"} | Owned: ${n.ownedStatus ? "Yes" : "No"}</div>
+          </div>
+        </div>
+
+        <div style="font-size:0.75rem;text-transform:uppercase;color:var(--muted);margin-bottom:6px;letter-spacing:0.05em;">
+          Curatorial &amp; Edition Notes
+        </div>
+        <div class="notes-box">${n.notes || "No curatorial notes recorded for this entry."}</div>
+      `;
+      drawer.classList.add("open");
+    }
+
+    /*************************************************************************
+     * 8. UI EVENT LISTENERS & TAB MANAGEMENT
+     *************************************************************************/
+    function populateTabDropdown() {
+      const sel = document.getElementById("tabSelect");
+      sel.innerHTML = state.tabs
+        .map((t, idx) => `<option value="${idx}" ${idx === state.activeTabIndex ? "selected" : ""}>${t.name}</option>`)
+        .join("");
+    }
+
+    document.getElementById("tabSelect").addEventListener("change", (e) => {
+      state.activeTabIndex = parseInt(e.target.value, 10);
+      loadActiveTab();
+    });
+
+    document.getElementById("yModeSelect").addEventListener("change", (e) => {
+      state.yMode = e.target.value;
+      renderChart();
+    });
+
+    document.getElementById("xModeSelect").addEventListener("change", (e) => {
+      state.xMode = e.target.value;
+      renderChart();
+    });
+
+    document.getElementById("colorModeSelect").addEventListener("change", (e) => {
+      state.colorMode = e.target.value;
+      renderChart();
+    });
+
+    document.getElementById("btnToggleThread").addEventListener("click", (e) => {
+      state.showThread = !state.showThread;
+      e.currentTarget.classList.toggle("active", state.showThread);
+      renderChart();
+    });
+
+    document.getElementById("btnToggleSpans").addEventListener("click", (e) => {
+      state.showSpans = !state.showSpans;
+      e.currentTarget.classList.toggle("active", state.showSpans);
+      renderChart();
+    });
+
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      state.searchQuery = e.target.value;
+      renderChart();
+    });
+
+    document.querySelectorAll("#tierLegend .legend-item").forEach(el => {
+      el.addEventListener("click", () => {
+        const tier = el.getAttribute("data-tier");
+        if (state.hiddenTiers.has(tier)) {
+          state.hiddenTiers.delete(tier);
+          el.classList.remove("muted");
+        } else {
+          state.hiddenTiers.add(tier);
+          el.classList.add("muted");
+        }
+        renderChart();
+      });
+    });
+
+    document.getElementById("drawerClose").addEventListener("click", () => {
+      document.getElementById("drawer").classList.remove("open");
+    });
+
+    // Sheet Tab Configuration Modal
+    document.getElementById("btnManageTabs").addEventListener("click", () => {
+      document.getElementById("baseCsvUrlInput").value = state.baseCsvUrl;
+      document.getElementById("tabsConfigTextarea").value = state.tabs
+        .map(t => `${t.name} | ${t.gid}`)
+        .join("\n");
+      document.getElementById("modalBackdrop").classList.add("open");
+    });
+
+    document.getElementById("btnCancelModal").addEventListener("click", () => {
+      document.getElementById("modalBackdrop").classList.remove("open");
+    });
+
+    document.getElementById("btnSaveModal").addEventListener("click", () => {
+      const base = document.getElementById("baseCsvUrlInput").value.trim();
+      const lines = document.getElementById("tabsConfigTextarea").value.split("\n");
+      const newTabs = [];
+      lines.forEach(line => {
+        if (!line.trim()) return;
+        const parts = line.split("|");
+        if (parts.length >= 2) {
+          newTabs.push({ name: parts[0].trim(), gid: parts.slice(1).join("|").trim() });
+        } else {
+          newTabs.push({ name: `Tab (${line.trim()})`, gid: line.trim() });
+        }
+      });
+      if (base) {
+        state.baseCsvUrl = base;
+        localStorage.setItem("ro_base_csv", base);
+      }
+      if (newTabs.length > 0) {
+        state.tabs = newTabs;
+        state.activeTabIndex = 0;
+        localStorage.setItem("ro_tabs_v1", JSON.stringify(newTabs));
+      }
+      document.getElementById("modalBackdrop").classList.remove("open");
+      populateTabDropdown();
+      loadActiveTab();
+    });
+
+    window.addEventListener("resize", () => renderChart());
+
+    // Initialize
+    populateTabDropdown();
+    loadActiveTab();
+  </script>
+</body>
+</html>
