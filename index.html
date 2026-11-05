@@ -52,12 +52,18 @@
       min-height: 100vh;
     }
 
+    body.is-panning,
+    body.is-panning * {
+      cursor: grabbing !important;
+      user-select: none !important;
+    }
+
     /* Top Control Bar */
     .topbar {
       position: sticky;
       top: 0;
       left: 0;
-      z-index: 100;
+      z-index: 120;
       background: rgba(23, 26, 36, 0.96);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
@@ -121,12 +127,43 @@
       font-weight: 600;
     }
 
+    .zoom-group {
+      display: inline-flex;
+      align-items: center;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .zoom-group button {
+      border: none;
+      border-radius: 0;
+      padding: 6px 9px;
+      background: transparent;
+    }
+
+    .zoom-group button:hover {
+      background: rgba(224, 177, 83, 0.15);
+    }
+
+    .zoom-readout {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.76rem;
+      color: var(--accent);
+      padding: 0 6px;
+      min-width: 48px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
     /* Legend & Stats Bar */
     .subbar {
       position: sticky;
       top: 57px;
       left: 0;
-      z-index: 99;
+      z-index: 115;
       background: rgba(15, 17, 23, 0.94);
       border-bottom: 1px solid var(--border);
       padding: 8px 20px;
@@ -170,42 +207,61 @@
     .stats {
       color: var(--muted);
       display: flex;
+      flex-wrap: wrap;
       gap: 14px;
+      align-items: center;
+    }
+
+    .nav-hint {
+      color: var(--muted);
+      font-size: 0.73rem;
+      opacity: 0.85;
     }
 
     /* Main Timeline Viewport */
     .viewport {
       position: relative;
-      min-width: 1280px;
+      min-width: 100%;
       padding-bottom: 120px;
+      cursor: grab;
     }
 
     /* Sticky Swimlane Header Row */
     .lane-headers {
       position: sticky;
       top: 93px;
-      z-index: 90;
+      z-index: 95;
       display: grid;
       background: var(--panel);
       border-bottom: 2px solid var(--border);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     }
 
+    /* Double-Pinned Corner Header (Sticky Top + Sticky Left) */
     .time-axis-header {
+      position: sticky;
+      left: 0;
+      z-index: 105;
+      background: var(--panel);
       padding: 10px 8px;
       font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--muted);
-      border-right: 1px solid var(--border);
+      color: var(--accent);
+      border-right: 2px solid var(--border);
       text-align: center;
+      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .lane-header {
       padding: 10px 12px;
       border-right: 1px solid var(--border);
       text-align: center;
+      background: var(--panel);
     }
 
     .lane-header .macro {
@@ -226,6 +282,55 @@
       width: 100%;
     }
 
+    /* Chunk 2.1: Sticky Floating Chronology Rail (Left Y-Axis) */
+    .sticky-chrono-rail {
+      position: sticky;
+      left: 0;
+      top: 0;
+      z-index: 80;
+      background: rgba(15, 17, 23, 0.96);
+      backdrop-filter: blur(8px);
+      border-right: 2px solid var(--border);
+      box-shadow: 6px 0 18px rgba(0, 0, 0, 0.55);
+      pointer-events: none;
+    }
+
+    .rail-tick-label {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      padding: 3px 10px 3px 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-align: right;
+      transform: translateY(-50%);
+      white-space: nowrap;
+    }
+
+    .rail-tick-label.epoch-start {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .rail-epoch-pill {
+      position: absolute;
+      left: 100%;
+      margin-left: 8px;
+      top: 5px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--accent);
+      background: rgba(23, 26, 36, 0.94);
+      border: 1px solid rgba(224, 177, 83, 0.4);
+      padding: 2px 9px;
+      border-radius: 4px;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    }
+
     /* Background Swimlane Columns */
     .lane-bg-grid {
       position: absolute;
@@ -243,45 +348,19 @@
       background: rgba(255, 255, 255, 0.012);
     }
 
-    /* Time Axis Ticks & Horizontal Gridlines */
+    /* Horizontal Time Gridlines across Stage */
     .time-tick {
       position: absolute;
       left: 0;
       width: 100%;
       border-top: 1px solid rgba(255, 255, 255, 0.06);
       pointer-events: none;
+      z-index: 5;
     }
 
     .time-tick.epoch-divider {
-      border-top: 1px solid rgba(224, 177, 83, 0.35);
-      background: linear-gradient(90deg, rgba(224, 177, 83, 0.1), transparent 35%);
-    }
-
-    .time-tick-label {
-      position: absolute;
-      left: 0;
-      width: 110px;
-      padding: 4px 8px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--muted);
-      text-align: right;
-      transform: translateY(-50%);
-      background: rgba(15, 17, 23, 0.85);
-    }
-
-    .epoch-banner-label {
-      position: absolute;
-      left: 120px;
-      top: 4px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--accent);
-      background: rgba(15, 17, 23, 0.85);
-      padding: 2px 8px;
-      border-radius: 4px;
+      border-top: 1px solid rgba(224, 177, 83, 0.38);
+      background: linear-gradient(90deg, rgba(224, 177, 83, 0.12), transparent 35%);
     }
 
     /* SVG Overlay for Read Order Thread & Connectors */
@@ -310,13 +389,14 @@
       position: absolute;
       z-index: 20;
       border-radius: 7px;
-      padding: 7px 9px;
+      padding: 6px 9px;
       border: 1px solid var(--border);
       background: var(--panel-2);
       cursor: pointer;
       transition: transform 0.14s ease, box-shadow 0.14s ease, opacity 0.2s ease;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
       overflow: hidden;
+      user-select: none;
     }
 
     .book-card:hover {
@@ -348,8 +428,9 @@
     }
 
     .book-card.dimmed {
-      opacity: 0.22;
-      filter: grayscale(75%);
+      opacity: 0.18;
+      filter: grayscale(80%);
+      pointer-events: none;
     }
 
     .card-top {
@@ -358,16 +439,17 @@
       justify-content: space-between;
       gap: 4px;
       font-size: 0.66rem;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .ro-badge {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-weight: 700;
       color: var(--accent);
-      background: rgba(0, 0, 0, 0.35);
-      padding: 1px 5px;
+      background: rgba(0, 0, 0, 0.42);
+      padding: 1px 6px;
       border-radius: 3px;
+      border: 1px solid rgba(224, 177, 83, 0.25);
     }
 
     .subregion-pill {
@@ -382,7 +464,7 @@
     .card-title {
       font-size: 0.78rem;
       font-weight: 700;
-      line-height: 1.25;
+      line-height: 1.22;
       color: var(--text);
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -391,12 +473,24 @@
     }
 
     .card-meta {
-      margin-top: 3px;
-      font-size: 0.68rem;
+      margin-top: 2px;
+      font-size: 0.67rem;
       color: var(--muted);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    /* Compact Card Adaptations when Zoomed Out */
+    .book-card.compact-zoom {
+      padding: 4px 6px;
+    }
+    .book-card.compact-zoom .card-title {
+      font-size: 0.7rem;
+      -webkit-line-clamp: 1;
+    }
+    .book-card.compact-zoom .card-meta {
+      display: none;
     }
 
     .status-dots {
@@ -570,7 +664,15 @@
       <button id="btnToggleThread" class="active" title="Show/hide the Reading Order narrative thread">🧵 Read Thread</button>
       <button id="btnToggleSpans" class="active" title="Show/hide History duration bars">📏 Era Spans</button>
 
-      <input type="text" id="searchInput" placeholder="Search title, author, region..." style="width:185px;" />
+      <!-- Chunk 2.3 Zoom Controls -->
+      <div class="zoom-group" title="Zoom chart (or use Ctrl/Shift + Mouse Wheel)">
+        <button id="btnZoomOut" title="Zoom Out">−</button>
+        <span class="zoom-readout" id="zoomReadout" title="Click to reset zoom to 100%">100%</span>
+        <button id="btnZoomIn" title="Zoom In">+</button>
+      </div>
+      <button id="btnWheelZoomMode" title="When active, scrolling the mouse wheel zooms directly without holding Ctrl/Shift">🔍 Wheel Zoom</button>
+
+      <input type="text" id="searchInput" placeholder="Search title, author, region..." style="width:175px;" />
     </div>
   </div>
 
@@ -647,6 +749,9 @@
       { id: "Americas", label: "The Americas", sub: "Latin America, Caribbean & North America" }
     ];
 
+    const MIN_ZOOM = 0.45;
+    const MAX_ZOOM = 2.25;
+
     let state = {
       baseCsvUrl: localStorage.getItem("ro_base_csv") || DEFAULT_PUBLISHED_BASE,
       tabs: JSON.parse(localStorage.getItem("ro_tabs_v1") || "null") || DEFAULT_TABS,
@@ -659,7 +764,20 @@
       showSpans: true,
       searchQuery: "",
       hiddenTiers: new Set(),
-      selectedRowId: null
+      selectedRowId: null,
+      zoom: 1.0,
+      directWheelZoom: false
+    };
+
+    // Track drag-pan state so clicks don't misfire after dragging
+    let panState = {
+      isDown: false,
+      hasMoved: false,
+      startX: 0,
+      startY: 0,
+      scrollLeft: 0,
+      scrollTop: 0,
+      suppressClickUntil: 0
     };
 
     /*************************************************************************
@@ -715,7 +833,6 @@
       if (!eraStr) return { start: Math.round(readOrder), end: Math.round(readOrder) };
       const s = eraStr.replace(/,/g, "");
 
-      // Check Billion / Million years (Ga / Ma / Billion / Million)
       const bilMatch = s.match(/(\d+(?:\.\d+)?)\s*(?:Billion|Ga)/i);
       if (bilMatch) {
         const y = -Math.round(parseFloat(bilMatch[1]) * 1e9);
@@ -727,7 +844,6 @@
         return { start: y, end: y };
       }
 
-      // Check century notation e.g. "5th C. BCE"
       const centMatch = s.match(/(\d+)(?:st|nd|rd|th)\s*C(?:entury|\.)?\s*(BCE|BC|CE|AD)?/i);
       if (centMatch) {
         const c = parseInt(centMatch[1], 10);
@@ -736,7 +852,6 @@
         return { start: year, end: year };
       }
 
-      // Remove "(Pub. YYYY)" so modern publication date isn't mistaken for historical era
       const clean = s.replace(/\(Pub\.?\s*\d{4}\)/gi, "");
       const nums = [...clean.matchAll(/(\d{1,6})\s*(BCE|BC|CE|AD)?/gi)];
       if (nums.length > 0) {
@@ -776,7 +891,7 @@
     }
 
     /*************************************************************************
-     * 4. FETCH & NORMALIZE 19-COLUMN SCHEMA (Columns A–S)
+     * 4. FETCH & NORMALIZE SCHEMA (Columns A–S + Optional T–X)
      *************************************************************************/
     function buildCsvUrl(tab) {
       if (tab.gid.startsWith("http")) return tab.gid;
@@ -795,7 +910,6 @@
         const csvText = await res.text();
         const rawGrid = parseCSV(csvText);
 
-        // Locate header row or start at row 1
         let startIdx = 0;
         for (let i = 0; i < Math.min(5, rawGrid.length); i++) {
           if (/read\s*order/i.test(rawGrid[i][0] || "") || /title/i.test(rawGrid[i][2] || "")) {
@@ -848,6 +962,13 @@
             sub = infReg.sub;
           }
 
+          // Optional Phase 1 Expanded Columns (Cols T–X, Indices 19–23)
+          const scopeSubtitle = (r[19] || "").trim();
+          const workGroupId = (r[20] || "").trim();
+          const pairedReadOrders = (r[21] || "").trim();
+          const themeTags = (r[22] || "").trim();
+          const authorBio = (r[23] || "").trim();
+
           parsed.push({
             id: `row-${i}-${roRaw}`,
             readOrder: roRaw,
@@ -869,6 +990,11 @@
             inter,
             sub,
             secRegions,
+            scopeSubtitle,
+            workGroupId,
+            pairedReadOrders,
+            themeTags,
+            authorBio,
             hasExplicitCoords
           });
         }
@@ -893,8 +1019,7 @@
       return `${Math.round(y)} CE`;
     }
 
-    function buildChronoScaler(rows) {
-      // Adaptive piecewise epoch segmentation so deep time + historical centuries both breathe cleanly
+    function buildChronoScaler(rows, zoomFactor) {
       const years = [];
       rows.forEach(r => {
         years.push(r.yStart);
@@ -903,7 +1028,6 @@
       const minY = Math.min(...years);
       const maxY = Math.max(...years);
 
-      // Define candidate breakpoints
       const rawBreaks = [
         { min: -15e9, max: -1e6, label: "Cosmic & Geologic Deep Time (Ga – Ma)", pxPerItem: 75, minPx: 260 },
         { min: -1e6, max: -10000, label: "Paleolithic & Pleistocene (1 Ma – 10,000 BCE)", pxPerItem: 75, minPx: 220 },
@@ -917,7 +1041,7 @@
       ];
 
       const activeBands = [];
-      let currentTop = 40;
+      let currentTop = Math.round(40 * zoomFactor);
 
       for (const b of rawBreaks) {
         if (maxY < b.min || minY > b.max) continue;
@@ -926,7 +1050,8 @@
         const countInBand = rows.filter(r => r.yStart >= b.min && r.yStart <= b.max).length;
         if (countInBand === 0 && activeBands.length === 0) continue;
 
-        const height = Math.max(b.minPx, countInBand * b.pxPerItem);
+        const baseHeight = Math.max(b.minPx, countInBand * b.pxPerItem);
+        const height = Math.round(baseHeight * zoomFactor);
         activeBands.push({
           yMin: bandMin,
           yMax: bandMax === bandMin ? bandMin + 1 : bandMax,
@@ -938,20 +1063,20 @@
       }
 
       if (activeBands.length === 0) {
+        const fallbackHeight = Math.round(Math.max(800, rows.length * 72) * zoomFactor);
         activeBands.push({
           yMin: minY,
           yMax: maxY === minY ? minY + 100 : maxY,
-          topPx: 40,
-          heightPx: Math.max(800, rows.length * 72),
+          topPx: Math.round(40 * zoomFactor),
+          heightPx: fallbackHeight,
           label: "Timeline"
         });
-        currentTop = 40 + activeBands[0].heightPx;
+        currentTop = activeBands[0].topPx + fallbackHeight;
       }
 
       const yearToY = (y) => {
         for (const band of activeBands) {
           if (y >= band.yMin && y <= band.yMax) {
-            // Use log compression for Cosmic/Geologic band if span > 1,000,000 years
             if (band.yMax - band.yMin > 1e6 && band.yMin < -1e6) {
               const logMin = Math.log10(Math.abs(band.yMin) + 1);
               const logMax = Math.log10(Math.abs(band.yMax) + 1);
@@ -968,13 +1093,12 @@
         return last.topPx + last.heightPx;
       };
 
-      return { yearToY, bands: activeBands, totalHeight: currentTop + 120 };
+      return { yearToY, bands: activeBands, totalHeight: currentTop + Math.round(120 * zoomFactor) };
     }
 
     function getActiveLanes(rows) {
       if (state.xMode === "macro") return MACRO_LANES;
 
-      // Dynamic Subregional Swimlanes ordered by Macro-Region
       const macroOrder = ["Off-Grid", "Africa", "Europe", "Asia", "Oceania", "Americas"];
       const seen = new Map();
       rows.forEach(r => {
@@ -1008,13 +1132,19 @@
     }
 
     /*************************************************************************
-     * 6. RENDER SWIMLANES, CARDS, DURATION BARS & SVG NARRATIVE THREAD
+     * 6. RENDER SWIMLANES, STICKY Y-AXIS, 1-N NUMBERS & NARRATIVE THREAD
      *************************************************************************/
     function renderChart() {
       const rows = state.rows;
       const lanes = getActiveLanes(rows);
-      const timeAxisWidth = 115;
-      const minLaneWidth = state.xMode === "macro" ? 235 : 210;
+      const z = state.zoom;
+
+      // Update Zoom UI Readout
+      document.getElementById("zoomReadout").textContent = `${Math.round(z * 100)}%`;
+
+      const timeAxisWidth = 115; // Sticky left column stays crisp & readable at all zoom levels
+      const baseMinLaneWidth = state.xMode === "macro" ? 235 : 210;
+      const minLaneWidth = Math.round(baseMinLaneWidth * z);
 
       const viewport = document.getElementById("viewport");
       const totalWidth = Math.max(window.innerWidth, timeAxisWidth + lanes.length * minLaneWidth);
@@ -1022,11 +1152,11 @@
 
       const gridTemplate = `${timeAxisWidth}px repeat(${lanes.length}, minmax(${minLaneWidth}px, 1fr))`;
 
-      // 1. Render Sticky Swimlane Headers
+      // 1. Render Sticky Swimlane Headers (with Double-Pinned Top-Left Corner Header)
       const laneHeaders = document.getElementById("laneHeaders");
       laneHeaders.style.gridTemplateColumns = gridTemplate;
       laneHeaders.innerHTML = `<div class="time-axis-header">${
-        state.yMode === "chrono" ? "Chronology" : "Read Order"
+        state.yMode === "chrono" ? "Chronology" : "Read Sequence"
       }</div>` + lanes.map(l => `
         <div class="lane-header">
           <div class="macro">${l.label}</div>
@@ -1042,31 +1172,50 @@
         return;
       }
 
-      // 2. Calculate Y-positions (Chronological vs. Ordinal Read Order)
-      const CARD_HEIGHT = 68;
-      const CARD_GAP = 10;
+      // 2. Filter Check & Chunk 2.2 Dynamic 1–N Sequential Reading Number Assignment
+      const q = state.searchQuery.trim().toLowerCase();
+      const isRowVisible = (n) => {
+        if (state.hiddenTiers.has(n.tier)) return false;
+        if (q) {
+          const hay = `${n.title} ${n.author} ${n.sub} ${n.macro} ${n.origLang} ${n.notes} ${n.scopeSubtitle || ""}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        if (state.colorMode === "read" && !n.readStatus) return false;
+        if (state.colorMode === "owned" && !n.ownedStatus) return false;
+        return true;
+      };
+
+      // Assign dynamic 1..N reading numbers strictly across visible rows in Read Order sequence
+      const dynamicSeqMap = new Map();
+      let seqCounter = 1;
+      rows.forEach(r => {
+        if (isRowVisible(r)) {
+          dynamicSeqMap.set(r.id, seqCounter++);
+        }
+      });
+
+      // 3. Calculate Y-positions (Chronological vs. Ordinal Read Order) scaled by Zoom
+      const CARD_HEIGHT = Math.round(68 * Math.max(0.72, Math.min(1.35, z)));
+      const CARD_GAP = Math.round(10 * z);
       let totalStageHeight = 1000;
       let scaler = null;
 
       if (state.yMode === "chrono") {
-        scaler = buildChronoScaler(rows);
+        scaler = buildChronoScaler(rows, z);
         totalStageHeight = scaler.totalHeight;
       } else {
-        totalStageHeight = rows.length * (CARD_HEIGHT + 16) + 120;
+        totalStageHeight = rows.length * (CARD_HEIGHT + Math.round(16 * z)) + 120;
       }
 
-      // Compute lane geometry
       const usableWidth = totalWidth - timeAxisWidth;
       const laneWidth = usableWidth / lanes.length;
 
       const laneIndexMap = new Map();
       lanes.forEach((l, idx) => laneIndexMap.set(l.id, idx));
 
-      // Place each row and resolve same-lane vertical collisions
-      const laneBottomTracker = new Array(lanes.length).fill(20);
+      const laneBottomTracker = new Array(lanes.length).fill(Math.round(24 * z));
       const positionedNodes = [];
 
-      // In chronological mode, sort placement pass by yStart then readOrder so simultaneous items align across lanes
       const placementOrder = state.yMode === "chrono"
         ? [...rows].sort((a, b) => a.yStart - b.yStart || a.readOrder - b.readOrder)
         : [...rows];
@@ -1078,16 +1227,19 @@
 
         let idealY = state.yMode === "chrono"
           ? scaler.yearToY(r.yStart)
-          : 40 + idx * (CARD_HEIGHT + 14);
+          : Math.round(40 * z) + idx * (CARD_HEIGHT + Math.round(14 * z));
 
         const actualY = Math.max(idealY, laneBottomTracker[laneIdx]);
         laneBottomTracker[laneIdx] = actualY + CARD_HEIGHT + CARD_GAP;
 
-        const endY = state.yMode === "chrono" ? Math.max(actualY + 16, scaler.yearToY(r.yEnd)) : actualY + CARD_HEIGHT;
+        const endY = state.yMode === "chrono"
+          ? Math.max(actualY + 16, scaler.yearToY(r.yEnd))
+          : actualY + CARD_HEIGHT;
 
         const laneLeft = timeAxisWidth + laneIdx * laneWidth;
-        const cardLeft = laneLeft + 14;
-        const cardWidth = laneWidth - 24;
+        const sidePad = Math.max(8, Math.round(14 * z));
+        const cardLeft = laneLeft + sidePad;
+        const cardWidth = Math.max(110, laneWidth - sidePad * 2);
 
         positionedNodes.push({
           ...r,
@@ -1098,75 +1250,106 @@
           left: cardLeft,
           width: cardWidth,
           centerX: cardLeft + cardWidth / 2,
-          centerY: actualY + CARD_HEIGHT / 2
+          centerY: actualY + CARD_HEIGHT / 2,
+          visible: dynamicSeqMap.has(r.id),
+          displaySeq: dynamicSeqMap.get(r.id) || null
         });
       });
 
       totalStageHeight = Math.max(totalStageHeight, Math.max(...laneBottomTracker) + 120);
       stage.style.height = `${totalStageHeight}px`;
 
-      // 3. Background Swimlane Grid
+      // 4. Background Swimlane Grid
       const bgGrid = document.createElement("div");
       bgGrid.className = "lane-bg-grid";
       bgGrid.style.gridTemplateColumns = gridTemplate;
       bgGrid.innerHTML = `<div class="lane-bg-col"></div>` + lanes.map(() => `<div class="lane-bg-col"></div>`).join("");
       stage.appendChild(bgGrid);
 
-      // 4. Time Ticks & Epoch Dividers
+      // 5. Chunk 2.1: Sticky Floating Chronology Rail (Pinned Left Y-Axis) + Stage Gridlines
+      const stickyRail = document.createElement("div");
+      stickyRail.className = "sticky-chrono-rail";
+      stickyRail.style.width = `${timeAxisWidth}px`;
+      stickyRail.style.height = `${totalStageHeight}px`;
+
       if (state.yMode === "chrono" && scaler) {
         scaler.bands.forEach(b => {
+          // Full-width horizontal gridline on stage
           const bandDiv = document.createElement("div");
           bandDiv.className = "time-tick epoch-divider";
           bandDiv.style.top = `${b.topPx}px`;
-          bandDiv.innerHTML = `
-            <span class="time-tick-label">${formatYearLabel(b.yMin)}</span>
-            <span class="epoch-banner-label">${b.label}</span>
-          `;
           stage.appendChild(bandDiv);
+
+          // Sticky label & floating epoch banner inside the pinned left rail
+          const railEpoch = document.createElement("div");
+          railEpoch.style.position = "absolute";
+          railEpoch.style.top = `${b.topPx}px`;
+          railEpoch.style.left = "0";
+          railEpoch.style.width = "100%";
+          railEpoch.innerHTML = `
+            <span class="rail-tick-label epoch-start">${formatYearLabel(b.yMin)}</span>
+            <span class="rail-epoch-pill">${b.label}</span>
+          `;
+          stickyRail.appendChild(railEpoch);
 
           // Intermediate ticks inside band
           const steps = 4;
           for (let s = 1; s < steps; s++) {
             const yVal = b.yMin + ((b.yMax - b.yMin) * s) / steps;
             const yPx = scaler.yearToY(yVal);
-            const tick = document.createElement("div");
-            tick.className = "time-tick";
-            tick.style.top = `${yPx}px`;
-            tick.innerHTML = `<span class="time-tick-label">${formatYearLabel(yVal)}</span>`;
-            stage.appendChild(tick);
+
+            const tickLine = document.createElement("div");
+            tickLine.className = "time-tick";
+            tickLine.style.top = `${yPx}px`;
+            stage.appendChild(tickLine);
+
+            const tickLbl = document.createElement("div");
+            tickLbl.className = "rail-tick-label";
+            tickLbl.style.top = `${yPx}px`;
+            tickLbl.textContent = formatYearLabel(yVal);
+            stickyRail.appendChild(tickLbl);
           }
         });
+      } else {
+        // Ordinal Read-Order sequence markers on the sticky rail
+        positionedNodes
+          .filter(n => n.visible)
+          .forEach((n, idx) => {
+            if (idx === 0 || (idx + 1) % 5 === 0) {
+              const tickLine = document.createElement("div");
+              tickLine.className = "time-tick";
+              tickLine.style.top = `${n.centerY}px`;
+              stage.appendChild(tickLine);
+
+              const tickLbl = document.createElement("div");
+              tickLbl.className = "rail-tick-label";
+              tickLbl.style.top = `${n.centerY}px`;
+              tickLbl.textContent = `#${n.displaySeq} (${formatYearLabel(n.yStart)})`;
+              stickyRail.appendChild(tickLbl);
+            }
+          });
       }
 
-      // 5. SVG Layer for Read Order Narrative Thread & Duration Bars
+      stage.appendChild(stickyRail);
+
+      // 6. SVG Layer for Read Order Narrative Thread (Connects visible #1 -> #2 -> ... -> #N)
       const svgNS = "http://www.w3.org/2000/svg";
       const svg = document.createElementNS(svgNS, "svg");
       svg.setAttribute("class", "svg-overlay");
       svg.setAttribute("width", totalWidth);
       svg.setAttribute("height", totalStageHeight);
 
-      // Filter check helper
-      const q = state.searchQuery.trim().toLowerCase();
-      const isRowVisible = (n) => {
-        if (state.hiddenTiers.has(n.tier)) return false;
-        if (q) {
-          const hay = `${n.title} ${n.author} ${n.sub} ${n.macro} ${n.origLang} ${n.notes}`.toLowerCase();
-          if (!hay.includes(q)) return false;
-        }
-        if (state.colorMode === "read" && !n.readStatus) return false;
-        if (state.colorMode === "owned" && !n.ownedStatus) return false;
-        return true;
-      };
+      const visibleSorted = positionedNodes
+        .filter(n => n.visible)
+        .sort((a, b) => a.readOrder - b.readOrder);
 
-      // Draw Reading Order Thread sorted by Read Order
-      const roSorted = [...positionedNodes].sort((a, b) => a.readOrder - b.readOrder);
-      if (state.showThread && roSorted.length > 1) {
+      if (state.showThread && visibleSorted.length > 1) {
         let d = "";
-        roSorted.forEach((pt, idx) => {
+        visibleSorted.forEach((pt, idx) => {
           if (idx === 0) {
             d += `M ${pt.centerX} ${pt.centerY} `;
           } else {
-            const prev = roSorted[idx - 1];
+            const prev = visibleSorted[idx - 1];
             const midY = (prev.centerY + pt.centerY) / 2;
             d += `C ${prev.centerX} ${midY}, ${pt.centerX} ${midY}, ${pt.centerX} ${pt.centerY} `;
           }
@@ -1174,15 +1357,15 @@
         const path = document.createElementNS(svgNS, "path");
         path.setAttribute("d", d);
         path.setAttribute("fill", "none");
-        path.setAttribute("stroke", "rgba(245, 158, 11, 0.42)");
-        path.setAttribute("stroke-width", "2.2");
+        path.setAttribute("stroke", "rgba(245, 158, 11, 0.44)");
+        path.setAttribute("stroke-width", String(Math.max(1.5, 2.2 * z)));
         path.setAttribute("stroke-dasharray", "5,4");
         svg.appendChild(path);
       }
 
       stage.appendChild(svg);
 
-      // 6. Render Duration Bars & Book Cards
+      // 7. Render Duration Bars & Book Cards (with Dynamic #1–N Badge)
       let visibleCount = 0;
       let readCount = 0;
       let ownedCount = 0;
@@ -1190,31 +1373,36 @@
       positionedNodes.forEach(n => {
         if (n.readStatus) readCount++;
         if (n.ownedStatus) ownedCount++;
-        const visible = isRowVisible(n);
-        if (visible) visibleCount++;
+        if (n.visible) visibleCount++;
 
         // Duration ribbon for multi-year History (Narrative) / Supporting (Scholarly)
         if (state.showSpans && state.yMode === "chrono" && n.endY - n.top > CARD_HEIGHT + 8) {
           const bar = document.createElement("div");
           bar.className = "duration-bar";
-          bar.style.left = `${n.left - 9}px`;
+          bar.style.left = `${n.left - 8}px`;
           bar.style.top = `${n.top}px`;
           bar.style.height = `${n.endY - n.top}px`;
           bar.style.background = n.tier.includes("History") ? "var(--tier-hist-border)" : "var(--tier-schol-border)";
-          if (!visible) bar.style.opacity = "0.08";
+          if (!n.visible) bar.style.opacity = "0.08";
           stage.appendChild(bar);
         }
 
         const card = document.createElement("div");
-        card.className = `book-card ${getTierClass(n.tier)} ${visible ? "" : "dimmed"}`;
+        const compactClass = z < 0.78 ? "compact-zoom" : "";
+        card.className = `book-card ${getTierClass(n.tier)} ${compactClass} ${n.visible ? "" : "dimmed"}`;
         card.style.left = `${n.left}px`;
         card.style.top = `${n.top}px`;
         card.style.width = `${n.width}px`;
         card.style.height = `${CARD_HEIGHT}px`;
 
+        const badgeLabel = n.visible ? `#${n.displaySeq}` : "—";
+        const badgeTooltip = n.visible
+          ? `Reading Sequence #${n.displaySeq} (Master Sheet Read Order: ${n.readOrder})`
+          : `Filtered Out (Master Sheet Read Order: ${n.readOrder})`;
+
         card.innerHTML = `
           <div class="card-top">
-            <span class="ro-badge">#${n.readOrder}</span>
+            <span class="ro-badge" title="${badgeTooltip}">${badgeLabel}</span>
             <span class="subregion-pill" title="${n.macro} > ${n.inter} > ${n.sub}">${n.sub || n.macro}</span>
             <span class="status-dots">
               ${n.readStatus ? '<span class="dot read" title="Read"></span>' : ""}
@@ -1225,16 +1413,23 @@
           <div class="card-meta">${n.author} • ${n.eraDate}</div>
         `;
 
-        card.addEventListener("click", () => openDrawer(n));
+        card.addEventListener("click", (e) => {
+          if (Date.now() < panState.suppressClickUntil) {
+            e.stopPropagation();
+            return;
+          }
+          openDrawer(n);
+        });
         stage.appendChild(card);
       });
 
       const coordCount = rows.filter(r => r.hasExplicitCoords).length;
       document.getElementById("statsBar").innerHTML = `
-        <span><strong>${visibleCount}</strong> / ${rows.length} Works Shown</span>
+        <span>Showing <strong>1–${visibleCount}</strong> of ${rows.length} Works</span>
         <span>Read: <strong>${readCount}</strong></span>
         <span>Owned: <strong>${ownedCount}</strong></span>
-        <span>19-Col Coordinates Populated: <strong>${coordCount}/${rows.length}</strong></span>
+        <span>Coords: <strong>${coordCount}/${rows.length}</strong></span>
+        <span class="nav-hint">🖐️ Drag canvas to pan • Ctrl/Shift + Wheel to zoom</span>
       `;
     }
 
@@ -1244,10 +1439,15 @@
     function openDrawer(n) {
       const drawer = document.getElementById("drawer");
       const content = document.getElementById("drawerContent");
+      const seqText = n.displaySeq ? `#${n.displaySeq}` : "Filtered";
+
       content.innerHTML = `
-        <div style="margin-top:6px;">
-          <span class="ro-badge" style="font-size:0.8rem;padding:3px 8px;">Read Order #${n.readOrder}</span>
-          <span style="font-size:0.78rem;color:var(--muted);margin-left:8px;">${n.tier}</span>
+        <div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="ro-badge" style="font-size:0.82rem;padding:3px 9px;">Reading # ${seqText}</span>
+          <span style="font-family:monospace;font-size:0.75rem;color:var(--muted);background:var(--panel-2);padding:2px 7px;border-radius:4px;border:1px solid var(--border);">
+            Sheet Decimal: ${n.readOrder}
+          </span>
+          <span style="font-size:0.78rem;color:var(--muted);">${n.tier}</span>
         </div>
         <h2>${n.title}</h2>
         <div class="author">${n.author}</div>
@@ -1296,7 +1496,119 @@
     }
 
     /*************************************************************************
-     * 8. UI EVENT LISTENERS & TAB MANAGEMENT
+     * 8. CHUNK 2.3: INTERACTIVE 2D CLICK-AND-DRAG PAN & CURSOR-CENTERED ZOOM
+     *************************************************************************/
+    function applyZoomAtPoint(newZoom, clientX, clientY) {
+      const clamped = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Number(newZoom.toFixed(2))));
+      if (Math.abs(clamped - state.zoom) < 0.005) return;
+
+      const oldZoom = state.zoom;
+      const ratio = clamped / oldZoom;
+
+      // Keep cursor point anchored across the sticky 115px chronology rail and 93px top headers
+      const timeAxisWidth = 115;
+      const headerOffset = 135;
+
+      const docX = window.scrollX + clientX;
+      const docY = window.scrollY + clientY;
+
+      state.zoom = clamped;
+      renderChart();
+
+      const newDocX = docX > timeAxisWidth
+        ? timeAxisWidth + (docX - timeAxisWidth) * ratio
+        : docX;
+      const newDocY = docY > headerOffset
+        ? headerOffset + (docY - headerOffset) * ratio
+        : docY;
+
+      window.scrollTo({
+        left: Math.max(0, newDocX - clientX),
+        top: Math.max(0, newDocY - clientY),
+        behavior: "instant"
+      });
+    }
+
+    function initViewportInteractions() {
+      const viewport = document.getElementById("viewport");
+
+      // 1. Click-and-Drag 2D Canvas Grabbing
+      viewport.addEventListener("mousedown", (e) => {
+        if (e.button !== 0) return; // Left-click only
+        if (e.target.closest(".lane-headers")) return;
+
+        panState.isDown = true;
+        panState.hasMoved = false;
+        panState.startX = e.clientX;
+        panState.startY = e.clientY;
+        panState.scrollLeft = window.scrollX;
+        panState.scrollTop = window.scrollY;
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (!panState.isDown) return;
+        const dx = e.clientX - panState.startX;
+        const dy = e.clientY - panState.startY;
+
+        if (!panState.hasMoved && Math.hypot(dx, dy) > 5) {
+          panState.hasMoved = true;
+          document.body.classList.add("is-panning");
+        }
+
+        if (panState.hasMoved) {
+          e.preventDefault();
+          window.scrollTo({
+            left: panState.scrollLeft - dx,
+            top: panState.scrollTop - dy,
+            behavior: "instant"
+          });
+        }
+      });
+
+      window.addEventListener("mouseup", () => {
+        if (!panState.isDown) return;
+        if (panState.hasMoved) {
+          panState.suppressClickUntil = Date.now() + 180;
+        }
+        panState.isDown = false;
+        panState.hasMoved = false;
+        document.body.classList.remove("is-panning");
+      });
+
+      // 2. Mouse-Wheel Zoom (Ctrl/Cmd + Wheel, Shift + Wheel, or Direct Wheel Zoom Mode)
+      window.addEventListener("wheel", (e) => {
+        if (e.target.closest(".drawer") || e.target.closest(".modal")) return;
+
+        const shouldZoom = e.ctrlKey || e.metaKey || e.shiftKey || state.directWheelZoom;
+        if (!shouldZoom) return;
+
+        e.preventDefault();
+        const direction = e.deltaY < 0 ? 1 : -1;
+        const factor = direction > 0 ? 1.12 : 0.89;
+        applyZoomAtPoint(state.zoom * factor, e.clientX, e.clientY);
+      }, { passive: false });
+
+      // Topbar Zoom Buttons
+      document.getElementById("btnZoomIn").addEventListener("click", () => {
+        applyZoomAtPoint(state.zoom * 1.18, window.innerWidth / 2, window.innerHeight / 2);
+      });
+
+      document.getElementById("btnZoomOut").addEventListener("click", () => {
+        applyZoomAtPoint(state.zoom * 0.85, window.innerWidth / 2, window.innerHeight / 2);
+      });
+
+      document.getElementById("zoomReadout").addEventListener("click", () => {
+        applyZoomAtPoint(1.0, window.innerWidth / 2, window.innerHeight / 2);
+      });
+
+      document.getElementById("btnWheelZoomMode").addEventListener("click", (e) => {
+        state.directWheelZoom = !state.directWheelZoom;
+        e.currentTarget.classList.toggle("active", state.directWheelZoom);
+      });
+    }
+
+    /*************************************************************************
+     * 9. UI EVENT LISTENERS & TAB MANAGEMENT
      *************************************************************************/
     function populateTabDropdown() {
       const sel = document.getElementById("tabSelect");
@@ -1404,6 +1716,7 @@
 
     // Initialize
     populateTabDropdown();
+    initViewportInteractions();
     loadActiveTab();
   </script>
 </body>
