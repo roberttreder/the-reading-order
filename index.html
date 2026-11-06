@@ -127,6 +127,13 @@
       font-weight: 600;
     }
 
+    button.guard-active {
+      background: rgba(52, 211, 153, 0.16);
+      color: #6ee7b7;
+      border-color: #34d399;
+      font-weight: 600;
+    }
+
     .zoom-group {
       display: inline-flex;
       align-items: center;
@@ -331,85 +338,35 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
     }
 
-    /* Chunk 3.1: Hover / Selection Timespan Highlighter Band & Rail Callout */
+    /* Chunk 3.1: Hover/Selection Timespan Highlighter Band */
     .timespan-highlight-band {
       position: absolute;
       left: 0;
       width: 100%;
+      background: linear-gradient(90deg, rgba(224, 177, 83, 0.16), rgba(56, 189, 248, 0.09) 45%, rgba(224, 177, 83, 0.12));
+      border-top: 1.5px solid rgba(224, 177, 83, 0.75);
+      border-bottom: 1.5px solid rgba(224, 177, 83, 0.75);
+      pointer-events: none;
       z-index: 12;
-      pointer-events: none;
-      background: linear-gradient(
-        90deg,
-        rgba(245, 158, 11, 0.22) 0%,
-        rgba(56, 189, 248, 0.12) 45%,
-        rgba(245, 158, 11, 0.16) 100%
-      );
-      border-top: 1.5px solid rgba(250, 204, 21, 0.85);
-      border-bottom: 1.5px solid rgba(250, 204, 21, 0.85);
-      box-shadow: 0 0 28px rgba(245, 158, 11, 0.18);
       display: none;
+      box-shadow: 0 0 24px rgba(224, 177, 83, 0.12);
     }
 
-    .timespan-lane-spotlight {
+    .rail-span-callout {
       position: absolute;
-      top: 0;
-      bottom: 0;
-      background: rgba(250, 204, 21, 0.14);
-      border-left: 2px solid rgba(250, 204, 21, 0.85);
-      border-right: 2px solid rgba(250, 204, 21, 0.85);
-    }
-
-    .rail-span-highlight {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      background: rgba(245, 158, 11, 0.28);
-      border-top: 2px solid #facc15;
-      border-bottom: 2px solid #facc15;
-      border-right: 3px solid #facc15;
-      z-index: 90;
-      display: none;
-      pointer-events: none;
-    }
-
-    .rail-span-pill {
-      position: absolute;
-      right: 4px;
-      background: #111520;
-      color: #facc15;
-      border: 1px solid #facc15;
-      border-radius: 4px;
-      padding: 1px 6px;
+      right: 6px;
+      background: #e0b153;
+      color: #0f1117;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.66rem;
-      font-weight: 700;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 3px;
       white-space: nowrap;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
-    }
-
-    .rail-span-pill.start {
-      top: -11px;
-    }
-
-    .rail-span-pill.end {
-      bottom: -11px;
-    }
-
-    .rail-span-summary {
-      position: absolute;
-      left: 100%;
-      margin-left: 10px;
-      top: 50%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+      z-index: 95;
+      display: none;
       transform: translateY(-50%);
-      background: rgba(17, 21, 32, 0.96);
-      color: #fef08a;
-      border: 1px solid rgba(250, 204, 21, 0.75);
-      border-radius: 5px;
-      padding: 3px 9px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      white-space: nowrap;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
     }
 
     /* Background Swimlane Columns */
@@ -454,7 +411,7 @@
       z-index: 15;
     }
 
-    .svg-spotlight-overlay {
+    .svg-spotlight {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -463,30 +420,14 @@
       z-index: 42;
     }
 
-    @keyframes threadFlow {
-      from {
-        stroke-dashoffset: 28;
-      }
+    @keyframes flowDash {
       to {
-        stroke-dashoffset: 0;
+        stroke-dashoffset: -28;
       }
     }
 
-    .spotlight-next-path {
-      animation: threadFlow 0.9s linear infinite;
-    }
-
-    @keyframes pairedPulse {
-      from {
-        stroke-dashoffset: 20;
-      }
-      to {
-        stroke-dashoffset: 0;
-      }
-    }
-
-    .spotlight-paired-path {
-      animation: pairedPulse 1.15s linear infinite;
+    .animated-flow {
+      animation: flowDash 0.9s linear infinite;
     }
 
     /* Historical Duration Span Bars */
@@ -497,7 +438,7 @@
       opacity: 0.45;
       z-index: 10;
       pointer-events: none;
-      transition: opacity 0.18s ease, width 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+      transition: opacity 0.18s ease, width 0.18s ease;
     }
 
     .duration-bar.dimmed-bar {
@@ -505,17 +446,9 @@
     }
 
     .duration-bar.active-bar {
-      opacity: 1 !important;
-      width: 9px;
-      z-index: 44;
-      box-shadow: 0 0 14px rgba(250, 204, 21, 0.9);
-    }
-
-    .duration-bar.paired-bar {
-      opacity: 0.92 !important;
+      opacity: 0.95 !important;
       width: 8px;
-      z-index: 43;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.85);
+      box-shadow: 0 0 10px rgba(224, 177, 83, 0.6);
     }
 
     /* Book Node Cards */
@@ -527,16 +460,27 @@
       border: 1px solid var(--border);
       background: var(--panel-2);
       cursor: pointer;
-      transition: transform 0.14s ease, box-shadow 0.14s ease, opacity 0.18s ease, border-color 0.14s ease;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, opacity 0.2s ease, border-color 0.15s ease;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
       overflow: hidden;
       user-select: none;
     }
 
-    .book-card:hover {
+    .book-card:hover,
+    .book-card.selected-card {
       transform: translateY(-2px) scale(1.015);
       z-index: 55;
-      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.65);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 0 2px var(--accent);
+    }
+
+    .book-card.paired-card {
+      z-index: 48;
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35), 0 0 0 2px #38bdf8;
+    }
+
+    .book-card.neighbor-card {
+      z-index: 47;
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.3), 0 0 0 1.5px #f59e0b;
     }
 
     .book-card.tier-main {
@@ -562,66 +506,9 @@
     }
 
     .book-card.dimmed {
-      opacity: 0.16;
+      opacity: 0.18;
       filter: grayscale(80%);
       pointer-events: none;
-    }
-
-    /* Phase 3 Focus & Spotlight Card States */
-    .book-card.spotlight-muted {
-      opacity: 0.32;
-    }
-
-    .book-card.spotlight-active {
-      z-index: 60 !important;
-      transform: translateY(-2px) scale(1.025);
-      border-color: #facc15 !important;
-      box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.65), 0 10px 28px rgba(0, 0, 0, 0.75) !important;
-    }
-
-    .book-card.spotlight-neighbor {
-      z-index: 52 !important;
-      border-color: #f59e0b !important;
-      box-shadow: 0 0 0 1.5px rgba(245, 158, 11, 0.6), 0 6px 18px rgba(0, 0, 0, 0.6) !important;
-    }
-
-    .book-card.spotlight-paired {
-      z-index: 53 !important;
-      border-color: #38bdf8 !important;
-      border-style: solid !important;
-      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.65), 0 6px 18px rgba(0, 0, 0, 0.65) !important;
-    }
-
-    .role-pill {
-      display: none;
-      font-size: 0.6rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 1px 5px;
-      border-radius: 3px;
-      margin-left: 4px;
-    }
-
-    .book-card.spotlight-prev .role-pill.prev-pill {
-      display: inline-block;
-      background: rgba(245, 158, 11, 0.25);
-      color: #fcd34d;
-      border: 1px solid rgba(245, 158, 11, 0.6);
-    }
-
-    .book-card.spotlight-next .role-pill.next-pill {
-      display: inline-block;
-      background: rgba(250, 204, 21, 0.28);
-      color: #fef08a;
-      border: 1px solid #facc15;
-    }
-
-    .book-card.spotlight-paired .role-pill.paired-pill {
-      display: inline-block;
-      background: rgba(56, 189, 248, 0.22);
-      color: #7dd3fc;
-      border: 1px solid #38bdf8;
     }
 
     .card-top {
@@ -643,13 +530,27 @@
       border: 1px solid rgba(224, 177, 83, 0.25);
     }
 
+    .paired-pill {
+      display: none;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #0f1117;
+      background: #38bdf8;
+      padding: 0 5px;
+      border-radius: 3px;
+    }
+
+    .book-card.paired-card .paired-pill {
+      display: inline-block;
+    }
+
     .subregion-pill {
       color: var(--muted);
       font-size: 0.64rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 55%;
+      max-width: 60%;
     }
 
     .card-title {
@@ -739,37 +640,20 @@
     .drawer .author {
       font-size: 0.9rem;
       color: var(--accent);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
-    .drawer-nav-row {
+    .drawer-nav {
       display: flex;
       gap: 8px;
       margin-bottom: 14px;
     }
 
-    .drawer-nav-btn {
+    .drawer-nav button {
       flex: 1;
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 7px 10px;
-      border-radius: 6px;
+      text-align: center;
       font-size: 0.76rem;
-      text-align: left;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .drawer-nav-btn:hover:not(:disabled) {
-      border-color: var(--accent);
-      background: rgba(224, 177, 83, 0.12);
-    }
-
-    .drawer-nav-btn:disabled {
-      opacity: 0.35;
-      cursor: default;
+      padding: 6px 8px;
     }
 
     .meta-grid {
@@ -804,23 +688,23 @@
       margin-bottom: 16px;
     }
 
-    .paired-chip {
+    .paired-link {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+      color: var(--text);
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      background: rgba(56, 189, 248, 0.09);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      border-radius: 6px;
-      padding: 7px 10px;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.14s ease;
     }
 
-    .paired-chip:hover {
-      background: rgba(56, 189, 248, 0.18);
+    .paired-link:hover {
       border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.18);
     }
 
     .notes-box {
@@ -851,8 +735,10 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 10px;
-      width: 560px;
+      width: 620px;
       max-width: 94vw;
+      max-height: 90vh;
+      overflow-y: auto;
       padding: 20px;
     }
     .modal h3 {
@@ -865,7 +751,7 @@
       margin-bottom: 12px;
       line-height: 1.45;
     }
-    .modal textarea, .modal input {
+    .modal textarea, .modal input[type="text"] {
       width: 100%;
       margin-bottom: 12px;
       background: var(--panel-2);
@@ -875,6 +761,31 @@
       padding: 8px;
       font-family: monospace;
       font-size: 0.8rem;
+    }
+    .tab-check-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+      max-height: 200px;
+      overflow-y: auto;
+      background: var(--panel-2);
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .tab-check-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      gap: 8px;
+    }
+    .tab-check-item label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -888,9 +799,13 @@
     </div>
 
     <div class="controls">
-      <label style="font-size:0.78rem;color:var(--muted);">Era Tab:</label>
+      <label style="font-size:0.78rem;color:var(--muted);">View:</label>
       <select id="tabSelect"></select>
-      <button id="btnManageTabs" title="Add or switch Google Sheet tab GIDs">⚙️ Sheet Tabs</button>
+      <button id="btnManageTabs" title="Configure Google Sheet tabs and choose which tabs load into the default Master Chronology">⚙️ Sheet Tabs</button>
+
+      <button id="btnStrictCoords" class="guard-active" title="When active, hides unmigrated rows missing Plot Year Start (Col N) or Primary Macro-Region (Col P) so unfinished tabs never mess up the chart">
+        🛡️ Validated Coords Only
+      </button>
 
       <select id="yModeSelect" title="Switch Y-Axis between True Chronological Time and Read Order">
         <option value="chrono">Y-Axis: Chronological Time</option>
@@ -908,8 +823,7 @@
         <option value="owned">Highlight: Owned Status</option>
       </select>
 
-      <button id="btnToggleThread" class="active" title="Show/hide the global Reading Order narrative thread">🧵 Global Thread</button>
-      <button id="btnTogglePairings" class="active" title="Show/hide Bidirectional Mapping arcs (Primary <-> History/Scholarly) on hover/select">🔗 Paired Arcs</button>
+      <button id="btnToggleThread" class="active" title="Show/hide the Reading Order narrative thread">🧵 Read Thread</button>
       <button id="btnToggleSpans" class="active" title="Show/hide History duration bars">📏 Era Spans</button>
 
       <!-- Chunk 2.3 Zoom Controls -->
@@ -944,7 +858,7 @@
         <span class="swatch" style="background:var(--tier-ref-border)"></span>General Reference
       </div>
     </div>
-    <div class="stats" id="statsBar">Loading live Google Sheet...</div>
+    <div class="stats" id="statsBar">Loading Master Chronology...</div>
   </div>
 
   <!-- Main Timeline Stage -->
@@ -959,33 +873,48 @@
     <div id="drawerContent"></div>
   </aside>
 
-  <!-- Modal for Adding/Switching Tab GIDs or Custom CSV URL -->
+  <!-- Modal for Adding/Switching Tab GIDs & Master Chronology Inclusion -->
   <div class="modal-backdrop" id="modalBackdrop">
     <div class="modal">
       <h3>Configure Published Google Sheet Tabs</h3>
       <p>
-        Your published Google Sheet base URL is pre-configured. You can paste any published CSV link below, or add additional tabs using their <code>gid=</code> number from your Google Sheet browser URL (e.g., <code>01. Prehistory &amp; Bronze Age | 429450416</code>).
+        Checked tabs automatically load into the default <strong>🌐 All Checked Eras (Master Chronology)</strong> view. Uncheck any unfinished later tabs so they don't clutter the master timeline (you can still preview unchecked tabs individually from the dropdown).
       </p>
+      <label style="font-size:0.75rem;color:var(--muted);">Include in Default Master Chronology:</label>
+      <div class="tab-check-list" id="tabCheckList"></div>
+
       <label style="font-size:0.75rem;color:var(--muted);">Published Base CSV URL:</label>
       <input type="text" id="baseCsvUrlInput" />
-      <label style="font-size:0.75rem;color:var(--muted);">Tab List (One per line: <code>Tab Name | GID or Full CSV URL</code>):</label>
-      <textarea id="tabsConfigTextarea" rows="8"></textarea>
-      <div style="display:flex;justify-content:flex-end;gap:8px;">
-        <button id="btnCancelModal">Cancel</button>
-        <button id="btnSaveModal" class="active">Save &amp; Reload</button>
+
+      <label style="font-size:0.75rem;color:var(--muted);">
+        Tab List (One per line: <code>Tab Name | GID</code> — prefix a line with <code>!</code> to exclude it from the Master Chronology):
+      </label>
+      <textarea id="tabsConfigTextarea" rows="7"></textarea>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <button id="btnResetDefaultTabs" title="Reset saved browser tab settings back to DEFAULT_TABS in index.html">↺ Reset to Code Defaults</button>
+        <div style="display:flex;gap:8px;">
+          <button id="btnCancelModal">Cancel</button>
+          <button id="btnSaveModal" class="active">Save &amp; Reload</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
     /*************************************************************************
-     * 1. DEFAULT CONFIGURATION (Pre-linked to your published Google Sheet)
+     * 1. DEFAULT CONFIGURATION (Master Chronology Default + Safe Tab Gating)
      *************************************************************************/
     const DEFAULT_PUBLISHED_BASE =
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1at2lgur-bO7C2rC1VWtHmhGgi2nD8OTASKWDnAE_dq2Of_nRblgbNKL4URoZs26U7-xzuK3O1WVK/pub";
 
+    // Set enabled: true for tabs ready for the default Master Chronology.
+    // Set enabled: false for unfinished tabs (or Reference) so they don't mess up the default view.
     const DEFAULT_TABS = [
-      { name: "Default Published Tab (gid=429450416)", gid: "429450416" }
+      { name: "01. Prehistory–1177 BCE Bronze Age", gid: "429450416", enabled: true }
+      // Example for adding future tabs:
+      // { name: "02. 1100–200 BCE Axial & Classical", gid: "YOUR_GID_HERE", enabled: true },
+      // { name: "03. 200 BCE–500 CE Late Antiquity", gid: "YOUR_GID_HERE", enabled: false }
     ];
 
     const MACRO_LANES = [
@@ -1002,44 +931,25 @@
 
     let state = {
       baseCsvUrl: localStorage.getItem("ro_base_csv") || DEFAULT_PUBLISHED_BASE,
-      tabs: JSON.parse(localStorage.getItem("ro_tabs_v1") || "null") || DEFAULT_TABS,
-      activeTabIndex: 0,
+      tabs: JSON.parse(localStorage.getItem("ro_tabs_v2") || "null") || DEFAULT_TABS,
+      activeTabKey: "ALL_VALIDATED", // Default to loading all checked tabs into the Master Chronology
       rows: [],
+      quarantinedCount: 0,
+      strictCoordsOnly: true, // Quarantine rows missing Col N / Col P by default
       yMode: "chrono",
       xMode: "macro",
       colorMode: "tier",
       showThread: true,
-      showPairings: true,
       showSpans: true,
       searchQuery: "",
       hiddenTiers: new Set(),
       selectedRowId: null,
       hoveredRowId: null,
       zoom: 1.0,
-      directWheelZoom: false
+      directWheelZoom: false,
+      positionedMap: new Map()
     };
 
-    // Runtime lookup caches populated during renderChart() for instant Phase 3 hover updates
-    let runtimeLayout = {
-      nodesById: new Map(),
-      nodesByReadOrderKey: new Map(),
-      visibleOrderedNodes: [],
-      cardElsById: new Map(),
-      barElsById: new Map(),
-      scaler: null,
-      laneWidth: 235,
-      timeAxisWidth: 115,
-      cardHeight: 68,
-      totalWidth: 1280,
-      totalStageHeight: 1000,
-      spotlightSvg: null,
-      globalThreadPath: null,
-      timespanBandEl: null,
-      timespanLaneBoxEl: null,
-      railHighlightEl: null
-    };
-
-    // Track drag-pan state so clicks don't misfire after dragging
     let panState = {
       isDown: false,
       hasMoved: false,
@@ -1051,7 +961,7 @@
     };
 
     /*************************************************************************
-     * 2. RFC-4180 CSV PARSER (Handles multi-line quotes & commas cleanly)
+     * 2. RFC-4180 CSV PARSER
      *************************************************************************/
     function parseCSV(text) {
       const rows = [];
@@ -1097,7 +1007,7 @@
     }
 
     /*************************************************************************
-     * 3. FALLBACK DATE & GEOSCHEME INFERENCE (For 13-Column Unmigrated Tabs)
+     * 3. FALLBACK DATE & GEOSCHEME INFERENCE (When Quarantine is Toggled Off)
      *************************************************************************/
     function inferYearsFromEraString(eraStr, readOrder) {
       if (!eraStr) return { start: Math.round(readOrder), end: Math.round(readOrder) };
@@ -1160,22 +1070,8 @@
       return { macro: "Europe", inter: "—", sub: "Europe (Inferred)" };
     }
 
-    function normalizeReadOrderKey(val) {
-      const num = parseFloat(String(val).trim());
-      if (isNaN(num)) return "";
-      return String(num);
-    }
-
-    function parsePairedTokens(pairedStr) {
-      if (!pairedStr || pairedStr === "—") return [];
-      return pairedStr
-        .split(/[;,]/)
-        .map(s => normalizeReadOrderKey(s))
-        .filter(Boolean);
-    }
-
     /*************************************************************************
-     * 4. FETCH & NORMALIZE SCHEMA (Columns A–S + Phase 1 Expanded Cols T–X)
+     * 4. MULTI-TAB PARALLEL FETCHER & NORMALIZER
      *************************************************************************/
     function buildCsvUrl(tab) {
       if (tab.gid.startsWith("http")) return tab.gid;
@@ -1183,116 +1079,153 @@
       return `${base}?gid=${encodeURIComponent(tab.gid)}&single=true&output=csv`;
     }
 
-    async function loadActiveTab() {
-      const tab = state.tabs[state.activeTabIndex] || state.tabs[0];
-      const url = buildCsvUrl(tab);
-      document.getElementById("statsBar").textContent = `Fetching live CSV (${tab.name})...`;
+    function parseTabRows(csvText, tabName, tabIdx) {
+      const rawGrid = parseCSV(csvText);
+      let startIdx = 0;
+      for (let i = 0; i < Math.min(5, rawGrid.length); i++) {
+        if (/read\s*order/i.test(rawGrid[i][0] || "") || /title/i.test(rawGrid[i][2] || "")) {
+          startIdx = i + 1;
+          break;
+        }
+      }
+
+      const parsed = [];
+      for (let i = startIdx; i < rawGrid.length; i++) {
+        const r = rawGrid[i];
+        const roRaw = parseFloat(r[0]);
+        const title = (r[2] || "").trim();
+        if (isNaN(roRaw) || !title) continue;
+
+        const eraDate = r[1] || "";
+        const author = r[3] || "";
+        const type = r[4] || "";
+        const tier = r[5] || "Main";
+        const origLang = r[6] || "";
+        const lcc = r[7] || "";
+        const readStatus = /^(yes|true|1|y)$/i.test((r[8] || "").trim());
+        const dateCompleted = r[9] || "";
+        const notes = r[10] || "";
+        const rating = r[11] || "";
+        const ownedStatus = /^(yes|true|1|y)$/i.test((r[12] || "").trim());
+
+        let yStart = parseFloat((r[13] || "").replace(/,/g, ""));
+        let yEnd = parseFloat((r[14] || "").replace(/,/g, ""));
+        let macro = (r[15] || "").trim();
+        let inter = (r[16] || "").trim();
+        let sub = (r[17] || "").trim();
+        let secRegions = (r[18] || "").trim();
+
+        const hasExplicitCoords = !isNaN(yStart) && Boolean(macro);
+
+        if (isNaN(yStart)) {
+          const inf = inferYearsFromEraString(eraDate, roRaw);
+          yStart = inf.start;
+          yEnd = inf.end;
+        } else if (isNaN(yEnd)) {
+          yEnd = yStart;
+        }
+
+        if (!macro) {
+          const infReg = inferRegionFallback(origLang, lcc, title, notes);
+          macro = infReg.macro;
+          inter = infReg.inter;
+          sub = infReg.sub;
+        }
+
+        const scopeSubtitle = (r[19] || "").trim();
+        const workGroupId = (r[20] || "").trim();
+        const pairedReadOrdersRaw = (r[21] || "").trim();
+        const themeTags = (r[22] || "").trim();
+        const authorBio = (r[23] || "").trim();
+
+        const pairedList = pairedReadOrdersRaw
+          ? pairedReadOrdersRaw.split(/[;,]/).map(s => parseFloat(s.trim())).filter(n => !isNaN(n))
+          : [];
+
+        parsed.push({
+          id: `tab${tabIdx}-row${i}-${roRaw}`,
+          tabName,
+          readOrder: roRaw,
+          eraDate,
+          title,
+          author,
+          type,
+          tier,
+          origLang,
+          lcc,
+          readStatus,
+          dateCompleted,
+          notes,
+          rating,
+          ownedStatus,
+          yStart,
+          yEnd: Math.max(yStart, yEnd),
+          macro,
+          inter,
+          sub,
+          secRegions,
+          scopeSubtitle,
+          workGroupId,
+          pairedReadOrdersRaw,
+          pairedList,
+          themeTags,
+          authorBio,
+          hasExplicitCoords
+        });
+      }
+      return parsed;
+    }
+
+    async function loadActiveSelection() {
+      let targetTabs = [];
+
+      if (state.activeTabKey === "ALL_VALIDATED") {
+        targetTabs = state.tabs
+          .map((t, idx) => ({ ...t, idx }))
+          .filter(t => t.enabled !== false);
+        if (targetTabs.length === 0 && state.tabs.length > 0) {
+          targetTabs = [{ ...state.tabs[0], idx: 0 }];
+        }
+      } else {
+        const idx = parseInt(state.activeTabKey, 10) || 0;
+        const tab = state.tabs[idx] || state.tabs[0];
+        targetTabs = [{ ...tab, idx }];
+      }
+
+      const label = state.activeTabKey === "ALL_VALIDATED"
+        ? `Master Chronology (${targetTabs.length} active tab${targetTabs.length === 1 ? "" : "s"})`
+        : targetTabs[0].name;
+
+      document.getElementById("statsBar").textContent = `Fetching live CSV data for ${label}...`;
 
       try {
-        const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const csvText = await res.text();
-        const rawGrid = parseCSV(csvText);
+        const results = await Promise.all(
+          targetTabs.map(async (t) => {
+            const url = buildCsvUrl(t);
+            const res = await fetch(url, { cache: "no-store" });
+            if (!res.ok) throw new Error(`${t.name}: HTTP ${res.status}`);
+            const text = await res.text();
+            return parseTabRows(text, t.name, t.idx);
+          })
+        );
 
-        let startIdx = 0;
-        for (let i = 0; i < Math.min(5, rawGrid.length); i++) {
-          if (/read\s*order/i.test(rawGrid[i][0] || "") || /title/i.test(rawGrid[i][2] || "")) {
-            startIdx = i + 1;
-            break;
-          }
+        const combined = results.flat();
+        combined.sort((a, b) => a.readOrder - b.readOrder);
+
+        state.quarantinedCount = combined.filter(r => !r.hasExplicitCoords).length;
+        state.rows = state.strictCoordsOnly
+          ? combined.filter(r => r.hasExplicitCoords)
+          : combined;
+
+        // If a single unmigrated tab is previewed directly and has 0 explicit coords, auto-fallback so the screen isn't blank
+        if (state.rows.length === 0 && combined.length > 0) {
+          state.rows = combined;
         }
 
-        const parsed = [];
-        for (let i = startIdx; i < rawGrid.length; i++) {
-          const r = rawGrid[i];
-          const roRaw = parseFloat(r[0]);
-          const title = (r[2] || "").trim();
-          if (isNaN(roRaw) || !title) continue;
-
-          const eraDate = r[1] || "";
-          const author = r[3] || "";
-          const type = r[4] || "";
-          const tier = r[5] || "Main";
-          const origLang = r[6] || "";
-          const lcc = r[7] || "";
-          const readStatus = /^(yes|true|1|y)$/i.test((r[8] || "").trim());
-          const dateCompleted = r[9] || "";
-          const notes = r[10] || "";
-          const rating = r[11] || "";
-          const ownedStatus = /^(yes|true|1|y)$/i.test((r[12] || "").trim());
-
-          // Columns N–S (Indices 13–18)
-          let yStart = parseFloat((r[13] || "").replace(/,/g, ""));
-          let yEnd = parseFloat((r[14] || "").replace(/,/g, ""));
-          const hasExplicitCoords = !isNaN(yStart);
-
-          if (isNaN(yStart)) {
-            const inf = inferYearsFromEraString(eraDate, roRaw);
-            yStart = inf.start;
-            yEnd = inf.end;
-          } else if (isNaN(yEnd)) {
-            yEnd = yStart;
-          }
-
-          let macro = (r[15] || "").trim();
-          let inter = (r[16] || "").trim();
-          let sub = (r[17] || "").trim();
-          let secRegions = (r[18] || "").trim();
-
-          if (!macro) {
-            const infReg = inferRegionFallback(origLang, lcc, title, notes);
-            macro = infReg.macro;
-            inter = infReg.inter;
-            sub = infReg.sub;
-          }
-
-          // Phase 1 Expanded Columns (Cols T–X, Indices 19–23)
-          const scopeSubtitle = (r[19] || "").trim();
-          const workGroupId = (r[20] || "").trim();
-          const pairedReadOrders = (r[21] || "").trim();
-          const themeTags = (r[22] || "").trim();
-          const authorBio = (r[23] || "").trim();
-
-          parsed.push({
-            id: `row-${i}-${roRaw}`,
-            readOrder: roRaw,
-            readOrderKey: normalizeReadOrderKey(roRaw),
-            eraDate,
-            title,
-            author,
-            type,
-            tier,
-            origLang,
-            lcc,
-            readStatus,
-            dateCompleted,
-            notes,
-            rating,
-            ownedStatus,
-            yStart,
-            yEnd: Math.max(yStart, yEnd),
-            macro,
-            inter,
-            sub,
-            secRegions,
-            scopeSubtitle: scopeSubtitle === "—" ? "" : scopeSubtitle,
-            workGroupId: workGroupId === "—" ? "" : workGroupId,
-            pairedReadOrders: pairedReadOrders === "—" ? "" : pairedReadOrders,
-            pairedKeys: parsePairedTokens(pairedReadOrders),
-            themeTags: themeTags === "—" ? "" : themeTags,
-            authorBio: authorBio === "—" ? "" : authorBio,
-            hasExplicitCoords
-          });
-        }
-
-        parsed.sort((a, b) => a.readOrder - b.readOrder);
-        state.rows = parsed;
-        state.selectedRowId = null;
-        state.hoveredRowId = null;
         renderChart();
       } catch (err) {
         document.getElementById("statsBar").innerHTML =
-          `<span style="color:#f87171;">Failed to fetch CSV: ${err.message}. Check your published link in ⚙️ Sheet Tabs.</span>`;
+          `<span style="color:#f87171;">Failed to fetch CSV: ${err.message}. Check your published links in ⚙️ Sheet Tabs.</span>`;
       }
     }
 
@@ -1305,14 +1238,6 @@
       if (y < 0) return `${Math.abs(Math.round(y)).toLocaleString()} BCE`;
       if (y === 0) return `1 CE`;
       return `${Math.round(y)} CE`;
-    }
-
-    function formatSpanDuration(yStart, yEnd) {
-      const diff = Math.abs(yEnd - yStart);
-      if (diff === 0) return "Single-Point Date";
-      if (diff >= 1e9) return `${(diff / 1e9).toFixed(2)} Billion Yr Span`;
-      if (diff >= 1e6) return `${(diff / 1e6).toFixed(1)} Million Yr Span`;
-      return `${Math.round(diff).toLocaleString()} Yr Span`;
     }
 
     function buildChronoScaler(rows, zoomFactor) {
@@ -1428,8 +1353,11 @@
     }
 
     /*************************************************************************
-     * 6. RENDER SWIMLANES, STICKY Y-AXIS, 1-N NUMBERS & PHASE 3 LAYERS
+     * 6. RENDER SWIMLANES, STICKY Y-AXIS, 1-N NUMBERS & PHASE 3 SPOTLIGHTS
      *************************************************************************/
+    let currentScaler = null;
+    let visibleSortedCache = [];
+
     function renderChart() {
       const rows = state.rows;
       const lanes = getActiveLanes(rows);
@@ -1447,7 +1375,6 @@
 
       const gridTemplate = `${timeAxisWidth}px repeat(${lanes.length}, minmax(${minLaneWidth}px, 1fr))`;
 
-      // 1. Sticky Swimlane Headers
       const laneHeaders = document.getElementById("laneHeaders");
       laneHeaders.style.gridTemplateColumns = gridTemplate;
       laneHeaders.innerHTML = `<div class="time-axis-header">${
@@ -1464,10 +1391,10 @@
 
       if (rows.length === 0) {
         stage.style.height = "400px";
+        document.getElementById("statsBar").innerHTML = `<span>No matching rows to display.</span>`;
         return;
       }
 
-      // 2. Filter Check & Chunk 2.2 Dynamic 1–N Sequential Reading Number Assignment
       const q = state.searchQuery.trim().toLowerCase();
       const isRowVisible = (n) => {
         if (state.hiddenTiers.has(n.tier)) return false;
@@ -1488,16 +1415,15 @@
         }
       });
 
-      // 3. Calculate Y-positions (Chronological vs. Ordinal Read Order) scaled by Zoom
       const CARD_HEIGHT = Math.round(68 * Math.max(0.72, Math.min(1.35, z)));
       const CARD_GAP = Math.round(10 * z);
       let totalStageHeight = 1000;
-      let scaler = null;
 
       if (state.yMode === "chrono") {
-        scaler = buildChronoScaler(rows, z);
-        totalStageHeight = scaler.totalHeight;
+        currentScaler = buildChronoScaler(rows, z);
+        totalStageHeight = currentScaler.totalHeight;
       } else {
+        currentScaler = null;
         totalStageHeight = rows.length * (CARD_HEIGHT + Math.round(16 * z)) + 120;
       }
 
@@ -1519,19 +1445,15 @@
         let laneIdx = laneIndexMap.get(laneKey);
         if (laneIdx === undefined) laneIdx = 0;
 
-        const trueStartY = state.yMode === "chrono"
-          ? scaler.yearToY(r.yStart)
+        let idealY = state.yMode === "chrono"
+          ? currentScaler.yearToY(r.yStart)
           : Math.round(40 * z) + idx * (CARD_HEIGHT + Math.round(14 * z));
 
-        const trueEndY = state.yMode === "chrono"
-          ? Math.max(trueStartY + 6, scaler.yearToY(r.yEnd))
-          : trueStartY + CARD_HEIGHT;
-
-        const actualY = Math.max(trueStartY, laneBottomTracker[laneIdx]);
+        const actualY = Math.max(idealY, laneBottomTracker[laneIdx]);
         laneBottomTracker[laneIdx] = actualY + CARD_HEIGHT + CARD_GAP;
 
-        const barEndY = state.yMode === "chrono"
-          ? Math.max(actualY + 14, trueEndY)
+        const endY = state.yMode === "chrono"
+          ? Math.max(actualY + 16, currentScaler.yearToY(r.yEnd))
           : actualY + CARD_HEIGHT;
 
         const laneLeft = timeAxisWidth + laneIdx * laneWidth;
@@ -1542,12 +1464,10 @@
         positionedNodes.push({
           ...r,
           laneIdx,
-          laneLeft,
-          laneWidth,
-          trueStartY,
-          trueEndY,
+          idealY,
           top: actualY,
-          endY: barEndY,
+          endY,
+          cardHeight: CARD_HEIGHT,
           left: cardLeft,
           width: cardWidth,
           centerX: cardLeft + cardWidth / 2,
@@ -1557,55 +1477,43 @@
         });
       });
 
+      state.positionedMap.clear();
+      positionedNodes.forEach(n => state.positionedMap.set(n.id, n));
+
       totalStageHeight = Math.max(totalStageHeight, Math.max(...laneBottomTracker) + 120);
       stage.style.height = `${totalStageHeight}px`;
 
-      // Populate runtime lookup maps for Phase 3 spotlighting
-      runtimeLayout.nodesById.clear();
-      runtimeLayout.nodesByReadOrderKey.clear();
-      runtimeLayout.cardElsById.clear();
-      runtimeLayout.barElsById.clear();
-      runtimeLayout.scaler = scaler;
-      runtimeLayout.laneWidth = laneWidth;
-      runtimeLayout.timeAxisWidth = timeAxisWidth;
-      runtimeLayout.cardHeight = CARD_HEIGHT;
-      runtimeLayout.totalWidth = totalWidth;
-      runtimeLayout.totalStageHeight = totalStageHeight;
-
-      positionedNodes.forEach(n => {
-        runtimeLayout.nodesById.set(n.id, n);
-        runtimeLayout.nodesByReadOrderKey.set(n.readOrderKey, n);
-      });
-
-      runtimeLayout.visibleOrderedNodes = positionedNodes
-        .filter(n => n.visible)
-        .sort((a, b) => a.readOrder - b.readOrder);
-
-      // 4. Background Swimlane Grid
+      // Background Swimlane Grid
       const bgGrid = document.createElement("div");
       bgGrid.className = "lane-bg-grid";
       bgGrid.style.gridTemplateColumns = gridTemplate;
       bgGrid.innerHTML = `<div class="lane-bg-col"></div>` + lanes.map(() => `<div class="lane-bg-col"></div>`).join("");
       stage.appendChild(bgGrid);
 
-      // 5. Chunk 3.1: Full-Width Timespan Highlighter Band on Stage
-      const timespanBand = document.createElement("div");
-      timespanBand.className = "timespan-highlight-band";
-      const timespanLaneBox = document.createElement("div");
-      timespanLaneBox.className = "timespan-lane-spotlight";
-      timespanBand.appendChild(timespanLaneBox);
-      stage.appendChild(timespanBand);
-      runtimeLayout.timespanBandEl = timespanBand;
-      runtimeLayout.timespanLaneBoxEl = timespanLaneBox;
+      // Chunk 3.1: Hover/Selection Timespan Highlighter Band
+      const highlightBand = document.createElement("div");
+      highlightBand.className = "timespan-highlight-band";
+      highlightBand.id = "timespanBand";
+      stage.appendChild(highlightBand);
 
-      // 6. Chunk 2.1: Sticky Floating Chronology Rail (Pinned Left Y-Axis) + Stage Gridlines
+      // Chunk 2.1: Sticky Floating Chronology Rail
       const stickyRail = document.createElement("div");
       stickyRail.className = "sticky-chrono-rail";
       stickyRail.style.width = `${timeAxisWidth}px`;
       stickyRail.style.height = `${totalStageHeight}px`;
 
-      if (state.yMode === "chrono" && scaler) {
-        scaler.bands.forEach(b => {
+      const calloutStart = document.createElement("div");
+      calloutStart.className = "rail-span-callout";
+      calloutStart.id = "railCalloutStart";
+      stickyRail.appendChild(calloutStart);
+
+      const calloutEnd = document.createElement("div");
+      calloutEnd.className = "rail-span-callout";
+      calloutEnd.id = "railCalloutEnd";
+      stickyRail.appendChild(calloutEnd);
+
+      if (state.yMode === "chrono" && currentScaler) {
+        currentScaler.bands.forEach(b => {
           const bandDiv = document.createElement("div");
           bandDiv.className = "time-tick epoch-divider";
           bandDiv.style.top = `${b.topPx}px`;
@@ -1625,7 +1533,7 @@
           const steps = 4;
           for (let s = 1; s < steps; s++) {
             const yVal = b.yMin + ((b.yMax - b.yMin) * s) / steps;
-            const yPx = scaler.yearToY(yVal);
+            const yPx = currentScaler.yearToY(yVal);
 
             const tickLine = document.createElement("div");
             tickLine.className = "time-tick";
@@ -1640,69 +1548,70 @@
           }
         });
       } else {
-        runtimeLayout.visibleOrderedNodes.forEach((n, idx) => {
-          if (idx === 0 || (idx + 1) % 5 === 0) {
-            const tickLine = document.createElement("div");
-            tickLine.className = "time-tick";
-            tickLine.style.top = `${n.centerY}px`;
-            stage.appendChild(tickLine);
+        positionedNodes
+          .filter(n => n.visible)
+          .forEach((n, idx) => {
+            if (idx === 0 || (idx + 1) % 5 === 0) {
+              const tickLine = document.createElement("div");
+              tickLine.className = "time-tick";
+              tickLine.style.top = `${n.centerY}px`;
+              stage.appendChild(tickLine);
 
-            const tickLbl = document.createElement("div");
-            tickLbl.className = "rail-tick-label";
-            tickLbl.style.top = `${n.centerY}px`;
-            tickLbl.textContent = `#${n.displaySeq} (${formatYearLabel(n.yStart)})`;
-            stickyRail.appendChild(tickLbl);
-          }
-        });
+              const tickLbl = document.createElement("div");
+              tickLbl.className = "rail-tick-label";
+              tickLbl.style.top = `${n.centerY}px`;
+              tickLbl.textContent = `#${n.displaySeq} (${formatYearLabel(n.yStart)})`;
+              stickyRail.appendChild(tickLbl);
+            }
+          });
       }
-
-      // Chunk 3.1 Sticky Rail Span Callout Box (Shows Start/End Year Pills on Left Axis)
-      const railHighlight = document.createElement("div");
-      railHighlight.className = "rail-span-highlight";
-      stickyRail.appendChild(railHighlight);
-      runtimeLayout.railHighlightEl = railHighlight;
 
       stage.appendChild(stickyRail);
 
-      // 7. Base SVG Layer for Global Read Order Thread
+      // Base SVG Layer for Read Order Narrative Thread
       const svgNS = "http://www.w3.org/2000/svg";
       const svg = document.createElementNS(svgNS, "svg");
       svg.setAttribute("class", "svg-overlay");
+      svg.setAttribute("id", "baseThreadSvg");
       svg.setAttribute("width", totalWidth);
       svg.setAttribute("height", totalStageHeight);
 
-      let globalThreadPath = null;
-      if (state.showThread && runtimeLayout.visibleOrderedNodes.length > 1) {
+      visibleSortedCache = positionedNodes
+        .filter(n => n.visible)
+        .sort((a, b) => a.readOrder - b.readOrder);
+
+      if (state.showThread && visibleSortedCache.length > 1) {
         let d = "";
-        runtimeLayout.visibleOrderedNodes.forEach((pt, idx) => {
+        visibleSortedCache.forEach((pt, idx) => {
           if (idx === 0) {
             d += `M ${pt.centerX} ${pt.centerY} `;
           } else {
-            const prev = runtimeLayout.visibleOrderedNodes[idx - 1];
+            const prev = visibleSortedCache[idx - 1];
             const midY = (prev.centerY + pt.centerY) / 2;
             d += `C ${prev.centerX} ${midY}, ${pt.centerX} ${midY}, ${pt.centerX} ${pt.centerY} `;
           }
         });
-        globalThreadPath = document.createElementNS(svgNS, "path");
-        globalThreadPath.setAttribute("d", d);
-        globalThreadPath.setAttribute("fill", "none");
-        globalThreadPath.setAttribute("stroke", "rgba(245, 158, 11, 0.36)");
-        globalThreadPath.setAttribute("stroke-width", String(Math.max(1.4, 2.0 * z)));
-        globalThreadPath.setAttribute("stroke-dasharray", "5,5");
-        svg.appendChild(globalThreadPath);
+        const path = document.createElementNS(svgNS, "path");
+        path.setAttribute("id", "masterThreadPath");
+        path.setAttribute("d", d);
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", "rgba(245, 158, 11, 0.44)");
+        path.setAttribute("stroke-width", String(Math.max(1.5, 2.2 * z)));
+        path.setAttribute("stroke-dasharray", "5,4");
+        svg.appendChild(path);
       }
-      runtimeLayout.globalThreadPath = globalThreadPath;
+
       stage.appendChild(svg);
 
-      // 8. Top SVG Layer for Phase 3 Spotlight Threads (Prev -> Current -> Next & Paired Arcs)
+      // Chunk 3.2 & 3.3: Spotlight SVG Layer (Prev -> Cur -> Next & Bidirectional Mapping Arcs)
       const spotlightSvg = document.createElementNS(svgNS, "svg");
-      spotlightSvg.setAttribute("class", "svg-spotlight-overlay");
+      spotlightSvg.setAttribute("class", "svg-spotlight");
+      spotlightSvg.setAttribute("id", "spotlightSvg");
       spotlightSvg.setAttribute("width", totalWidth);
       spotlightSvg.setAttribute("height", totalStageHeight);
       stage.appendChild(spotlightSvg);
-      runtimeLayout.spotlightSvg = spotlightSvg;
 
-      // 9. Render Duration Bars & Book Cards
+      // Render Duration Bars & Book Cards
       let visibleCount = 0;
       let readCount = 0;
       let ownedCount = 0;
@@ -1712,33 +1621,22 @@
         if (n.ownedStatus) ownedCount++;
         if (n.visible) visibleCount++;
 
-        // Duration bar for every entry in chronological mode (even short-span works get a bar for hover highlighting)
-        if (state.showSpans && state.yMode === "chrono") {
-          const isMultiYear = (n.yEnd - n.yStart) > 0 || (n.endY - n.top > CARD_HEIGHT + 4);
+        if (state.showSpans && state.yMode === "chrono" && n.endY - n.top > CARD_HEIGHT + 8) {
           const bar = document.createElement("div");
           bar.className = "duration-bar";
+          bar.dataset.rowId = n.id;
           bar.style.left = `${n.left - 8}px`;
-          bar.style.top = `${Math.min(n.trueStartY, n.top)}px`;
-          const barHeight = Math.max(CARD_HEIGHT, Math.max(n.endY, n.trueEndY) - Math.min(n.trueStartY, n.top));
-          bar.style.height = `${barHeight}px`;
-          bar.style.background = n.tier.includes("History")
-            ? "var(--tier-hist-border)"
-            : n.tier.includes("Supporting")
-              ? "var(--tier-schol-border)"
-              : "var(--tier-main-border)";
-
-          if (!n.visible) {
-            bar.style.opacity = "0.05";
-          } else if (!isMultiYear) {
-            bar.style.opacity = "0.18";
-          }
+          bar.style.top = `${n.top}px`;
+          bar.style.height = `${n.endY - n.top}px`;
+          bar.style.background = n.tier.includes("History") ? "var(--tier-hist-border)" : "var(--tier-schol-border)";
+          if (!n.visible) bar.style.opacity = "0.08";
           stage.appendChild(bar);
-          runtimeLayout.barElsById.set(n.id, bar);
         }
 
         const card = document.createElement("div");
         const compactClass = z < 0.78 ? "compact-zoom" : "";
         card.className = `book-card ${getTierClass(n.tier)} ${compactClass} ${n.visible ? "" : "dimmed"}`;
+        card.dataset.rowId = n.id;
         card.style.left = `${n.left}px`;
         card.style.top = `${n.top}px`;
         card.style.width = `${n.width}px`;
@@ -1749,18 +1647,14 @@
           ? `Reading Sequence #${n.displaySeq} (Master Sheet Read Order: ${n.readOrder})`
           : `Filtered Out (Master Sheet Read Order: ${n.readOrder})`;
 
-        const subtitleHtml = n.scopeSubtitle
-          ? `<span style="color:var(--accent);font-weight:600;">[${n.scopeSubtitle}]</span> `
-          : "";
+        const subLabel = n.scopeSubtitle && n.scopeSubtitle !== "—"
+          ? `${n.author} • ${n.scopeSubtitle}`
+          : `${n.author} • ${n.eraDate}`;
 
         card.innerHTML = `
           <div class="card-top">
-            <span>
-              <span class="ro-badge" title="${badgeTooltip}">${badgeLabel}</span>
-              <span class="role-pill prev-pill">← Prev</span>
-              <span class="role-pill next-pill">Next →</span>
-              <span class="role-pill paired-pill">⇄ Paired</span>
-            </span>
+            <span class="ro-badge" title="${badgeTooltip}">${badgeLabel}</span>
+            <span class="paired-pill">⇄ Paired</span>
             <span class="subregion-pill" title="${n.macro} > ${n.inter} > ${n.sub}">${n.sub || n.macro}</span>
             <span class="status-dots">
               ${n.readStatus ? '<span class="dot read" title="Read"></span>' : ""}
@@ -1768,324 +1662,225 @@
             </span>
           </div>
           <div class="card-title" title="${n.title.replace(/"/g, '&quot;')}">${n.title}</div>
-          <div class="card-meta">${subtitleHtml}${n.author} • ${n.eraDate}</div>
+          <div class="card-meta">${subLabel}</div>
         `;
 
         card.addEventListener("mouseenter", () => {
-          if (panState.isDown) return;
           state.hoveredRowId = n.id;
-          updatePhase3Spotlight();
+          updateActiveSpotlight();
         });
 
         card.addEventListener("mouseleave", () => {
-          if (state.hoveredRowId === n.id) {
-            state.hoveredRowId = null;
-            updatePhase3Spotlight();
-          }
+          state.hoveredRowId = null;
+          updateActiveSpotlight();
         });
 
         card.addEventListener("click", (e) => {
-          e.stopPropagation();
-          if (Date.now() < panState.suppressClickUntil) return;
+          if (Date.now() < panState.suppressClickUntil) {
+            e.stopPropagation();
+            return;
+          }
           state.selectedRowId = n.id;
+          updateActiveSpotlight();
           openDrawer(n);
-          updatePhase3Spotlight();
         });
 
         stage.appendChild(card);
-        runtimeLayout.cardElsById.set(n.id, card);
       });
 
-      const coordCount = rows.filter(r => r.hasExplicitCoords).length;
-      const pairedCount = rows.filter(r => r.pairedKeys && r.pairedKeys.length > 0).length;
+      const quarantineNote = state.quarantinedCount > 0 && state.strictCoordsOnly
+        ? `<span>🛡️ Quarantined: <strong>${state.quarantinedCount} unmigrated rows hidden</strong></span>`
+        : "";
+
       document.getElementById("statsBar").innerHTML = `
         <span>Showing <strong>1–${visibleCount}</strong> of ${rows.length} Works</span>
         <span>Read: <strong>${readCount}</strong></span>
         <span>Owned: <strong>${ownedCount}</strong></span>
-        <span>Coords: <strong>${coordCount}/${rows.length}</strong></span>
-        <span>Paired: <strong>${pairedCount}/${rows.length}</strong></span>
-        <span class="nav-hint">🖐️ Hover/click card for Span &amp; Thread Spotlight • Drag to pan • Ctrl+Wheel to zoom</span>
+        ${quarantineNote}
+        <span class="nav-hint">🖐️ Drag canvas to pan • Ctrl/Shift + Wheel to zoom</span>
       `;
 
-      updatePhase3Spotlight();
+      updateActiveSpotlight();
     }
 
     /*************************************************************************
-     * 7. PHASE 3 ENGINE: TIMESPAN HIGHLIGHTER, PREV->NEXT THREAD & PAIRED ARCS
+     * 7. PHASE 3 INTERACTIVE SPOTLIGHT ENGINE (Chunks 3.1, 3.2, 3.3)
      *************************************************************************/
-    function buildBezierPath(x1, y1, x2, y2) {
-      const dy = Math.abs(y2 - y1);
-      const dx = Math.abs(x2 - x1);
-      if (dy < 35 && dx > 80) {
-        const arcHeight = Math.max(40, Math.min(130, dx * 0.22));
-        const ctrlY = Math.min(y1, y2) - arcHeight;
-        return `M ${x1} ${y1} C ${x1} ${ctrlY}, ${x2} ${ctrlY}, ${x2} ${y2}`;
-      }
-      const midY = (y1 + y2) / 2;
-      return `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
-    }
-
-    function updatePhase3Spotlight() {
+    function updateActiveSpotlight() {
       const activeId = state.hoveredRowId || state.selectedRowId;
-      const activeNode = activeId ? runtimeLayout.nodesById.get(activeId) : null;
-      const svg = runtimeLayout.spotlightSvg;
-      if (!svg) return;
+      const band = document.getElementById("timespanBand");
+      const calloutStart = document.getElementById("railCalloutStart");
+      const calloutEnd = document.getElementById("railCalloutEnd");
+      const spotlightSvg = document.getElementById("spotlightSvg");
+      const masterThreadPath = document.getElementById("masterThreadPath");
 
-      svg.innerHTML = "";
+      if (!band || !spotlightSvg) return;
+      spotlightSvg.innerHTML = "";
 
-      // Reset all cards and duration bars to default state when nothing is hovered or selected
-      if (!activeNode) {
-        if (runtimeLayout.globalThreadPath) {
-          runtimeLayout.globalThreadPath.setAttribute("stroke", "rgba(245, 158, 11, 0.36)");
-        }
-        if (runtimeLayout.timespanBandEl) {
-          runtimeLayout.timespanBandEl.style.display = "none";
-        }
-        if (runtimeLayout.railHighlightEl) {
-          runtimeLayout.railHighlightEl.style.display = "none";
-        }
-        runtimeLayout.cardElsById.forEach(el => {
-          el.classList.remove(
-            "spotlight-muted",
-            "spotlight-active",
-            "spotlight-neighbor",
-            "spotlight-prev",
-            "spotlight-next",
-            "spotlight-paired"
-          );
-        });
-        runtimeLayout.barElsById.forEach(bar => {
-          bar.classList.remove("dimmed-bar", "active-bar", "paired-bar");
-        });
+      const allCards = document.querySelectorAll(".book-card");
+      const allBars = document.querySelectorAll(".duration-bar");
+
+      if (!activeId || !state.positionedMap.has(activeId)) {
+        band.style.display = "none";
+        if (calloutStart) calloutStart.style.display = "none";
+        if (calloutEnd) calloutEnd.style.display = "none";
+        if (masterThreadPath) masterThreadPath.setAttribute("stroke", "rgba(245, 158, 11, 0.44)");
+        allCards.forEach(c => c.classList.remove("selected-card", "paired-card", "neighbor-card"));
+        allBars.forEach(b => b.classList.remove("dimmed-bar", "active-bar"));
         return;
       }
 
-      // Dim global background thread so the focused Prev -> Current -> Next spotlight pops cleanly
-      if (runtimeLayout.globalThreadPath) {
-        runtimeLayout.globalThreadPath.setAttribute("stroke", "rgba(245, 158, 11, 0.10)");
-      }
+      const activeNode = state.positionedMap.get(activeId);
 
-      // Identify Previous (#N-1) and Next (#N+1) visible books in the active Reading Order
-      const visList = runtimeLayout.visibleOrderedNodes;
-      const curIdx = visList.findIndex(n => n.id === activeNode.id);
-      const prevNode = curIdx > 0 ? visList[curIdx - 1] : null;
-      const nextNode = curIdx >= 0 && curIdx < visList.length - 1 ? visList[curIdx + 1] : null;
+      // 1. Chunk 3.1: Timespan Highlighter Band
+      if (state.yMode === "chrono" && currentScaler) {
+        const yTop = currentScaler.yearToY(activeNode.yStart);
+        const yBot = Math.max(yTop + 26, currentScaler.yearToY(activeNode.yEnd));
+        band.style.display = "block";
+        band.style.top = `${yTop}px`;
+        band.style.height = `${yBot - yTop}px`;
 
-      // Identify Bidirectionally Paired Works (Col V)
-      const pairedNodes = [];
-      if (state.showPairings && activeNode.pairedKeys && activeNode.pairedKeys.length > 0) {
-        activeNode.pairedKeys.forEach(k => {
-          const target = runtimeLayout.nodesByReadOrderKey.get(k);
-          if (target && target.id !== activeNode.id) {
-            pairedNodes.push(target);
+        if (calloutStart) {
+          calloutStart.style.display = "block";
+          calloutStart.style.top = `${yTop}px`;
+          calloutStart.textContent = formatYearLabel(activeNode.yStart);
+        }
+        if (calloutEnd) {
+          if (Math.abs(activeNode.yEnd - activeNode.yStart) > 0) {
+            calloutEnd.style.display = "block";
+            calloutEnd.style.top = `${yBot}px`;
+            calloutEnd.textContent = formatYearLabel(activeNode.yEnd);
+          } else {
+            calloutEnd.style.display = "none";
           }
-        });
+        }
+      } else {
+        band.style.display = "block";
+        band.style.top = `${activeNode.top}px`;
+        band.style.height = `${activeNode.cardHeight}px`;
       }
 
-      const pairedIdSet = new Set(pairedNodes.map(p => p.id));
-
-      // 1. Chunk 3.1: Project Horizontal Timespan Highlighter Band across Chronology Rail & Swimlanes
-      if (runtimeLayout.timespanBandEl && runtimeLayout.railHighlightEl) {
-        let bandTop = activeNode.top;
-        let bandBottom = activeNode.top + runtimeLayout.cardHeight;
-
-        if (state.yMode === "chrono" && runtimeLayout.scaler) {
-          const y1 = runtimeLayout.scaler.yearToY(activeNode.yStart);
-          const y2 = runtimeLayout.scaler.yearToY(activeNode.yEnd);
-          bandTop = Math.min(y1, y2);
-          bandBottom = Math.max(y1, y2, bandTop + 26);
-        }
-
-        const bandHeight = Math.max(26, bandBottom - bandTop);
-
-        runtimeLayout.timespanBandEl.style.display = "block";
-        runtimeLayout.timespanBandEl.style.top = `${bandTop}px`;
-        runtimeLayout.timespanBandEl.style.height = `${bandHeight}px`;
-
-        if (runtimeLayout.timespanLaneBoxEl) {
-          runtimeLayout.timespanLaneBoxEl.style.left = `${activeNode.laneLeft}px`;
-          runtimeLayout.timespanLaneBoxEl.style.width = `${activeNode.laneWidth}px`;
-        }
-
-        const startText = formatYearLabel(activeNode.yStart);
-        const endText = formatYearLabel(activeNode.yEnd);
-        const durationDesc = formatSpanDuration(activeNode.yStart, activeNode.yEnd);
-        const isPoint = activeNode.yStart === activeNode.yEnd;
-
-        runtimeLayout.railHighlightEl.style.display = "block";
-        runtimeLayout.railHighlightEl.style.top = `${bandTop}px`;
-        runtimeLayout.railHighlightEl.style.height = `${bandHeight}px`;
-        runtimeLayout.railHighlightEl.innerHTML = isPoint
-          ? `
-            <span class="rail-span-pill start">${startText}</span>
-            <span class="rail-span-summary">${startText} (${durationDesc})</span>
-          `
-          : `
-            <span class="rail-span-pill start">${startText}</span>
-            <span class="rail-span-pill end">${endText}</span>
-            <span class="rail-span-summary">${startText} → ${endText} (${durationDesc})</span>
-          `;
-      }
-
-      // 2. Update Card & Duration Bar CSS Highlights
-      runtimeLayout.cardElsById.forEach((el, id) => {
-        el.classList.remove(
-          "spotlight-muted",
-          "spotlight-active",
-          "spotlight-neighbor",
-          "spotlight-prev",
-          "spotlight-next",
-          "spotlight-paired"
-        );
-
-        if (id === activeNode.id) {
-          el.classList.add("spotlight-active");
-        } else if (prevNode && id === prevNode.id) {
-          el.classList.add("spotlight-neighbor", "spotlight-prev");
-        } else if (nextNode && id === nextNode.id) {
-          el.classList.add("spotlight-neighbor", "spotlight-next");
-        } else if (pairedIdSet.has(id)) {
-          el.classList.add("spotlight-paired");
+      allBars.forEach(b => {
+        if (b.dataset.rowId === activeId) {
+          b.classList.add("active-bar");
+          b.classList.remove("dimmed-bar");
         } else {
-          el.classList.add("spotlight-muted");
+          b.classList.add("dimmed-bar");
+          b.classList.remove("active-bar");
         }
       });
 
-      runtimeLayout.barElsById.forEach((bar, id) => {
-        bar.classList.remove("dimmed-bar", "active-bar", "paired-bar");
-        if (id === activeNode.id) {
-          bar.classList.add("active-bar");
-        } else if (pairedIdSet.has(id)) {
-          bar.classList.add("paired-bar");
-        } else {
-          bar.classList.add("dimmed-bar");
-        }
-      });
+      // 2. Chunk 3.2: Prev (#N-1) -> Current (#N) -> Next (#N+1) Spotlight
+      if (masterThreadPath) {
+        masterThreadPath.setAttribute("stroke", "rgba(245, 158, 11, 0.14)");
+      }
 
-      // 3. Chunk 3.2 & 3.3: Draw Focused SVG Curves & Arrowheads
       const svgNS = "http://www.w3.org/2000/svg";
-      const defs = document.createElementNS(svgNS, "defs");
-      defs.innerHTML = `
-        <marker id="arrow-prev" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M 0 1 L 10 5 L 0 9 z" fill="#f59e0b" />
-        </marker>
-        <marker id="arrow-next" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
-          <path d="M 0 1 L 10 5 L 0 9 z" fill="#facc15" />
-        </marker>
-        <marker id="arrow-paired" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
-        </marker>
-      `;
-      svg.appendChild(defs);
+      const visIdx = visibleSortedCache.findIndex(n => n.id === activeId);
+      let prevNode = visIdx > 0 ? visibleSortedCache[visIdx - 1] : null;
+      let nextNode = visIdx >= 0 && visIdx < visibleSortedCache.length - 1 ? visibleSortedCache[visIdx + 1] : null;
 
-      // Chunk 3.3: Bidirectional Mapping Connectors (Cyan Dashed Arcs)
+      if (prevNode) {
+        const midY = (prevNode.centerY + activeNode.centerY) / 2;
+        const dPrev = `M ${prevNode.centerX} ${prevNode.centerY} C ${prevNode.centerX} ${midY}, ${activeNode.centerX} ${midY}, ${activeNode.centerX} ${activeNode.centerY}`;
+        const pPath = document.createElementNS(svgNS, "path");
+        pPath.setAttribute("d", dPrev);
+        pPath.setAttribute("fill", "none");
+        pPath.setAttribute("stroke", "#f59e0b");
+        pPath.setAttribute("stroke-width", "3");
+        pPath.setAttribute("stroke-dasharray", "6,4");
+        spotlightSvg.appendChild(pPath);
+      }
+
+      if (nextNode) {
+        const midY = (activeNode.centerY + nextNode.centerY) / 2;
+        const dNext = `M ${activeNode.centerX} ${activeNode.centerY} C ${activeNode.centerX} ${midY}, ${nextNode.centerX} ${midY}, ${nextNode.centerX} ${nextNode.centerY}`;
+        const nPath = document.createElementNS(svgNS, "path");
+        nPath.setAttribute("d", dNext);
+        nPath.setAttribute("fill", "none");
+        nPath.setAttribute("stroke", "#facc15");
+        nPath.setAttribute("stroke-width", "3.5");
+        nPath.setAttribute("stroke-dasharray", "8,6");
+        nPath.setAttribute("class", "animated-flow");
+        spotlightSvg.appendChild(nPath);
+      }
+
+      // 3. Chunk 3.3: Bidirectional Mapping Connectors (Col V Paired Read Orders)
+      const pairedNodes = [];
+      state.positionedMap.forEach(candidate => {
+        if (candidate.id === activeId) return;
+        const isMatched =
+          activeNode.pairedList.includes(candidate.readOrder) ||
+          candidate.pairedList.includes(activeNode.readOrder);
+        if (isMatched) pairedNodes.push(candidate);
+      });
+
       pairedNodes.forEach(target => {
-        const d = buildBezierPath(activeNode.centerX, activeNode.centerY, target.centerX, target.centerY);
-
-        const glow = document.createElementNS(svgNS, "path");
-        glow.setAttribute("d", d);
-        glow.setAttribute("fill", "none");
-        glow.setAttribute("stroke", "rgba(56, 189, 248, 0.25)");
-        glow.setAttribute("stroke-width", "7");
-        svg.appendChild(glow);
+        const dx = target.centerX - activeNode.centerX;
+        const dy = target.centerY - activeNode.centerY;
+        const ctrlOffset = Math.max(60, Math.abs(dx) * 0.35);
+        const dArc = `M ${activeNode.centerX} ${activeNode.centerY} C ${activeNode.centerX + (dx >= 0 ? ctrlOffset : -ctrlOffset)} ${activeNode.centerY + dy * 0.25}, ${target.centerX - (dx >= 0 ? ctrlOffset : -ctrlOffset)} ${target.centerY - dy * 0.25}, ${target.centerX} ${target.centerY}`;
 
         const arc = document.createElementNS(svgNS, "path");
-        arc.setAttribute("d", d);
-        arc.setAttribute("class", "spotlight-paired-path");
+        arc.setAttribute("d", dArc);
         arc.setAttribute("fill", "none");
         arc.setAttribute("stroke", "#38bdf8");
-        arc.setAttribute("stroke-width", "2.4");
-        arc.setAttribute("stroke-dasharray", "6,4");
-        arc.setAttribute("marker-end", "url(#arrow-paired)");
-        svg.appendChild(arc);
+        arc.setAttribute("stroke-width", "2.6");
+        arc.setAttribute("stroke-dasharray", "4,4");
+        spotlightSvg.appendChild(arc);
       });
 
-      // Chunk 3.2: Incoming Path from Previous Book (#N-1 -> #N)
-      if (prevNode) {
-        const dPrev = buildBezierPath(prevNode.centerX, prevNode.centerY, activeNode.centerX, activeNode.centerY);
-        const prevPath = document.createElementNS(svgNS, "path");
-        prevPath.setAttribute("d", dPrev);
-        prevPath.setAttribute("fill", "none");
-        prevPath.setAttribute("stroke", "#f59e0b");
-        prevPath.setAttribute("stroke-width", "2.8");
-        prevPath.setAttribute("stroke-dasharray", "6,4");
-        prevPath.setAttribute("marker-end", "url(#arrow-prev)");
-        svg.appendChild(prevPath);
-      }
-
-      // Chunk 3.2: Outgoing Animated Path to Next Book (#N -> #N+1)
-      if (nextNode) {
-        const dNext = buildBezierPath(activeNode.centerX, activeNode.centerY, nextNode.centerX, nextNode.centerY);
-
-        const nextGlow = document.createElementNS(svgNS, "path");
-        nextGlow.setAttribute("d", dNext);
-        nextGlow.setAttribute("fill", "none");
-        nextGlow.setAttribute("stroke", "rgba(250, 204, 21, 0.28)");
-        nextGlow.setAttribute("stroke-width", "8");
-        svg.appendChild(nextGlow);
-
-        const nextPath = document.createElementNS(svgNS, "path");
-        nextPath.setAttribute("d", dNext);
-        nextPath.setAttribute("class", "spotlight-next-path");
-        nextPath.setAttribute("fill", "none");
-        nextPath.setAttribute("stroke", "#facc15");
-        nextPath.setAttribute("stroke-width", "3.2");
-        nextPath.setAttribute("stroke-dasharray", "9,5");
-        nextPath.setAttribute("marker-end", "url(#arrow-next)");
-        svg.appendChild(nextPath);
-      }
+      const pairedIds = new Set(pairedNodes.map(p => p.id));
+      allCards.forEach(c => {
+        const cid = c.dataset.rowId;
+        c.classList.toggle("selected-card", cid === activeId);
+        c.classList.toggle("paired-card", pairedIds.has(cid));
+        c.classList.toggle("neighbor-card", (prevNode && cid === prevNode.id) || (nextNode && cid === nextNode.id));
+      });
     }
 
-    function focusAndPanToNode(targetId) {
-      const node = runtimeLayout.nodesById.get(targetId);
+    function panToNode(node) {
       if (!node) return;
       state.selectedRowId = node.id;
+      updateActiveSpotlight();
       openDrawer(node);
-      updatePhase3Spotlight();
-
-      const targetLeft = Math.max(0, node.centerX - (window.innerWidth - 420) / 2);
-      const targetTop = Math.max(0, node.centerY - window.innerHeight / 2);
       window.scrollTo({
-        left: targetLeft,
-        top: targetTop,
+        left: Math.max(0, node.centerX - window.innerWidth / 2),
+        top: Math.max(0, node.centerY - window.innerHeight / 2),
         behavior: "smooth"
       });
     }
 
     /*************************************************************************
-     * 8. SLIDE-OUT SCHOLARLY INSPECTOR DRAWER (With Prev/Next & Paired Links)
+     * 8. SLIDE-OUT SCHOLARLY INSPECTOR DRAWER
      *************************************************************************/
     function openDrawer(n) {
       const drawer = document.getElementById("drawer");
       const content = document.getElementById("drawerContent");
       const seqText = n.displaySeq ? `#${n.displaySeq}` : "Filtered";
 
-      const visList = runtimeLayout.visibleOrderedNodes;
-      const curIdx = visList.findIndex(item => item.id === n.id);
-      const prevNode = curIdx > 0 ? visList[curIdx - 1] : null;
-      const nextNode = curIdx >= 0 && curIdx < visList.length - 1 ? visList[curIdx + 1] : null;
+      const visIdx = visibleSortedCache.findIndex(item => item.id === n.id);
+      const prevNode = visIdx > 0 ? visibleSortedCache[visIdx - 1] : null;
+      const nextNode = visIdx >= 0 && visIdx < visibleSortedCache.length - 1 ? visibleSortedCache[visIdx + 1] : null;
 
-      const pairedNodes = (n.pairedKeys || [])
-        .map(k => runtimeLayout.nodesByReadOrderKey.get(k))
-        .filter(Boolean);
+      const pairedNodes = [];
+      state.positionedMap.forEach(candidate => {
+        if (candidate.id === n.id) return;
+        if (n.pairedList.includes(candidate.readOrder) || candidate.pairedList.includes(n.readOrder)) {
+          pairedNodes.push(candidate);
+        }
+      });
 
       const pairedHtml = pairedNodes.length > 0
         ? `
-          <div style="font-size:0.75rem;text-transform:uppercase;color:var(--sec-thread);margin-bottom:6px;letter-spacing:0.05em;font-weight:700;">
-            ⇄ Bidirectional Companion Works (${pairedNodes.length})
+          <div style="font-size:0.75rem;text-transform:uppercase;color:#38bdf8;margin-bottom:6px;letter-spacing:0.05em;font-weight:700;">
+            ⇄ Bidirectional Paired Works (${pairedNodes.length})
           </div>
           <div class="paired-list">
             ${pairedNodes.map(p => `
-              <div class="paired-chip" data-target-id="${p.id}">
-                <div>
-                  <div style="font-weight:700;color:var(--text);">
-                    ${p.displaySeq ? `#${p.displaySeq}` : `RO ${p.readOrder}`} — ${p.title}
-                  </div>
-                  <div style="font-size:0.7rem;color:var(--muted);">
-                    ${p.author} • ${p.tier} (${formatYearLabel(p.yStart)} → ${formatYearLabel(p.yEnd)})
-                  </div>
-                </div>
-                <span style="color:var(--sec-thread);font-weight:700;font-size:0.78rem;">Jump →</span>
+              <div class="paired-link" data-target-id="${p.id}">
+                <span><strong>#${p.displaySeq || p.readOrder}</strong> ${p.title}</span>
+                <span style="color:var(--muted);font-size:0.7rem;">${p.tier} →</span>
               </div>
             `).join("")}
           </div>
@@ -2103,13 +1898,12 @@
         <h2>${n.title}</h2>
         <div class="author">${n.author}${n.authorBio ? ` <span style="color:var(--muted);font-size:0.78rem;">— ${n.authorBio}</span>` : ""}</div>
 
-        <!-- Chunk 3.2: Prev / Next Reading Order Jump Buttons -->
-        <div class="drawer-nav-row">
-          <button class="drawer-nav-btn" id="btnDrawerPrev" ${prevNode ? "" : "disabled"} title="${prevNode ? prevNode.title.replace(/"/g, '&quot;') : ""}">
-            ${prevNode ? `← Prev (#${prevNode.displaySeq}): ${prevNode.title}` : "← Start of Filter"}
+        <div class="drawer-nav">
+          <button id="btnDrawerPrev" ${prevNode ? "" : "disabled style='opacity:0.4;cursor:not-allowed;'"}>
+            ← Prev ${prevNode ? `(#${prevNode.displaySeq})` : ""}
           </button>
-          <button class="drawer-nav-btn" id="btnDrawerNext" ${nextNode ? "" : "disabled"} title="${nextNode ? nextNode.title.replace(/"/g, '&quot;') : ""}">
-            ${nextNode ? `Next (#${nextNode.displaySeq}): ${nextNode.title} →` : "End of Filter →"}
+          <button id="btnDrawerNext" ${nextNode ? "" : "disabled style='opacity:0.4;cursor:not-allowed;'"}>
+            Next ${nextNode ? `(#${nextNode.displaySeq})` : ""} →
           </button>
         </div>
 
@@ -2120,15 +1914,23 @@
           </div>
           <div class="meta-cell">
             <div class="label">Plot Window (Y-Axis)</div>
-            <div class="val">${formatYearLabel(n.yStart)} → ${formatYearLabel(n.yEnd)} (${formatSpanDuration(n.yStart, n.yEnd)})</div>
+            <div class="val">${formatYearLabel(n.yStart)} → ${formatYearLabel(n.yEnd)}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Scope / Part Subtitle</div>
+            <div class="val">${n.scopeSubtitle || "Full Work"}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Source Sheet Tab</div>
+            <div class="val">${n.tabName || "—"}</div>
           </div>
           <div class="meta-cell">
             <div class="label">Primary Geoscheme</div>
             <div class="val">${n.macro} &rsaquo; ${n.sub || "—"}</div>
           </div>
           <div class="meta-cell">
-            <div class="label">Scope / Subtitle</div>
-            <div class="val">${n.scopeSubtitle || "Full Work"}</div>
+            <div class="label">Intermediary Region</div>
+            <div class="val">${n.inter || "—"}</div>
           </div>
           <div class="meta-cell">
             <div class="label">Original Language</div>
@@ -2156,19 +1958,16 @@
         <div class="notes-box">${n.notes || "No curatorial notes recorded for this entry."}</div>
       `;
 
-      const prevBtn = document.getElementById("btnDrawerPrev");
-      if (prevBtn && prevNode) {
-        prevBtn.addEventListener("click", () => focusAndPanToNode(prevNode.id));
-      }
-      const nextBtn = document.getElementById("btnDrawerNext");
-      if (nextBtn && nextNode) {
-        nextBtn.addEventListener("click", () => focusAndPanToNode(nextNode.id));
-      }
+      const btnPrev = document.getElementById("btnDrawerPrev");
+      if (btnPrev && prevNode) btnPrev.addEventListener("click", () => panToNode(prevNode));
 
-      content.querySelectorAll(".paired-chip").forEach(chip => {
-        chip.addEventListener("click", () => {
-          const targetId = chip.getAttribute("data-target-id");
-          if (targetId) focusAndPanToNode(targetId);
+      const btnNext = document.getElementById("btnDrawerNext");
+      if (btnNext && nextNode) btnNext.addEventListener("click", () => panToNode(nextNode));
+
+      content.querySelectorAll(".paired-link").forEach(el => {
+        el.addEventListener("click", () => {
+          const target = state.positionedMap.get(el.getAttribute("data-target-id"));
+          if (target) panToNode(target);
         });
       });
 
@@ -2176,7 +1975,7 @@
     }
 
     /*************************************************************************
-     * 9. CHUNK 2.3: INTERACTIVE 2D CLICK-AND-DRAG PAN & CURSOR-CENTERED ZOOM
+     * 9. INTERACTIVE 2D CLICK-AND-DRAG PAN & CURSOR-CENTERED ZOOM
      *************************************************************************/
     function applyZoomAtPoint(newZoom, clientX, clientY) {
       const clamped = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Number(newZoom.toFixed(2))));
@@ -2211,7 +2010,6 @@
     function initViewportInteractions() {
       const viewport = document.getElementById("viewport");
 
-      // 1. Click-and-Drag 2D Canvas Grabbing
       viewport.addEventListener("mousedown", (e) => {
         if (e.button !== 0) return;
         if (e.target.closest(".lane-headers")) return;
@@ -2254,17 +2052,6 @@
         document.body.classList.remove("is-panning");
       });
 
-      // Clicking empty canvas clears pinned selection & closes drawer
-      viewport.addEventListener("click", (e) => {
-        if (Date.now() < panState.suppressClickUntil) return;
-        if (!e.target.closest(".book-card") && !e.target.closest(".lane-headers")) {
-          state.selectedRowId = null;
-          document.getElementById("drawer").classList.remove("open");
-          updatePhase3Spotlight();
-        }
-      });
-
-      // 2. Mouse-Wheel Zoom (Ctrl/Cmd + Wheel, Shift + Wheel, or Direct Wheel Zoom Mode)
       window.addEventListener("wheel", (e) => {
         if (e.target.closest(".drawer") || e.target.closest(".modal")) return;
 
@@ -2277,7 +2064,6 @@
         applyZoomAtPoint(state.zoom * factor, e.clientX, e.clientY);
       }, { passive: false });
 
-      // Topbar Zoom Buttons
       document.getElementById("btnZoomIn").addEventListener("click", () => {
         applyZoomAtPoint(state.zoom * 1.18, window.innerWidth / 2, window.innerHeight / 2);
       });
@@ -2297,18 +2083,35 @@
     }
 
     /*************************************************************************
-     * 10. UI EVENT LISTENERS & TAB MANAGEMENT
+     * 10. UI EVENT LISTENERS & SAFE TAB MANAGEMENT MODAL
      *************************************************************************/
     function populateTabDropdown() {
       const sel = document.getElementById("tabSelect");
-      sel.innerHTML = state.tabs
-        .map((t, idx) => `<option value="${idx}" ${idx === state.activeTabIndex ? "selected" : ""}>${t.name}</option>`)
+      const enabledCount = state.tabs.filter(t => t.enabled !== false).length;
+      const masterOption = `<option value="ALL_VALIDATED" ${state.activeTabKey === "ALL_VALIDATED" ? "selected" : ""}>
+        🌐 All Checked Eras — Master Chronology (${enabledCount} Tab${enabledCount === 1 ? "" : "s"})
+      </option>`;
+
+      const individualOptions = state.tabs
+        .map((t, idx) => {
+          const statusTag = t.enabled === false ? " [Excluded from Master]" : "";
+          const isSel = String(idx) === String(state.activeTabKey) ? "selected" : "";
+          return `<option value="${idx}" ${isSel}>${t.name}${statusTag}</option>`;
+        })
         .join("");
+
+      sel.innerHTML = masterOption + individualOptions;
     }
 
     document.getElementById("tabSelect").addEventListener("change", (e) => {
-      state.activeTabIndex = parseInt(e.target.value, 10);
-      loadActiveTab();
+      state.activeTabKey = e.target.value;
+      loadActiveSelection();
+    });
+
+    document.getElementById("btnStrictCoords").addEventListener("click", (e) => {
+      state.strictCoordsOnly = !state.strictCoordsOnly;
+      e.currentTarget.classList.toggle("guard-active", state.strictCoordsOnly);
+      loadActiveSelection();
     });
 
     document.getElementById("yModeSelect").addEventListener("change", (e) => {
@@ -2330,12 +2133,6 @@
       state.showThread = !state.showThread;
       e.currentTarget.classList.toggle("active", state.showThread);
       renderChart();
-    });
-
-    document.getElementById("btnTogglePairings").addEventListener("click", (e) => {
-      state.showPairings = !state.showPairings;
-      e.currentTarget.classList.toggle("active", state.showPairings);
-      updatePhase3Spotlight();
     });
 
     document.getElementById("btnToggleSpans").addEventListener("click", (e) => {
@@ -2366,15 +2163,44 @@
     document.getElementById("drawerClose").addEventListener("click", () => {
       state.selectedRowId = null;
       document.getElementById("drawer").classList.remove("open");
-      updatePhase3Spotlight();
+      updateActiveSpotlight();
     });
 
     // Sheet Tab Configuration Modal
+    function renderModalChecklist() {
+      const checkContainer = document.getElementById("tabCheckList");
+      checkContainer.innerHTML = state.tabs.map((t, idx) => `
+        <div class="tab-check-item">
+          <label>
+            <input type="checkbox" data-tab-idx="${idx}" ${t.enabled !== false ? "checked" : ""} />
+            <span><strong>${t.name}</strong> <code style="color:var(--muted);">gid=${t.gid}</code></span>
+          </label>
+          <span style="font-size:0.72rem;color:${t.enabled !== false ? "#6ee7b7" : "var(--muted)"};">
+            ${t.enabled !== false ? "In Master View" : "Excluded"}
+          </span>
+        </div>
+      `).join("");
+
+      checkContainer.querySelectorAll("input[type='checkbox']").forEach(box => {
+        box.addEventListener("change", (e) => {
+          const idx = parseInt(e.target.getAttribute("data-tab-idx"), 10);
+          state.tabs[idx].enabled = e.target.checked;
+          syncTextareaFromTabs();
+          renderModalChecklist();
+        });
+      });
+    }
+
+    function syncTextareaFromTabs() {
+      document.getElementById("tabsConfigTextarea").value = state.tabs
+        .map(t => `${t.enabled === false ? "! " : ""}${t.name} | ${t.gid}`)
+        .join("\n");
+    }
+
     document.getElementById("btnManageTabs").addEventListener("click", () => {
       document.getElementById("baseCsvUrlInput").value = state.baseCsvUrl;
-      document.getElementById("tabsConfigTextarea").value = state.tabs
-        .map(t => `${t.name} | ${t.gid}`)
-        .join("\n");
+      syncTextareaFromTabs();
+      renderModalChecklist();
       document.getElementById("modalBackdrop").classList.add("open");
     });
 
@@ -2382,17 +2208,38 @@
       document.getElementById("modalBackdrop").classList.remove("open");
     });
 
+    document.getElementById("btnResetDefaultTabs").addEventListener("click", () => {
+      localStorage.removeItem("ro_tabs_v2");
+      state.tabs = JSON.parse(JSON.stringify(DEFAULT_TABS));
+      syncTextareaFromTabs();
+      renderModalChecklist();
+    });
+
     document.getElementById("btnSaveModal").addEventListener("click", () => {
       const base = document.getElementById("baseCsvUrlInput").value.trim();
       const lines = document.getElementById("tabsConfigTextarea").value.split("\n");
       const newTabs = [];
       lines.forEach(line => {
-        if (!line.trim()) return;
-        const parts = line.split("|");
+        let raw = line.trim();
+        if (!raw) return;
+        let enabled = true;
+        if (raw.startsWith("!")) {
+          enabled = false;
+          raw = raw.slice(1).trim();
+        }
+        const parts = raw.split("|");
         if (parts.length >= 2) {
-          newTabs.push({ name: parts[0].trim(), gid: parts.slice(1).join("|").trim() });
+          newTabs.push({
+            name: parts[0].trim(),
+            gid: parts.slice(1).join("|").trim(),
+            enabled
+          });
         } else {
-          newTabs.push({ name: `Tab (${line.trim()})`, gid: line.trim() });
+          newTabs.push({
+            name: `Tab (${raw})`,
+            gid: raw,
+            enabled
+          });
         }
       });
       if (base) {
@@ -2401,12 +2248,11 @@
       }
       if (newTabs.length > 0) {
         state.tabs = newTabs;
-        state.activeTabIndex = 0;
-        localStorage.setItem("ro_tabs_v1", JSON.stringify(newTabs));
+        localStorage.setItem("ro_tabs_v2", JSON.stringify(newTabs));
       }
       document.getElementById("modalBackdrop").classList.remove("open");
       populateTabDropdown();
-      loadActiveTab();
+      loadActiveSelection();
     });
 
     window.addEventListener("resize", () => renderChart());
@@ -2414,7 +2260,7 @@
     // Initialize
     populateTabDropdown();
     initViewportInteractions();
-    loadActiveTab();
+    loadActiveSelection();
   </script>
 </body>
 </html>
