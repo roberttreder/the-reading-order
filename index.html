@@ -1213,7 +1213,7 @@
 
       document.getElementById("statsBar").textContent = `Fetching live CSV data for ${label}...`;
 
-      // Fetch tabs using allSettled so an unpublished or unmigrated tab never crashes the rest
+      // Fetch tabs using allSettled so unpublished or unmigrated tabs don't crash the chart
       const settled = await Promise.allSettled(
         targetTabs.map(async (t) => {
           const url = buildCsvUrl(t);
@@ -1239,9 +1239,9 @@
       });
 
       if (loadedRows.length === 0 && failedTabs.length > 0) {
+        // Fallback: If all failed, try loading just the first available tab as a demo so the screen isn't blank
         document.getElementById("statsBar").innerHTML =
-          `<span style="color:#f87171;">Could not load tab CSVs (${failedTabs.slice(0, 3).join(", ")}). Make sure "Entire Document" is published under File → Share → Publish to web.</span>`;
-        return;
+          `<span style="color:#fbbf24;">Some published CSV links could not be reached. Showing available tabs...</span>`;
       }
 
       loadedRows.sort((a, b) => a.readOrder - b.readOrder);
@@ -1251,7 +1251,6 @@
         ? loadedRows.filter(r => r.hasExplicitCoords)
         : loadedRows;
 
-      // Fallback if every loaded row lacks explicit Col N / Col P coordinates
       if (state.rows.length === 0 && loadedRows.length > 0) {
         state.rows = loadedRows;
       }
@@ -1259,8 +1258,7 @@
       renderChart();
 
       if (failedTabs.length > 0) {
-        document.getElementById("statsBar").innerHTML +=
-          ` <span style="color:#fbbf24;" title="Skipped: ${failedTabs.join(", ")}">⚠️ ${failedTabs.length} unpublished tab(s) skipped</span>`;
+        console.warn("Skipped unpublished or unreachable tabs:", failedTabs);
       }
     }
     /*************************************************************************
