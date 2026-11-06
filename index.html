@@ -908,13 +908,28 @@
     const DEFAULT_PUBLISHED_BASE =
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1at2lgur-bO7C2rC1VWtHmhGgi2nD8OTASKWDnAE_dq2Of_nRblgbNKL4URoZs26U7-xzuK3O1WVK/pub";
 
-    // Set enabled: true for tabs ready for the default Master Chronology.
+   // Set enabled: true for tabs ready for the default Master Chronology.
     // Set enabled: false for unfinished tabs (or Reference) so they don't mess up the default view.
     const DEFAULT_TABS = [
-      { name: "01. Prehistory–1177 BCE Bronze Age", gid: "429450416", enabled: true }
-      // Example for adding future tabs:
-      // { name: "02. 1100–200 BCE Axial & Classical", gid: "YOUR_GID_HERE", enabled: true },
-      // { name: "03. 200 BCE–500 CE Late Antiquity", gid: "YOUR_GID_HERE", enabled: false }
+      { name: "01. Prehistory–1177 BCE Bronze Age", gid: "429450416", enabled: true },
+      { name: "02. 1100–200 BCE Axial & Classical", gid: "1421629170", enabled: true },
+      { name: "03. 200 BCE–500 CE Late Antiquity", gid: "1357270877", enabled: true },
+      { name: "04. 500–1050 Early Middle Ages", gid: "122415868", enabled: true },
+      { name: "05. 1050–1450 High Middle Ages", gid: "1719394092", enabled: true },
+      { name: "06. 1450–1616 Renaissance", gid: "1081815791", enabled: true },
+      { name: "07. 1600–1699 17th C & Baroque", gid: "1710586163", enabled: true },
+      { name: "08. 1700–1799 Enlightenment", gid: "21083586", enabled: true },
+      { name: "09. 1800–1848 Romanticism", gid: "677063922", enabled: true },
+      { name: "10. 1849–1899 Victorian Realism", gid: "1982498947", enabled: true },
+      { name: "11. 1900–1918 Belle Époque & WWI", gid: "295378452", enabled: true },
+      { name: "12. 1919–1929 Roaring Twenties & High Modernism", gid: "660834264", enabled: true },
+      { name: "13. 1930–1938 Depression & Rise of Totalitarianism", gid: "1478444962", enabled: true },
+      { name: "14. 1939–1949 WWII, Holocaust & Postwar Dawn", gid: "114590073", enabled: true },
+      { name: "15. 1950–1961 Early Cold War & Existentialism", gid: "635324859", enabled: true },
+      { name: "16. 1962–1975 The Long Sixties & Global Boom", gid: "1784838157", enabled: true },
+      { name: "17. 1976–1989 Late Cold War & Postmodernism", gid: "109145688", enabled: false },
+      { name: "18. 1990–Pres Contemporary", gid: "1412638559", enabled: false },
+      { name: "00. General Reference", gid: "1394318577", enabled: false }
     ];
 
     const MACRO_LANES = [
