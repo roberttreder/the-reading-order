@@ -908,13 +908,13 @@
     const DEFAULT_PUBLISHED_BASE =
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1at2lgur-bO7C2rC1VWtHmhGgi2nD8OTASKWDnAE_dq2Of_nRblgbNKL4URoZs26U7-xzuK3O1WVK/pub";
 
-   // Set enabled: true for tabs ready for the default Master Chronology.
+    // Set enabled: true for tabs ready for the default Master Chronology.
     // Set enabled: false for unfinished tabs (or Reference) so they don't mess up the default view.
     const DEFAULT_TABS = [
       { name: "01. Prehistory–1177 BCE Bronze Age", gid: "429450416", enabled: true },
       { name: "02. 1100–200 BCE Axial & Classical", gid: "1421629170", enabled: true },
       { name: "03. 200 BCE–500 CE Late Antiquity", gid: "1357270877", enabled: true },
-      { name: "04. 500–1050 Early Middle Ages", gid: "122415868", enabled: false },
+      { name: "04. 500–1050 Early Middle Ages", gid: "122415868", enabled: true },
       { name: "05. 1050–1450 High Middle Ages", gid: "1719394092", enabled: false },
       { name: "06. 1450–1616 Renaissance", gid: "1081815791", enabled: false },
       { name: "07. 1600–1699 17th C & Baroque", gid: "1710586163", enabled: false },
@@ -947,10 +947,10 @@
     let state = {
       baseCsvUrl: localStorage.getItem("ro_base_csv") || DEFAULT_PUBLISHED_BASE,
       tabs: JSON.parse(localStorage.getItem("ro_tabs_v2") || "null") || DEFAULT_TABS,
-      activeTabKey: "ALL_VALIDATED", // Default to loading all checked tabs into the Master Chronology
+      activeTabKey: "ALL_VALIDATED",
       rows: [],
       quarantinedCount: 0,
-      strictCoordsOnly: true, // Quarantine rows missing Col N / Col P by default
+      strictCoordsOnly: true,
       yMode: "chrono",
       xMode: "macro",
       colorMode: "tier",
@@ -1022,7 +1022,7 @@
     }
 
     /*************************************************************************
-     * 3. FALLBACK DATE & GEOSCHEME INFERENCE (When Quarantine is Toggled Off)
+     * 3. FALLBACK DATE & GEOSCHEME INFERENCE
      *************************************************************************/
     function inferYearsFromEraString(eraStr, readOrder) {
       if (!eraStr) return { start: Math.round(readOrder), end: Math.round(readOrder) };
@@ -1152,6 +1152,7 @@
         const pairedReadOrdersRaw = (r[21] || "").trim();
         const themeTags = (r[22] || "").trim();
         const authorBio = (r[23] || "").trim();
+        const isbn = (r[24] || "").trim();
 
         const pairedList = pairedReadOrdersRaw
           ? pairedReadOrdersRaw.split(/[;,]/).map(s => parseFloat(s.trim())).filter(n => !isNaN(n))
@@ -1185,6 +1186,7 @@
           pairedList,
           themeTags,
           authorBio,
+          isbn,
           hasExplicitCoords
         });
       }
@@ -1213,7 +1215,6 @@
 
       document.getElementById("statsBar").textContent = `Fetching live CSV data for ${label}...`;
 
-      // Fetch tabs using allSettled so unpublished or unmigrated tabs don't crash the chart
       const settled = await Promise.allSettled(
         targetTabs.map(async (t) => {
           const url = buildCsvUrl(t);
@@ -1239,7 +1240,6 @@
       });
 
       if (loadedRows.length === 0 && failedTabs.length > 0) {
-        // Fallback: If all failed, try loading just the first available tab as a demo so the screen isn't blank
         document.getElementById("statsBar").innerHTML =
           `<span style="color:#fbbf24;">Some published CSV links could not be reached. Showing available tabs...</span>`;
       }
@@ -1261,6 +1261,7 @@
         console.warn("Skipped unpublished or unreachable tabs:", failedTabs);
       }
     }
+
     /*************************************************************************
      * 5. PIECEWISE CHRONOLOGICAL TIME AXIS & SWIMLANE LAYOUT ENGINE
      *************************************************************************/
@@ -1385,7 +1386,7 @@
     }
 
     /*************************************************************************
-     * 6. RENDER SWIMLANES, STICKY Y-AXIS, 1-N NUMBERS & PHASE 3 SPOTLIGHTS
+     * 6. RENDER SWIMLANES, STICKY Y-AXIS, 1-N NUMBERS & SPOTLIGHTS
      *************************************************************************/
     let currentScaler = null;
     let visibleSortedCache = [];
@@ -1522,13 +1523,13 @@
       bgGrid.innerHTML = `<div class="lane-bg-col"></div>` + lanes.map(() => `<div class="lane-bg-col"></div>`).join("");
       stage.appendChild(bgGrid);
 
-      // Chunk 3.1: Hover/Selection Timespan Highlighter Band
+      // Timespan Highlighter Band
       const highlightBand = document.createElement("div");
       highlightBand.className = "timespan-highlight-band";
       highlightBand.id = "timespanBand";
       stage.appendChild(highlightBand);
 
-      // Chunk 2.1: Sticky Floating Chronology Rail
+      // Sticky Floating Chronology Rail
       const stickyRail = document.createElement("div");
       stickyRail.className = "sticky-chrono-rail";
       stickyRail.style.width = `${timeAxisWidth}px`;
@@ -1635,7 +1636,7 @@
 
       stage.appendChild(svg);
 
-      // Chunk 3.2 & 3.3: Spotlight SVG Layer (Prev -> Cur -> Next & Bidirectional Mapping Arcs)
+      // Spotlight SVG Layer
       const spotlightSvg = document.createElementNS(svgNS, "svg");
       spotlightSvg.setAttribute("class", "svg-spotlight");
       spotlightSvg.setAttribute("id", "spotlightSvg");
@@ -1736,7 +1737,7 @@
     }
 
     /*************************************************************************
-     * 7. PHASE 3 INTERACTIVE SPOTLIGHT ENGINE (Chunks 3.1, 3.2, 3.3)
+     * 7. PHASE 3 INTERACTIVE SPOTLIGHT ENGINE
      *************************************************************************/
     function updateActiveSpotlight() {
       const activeId = state.hoveredRowId || state.selectedRowId;
@@ -1764,7 +1765,6 @@
 
       const activeNode = state.positionedMap.get(activeId);
 
-      // 1. Chunk 3.1: Timespan Highlighter Band
       if (state.yMode === "chrono" && currentScaler) {
         const yTop = currentScaler.yearToY(activeNode.yStart);
         const yBot = Math.max(yTop + 26, currentScaler.yearToY(activeNode.yEnd));
@@ -1802,7 +1802,6 @@
         }
       });
 
-      // 2. Chunk 3.2: Prev (#N-1) -> Current (#N) -> Next (#N+1) Spotlight
       if (masterThreadPath) {
         masterThreadPath.setAttribute("stroke", "rgba(245, 158, 11, 0.14)");
       }
@@ -1837,7 +1836,6 @@
         spotlightSvg.appendChild(nPath);
       }
 
-      // 3. Chunk 3.3: Bidirectional Mapping Connectors (Col V Paired Read Orders)
       const pairedNodes = [];
       state.positionedMap.forEach(candidate => {
         if (candidate.id === activeId) return;
@@ -1919,6 +1917,24 @@
         `
         : "";
 
+      const cleanIsbn = (n.isbn || "").replace(/[^0-9X]/gi, "");
+      const coverHtml = cleanIsbn
+        ? `<div style="margin-bottom:14px;text-align:center;">
+             <img src="https://covers.openlibrary.org/b/isbn/${cleanIsbn}-M.jpg?default=false" 
+                  alt="${n.title}" 
+                  style="max-height:160px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,0.6);"
+                  onerror="this.style.display='none'" />
+           </div>`
+        : "";
+
+      const tagPills = n.themeTags
+        ? n.themeTags.split(";").map(t => t.trim()).filter(Boolean).map(t => `
+            <span style="font-size:0.68rem;background:rgba(224,177,83,0.12);color:var(--accent);border:1px solid rgba(224,177,83,0.3);padding:2px 7px;border-radius:4px;display:inline-block;margin:2px;">
+              #${t}
+            </span>
+          `).join("")
+        : "";
+
       content.innerHTML = `
         <div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
           <span class="ro-badge" style="font-size:0.82rem;padding:3px 9px;">Reading # ${seqText}</span>
@@ -1927,6 +1943,7 @@
           </span>
           <span style="font-size:0.78rem;color:var(--muted);">${n.tier}</span>
         </div>
+        ${coverHtml}
         <h2>${n.title}</h2>
         <div class="author">${n.author}${n.authorBio ? ` <span style="color:var(--muted);font-size:0.78rem;">— ${n.authorBio}</span>` : ""}</div>
 
@@ -1982,6 +1999,7 @@
           </div>
         </div>
 
+        ${tagPills ? `<div style="margin-bottom:14px;">${tagPills}</div>` : ""}
         ${pairedHtml}
 
         <div style="font-size:0.75rem;text-transform:uppercase;color:var(--muted);margin-bottom:6px;letter-spacing:0.05em;">
@@ -2115,7 +2133,7 @@
     }
 
     /*************************************************************************
-     * 10. UI EVENT LISTENERS & SAFE TAB MANAGEMENT MODAL
+     * 10. UI EVENT LISTENERS & TAB MANAGEMENT MODAL
      *************************************************************************/
     function populateTabDropdown() {
       const sel = document.getElementById("tabSelect");
@@ -2198,7 +2216,6 @@
       updateActiveSpotlight();
     });
 
-    // Sheet Tab Configuration Modal
     function renderModalChecklist() {
       const checkContainer = document.getElementById("tabCheckList");
       checkContainer.innerHTML = state.tabs.map((t, idx) => `
@@ -2289,7 +2306,6 @@
 
     window.addEventListener("resize", () => renderChart());
 
-    // Initialize
     populateTabDropdown();
     initViewportInteractions();
     loadActiveSelection();
