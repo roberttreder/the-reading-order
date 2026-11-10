@@ -15,8 +15,9 @@
       --accent: #e0b153;
       --thread: #f59e0b;
       --sec-thread: #38bdf8;
-      --header-stack-height: 93px;
+      --header-stack-height: 96px;
       --chrono-rail-width: 115px;
+      --epoch-banner-height: 38px;
 
       /* Collection Tier Colors */
       --tier-main-bg: #2b2212;
@@ -60,21 +61,27 @@
       user-select: none !important;
     }
 
-    /* Top Control Bar */
-    .topbar {
-      position: sticky;
+    /* Fixed Top Header Wrapper (Topbar + Filter Bar Stay Permanently Docked) */
+    .app-header {
+      position: fixed;
       top: 0;
       left: 0;
-      z-index: 120;
-      background: rgba(23, 26, 36, 0.96);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-      padding: 10px 18px;
+      width: 100vw;
+      z-index: 130;
+      background: rgba(23, 26, 36, 0.98);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Top Control Bar */
+    .topbar {
+      padding: 9px 18px;
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       align-items: center;
       justify-content: space-between;
+      border-bottom: 1px solid var(--border);
     }
 
     .brand {
@@ -185,14 +192,8 @@
       user-select: none;
     }
 
-    /* Subbar / Legend */
+    /* Subbar / Filter Bar */
     .subbar {
-      position: sticky;
-      top: 50px;
-      left: 0;
-      z-index: 115;
-      background: rgba(15, 17, 23, 0.94);
-      border-bottom: 1px solid var(--border);
       padding: 6px 18px;
       display: flex;
       flex-wrap: wrap;
@@ -200,6 +201,7 @@
       align-items: center;
       justify-content: space-between;
       font-size: 0.76rem;
+      background: rgba(15, 17, 23, 0.96);
     }
 
     .legend {
@@ -249,26 +251,27 @@
     .viewport {
       position: relative;
       min-width: 100%;
+      padding-top: var(--header-stack-height, 96px);
       padding-bottom: 120px;
       cursor: grab;
     }
 
-    /* Sticky Swimlane Two-Tier Bracket Headers */
+    /* Sticky Swimlane Two-Tier Bracket Headers (Flush Against Subbar) */
     .lane-headers {
       position: sticky;
-      top: var(--header-stack-height, 93px);
-      z-index: 95;
+      top: var(--header-stack-height, 96px);
+      z-index: 100;
       display: grid;
       background: var(--panel);
       border-bottom: 2px solid var(--border);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
     }
 
     .time-axis-header {
       position: sticky;
       left: 0;
-      top: var(--header-stack-height, 93px);
-      z-index: 105;
+      top: var(--header-stack-height, 96px);
+      z-index: 110;
       background: var(--panel);
       grid-row: 1 / span 2;
       padding: 8px 6px;
@@ -284,7 +287,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.45);
+      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.5);
     }
 
     .time-axis-header span.sub {
@@ -295,7 +298,7 @@
       margin-top: 2px;
     }
 
-    /* Tier 1: Overarching Macro-Region Banner */
+    /* Tier 1: Macro-Region Banner */
     .macro-bracket-cell {
       padding: 6px 8px;
       text-align: center;
@@ -403,7 +406,7 @@
       background: rgba(15, 17, 23, 0.96);
       backdrop-filter: blur(8px);
       border-right: 2px solid var(--border);
-      box-shadow: 6px 0 18px rgba(0, 0, 0, 0.55);
+      box-shadow: 6px 0 18px rgba(0, 0, 0, 0.6);
       pointer-events: none;
     }
 
@@ -411,13 +414,14 @@
       position: absolute;
       left: 0;
       width: 100%;
-      padding: 2px 8px 2px 4px;
-      font-size: 0.7rem;
+      padding: 2px 10px 2px 4px;
+      font-size: 0.68rem;
       font-weight: 600;
       color: var(--muted);
       text-align: right;
       transform: translateY(-50%);
       white-space: nowrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     }
 
     .rail-tick-label.epoch-start {
@@ -442,7 +446,7 @@
       background: rgba(255, 255, 255, 0.012);
     }
 
-    /* Horizontal Time Gridlines & Option B Epoch Dividers */
+    /* Horizontal Time Gridlines */
     .time-tick {
       position: absolute;
       left: 0;
@@ -452,33 +456,46 @@
       z-index: 5;
     }
 
-    /* Option B: Full-width stage divider behind cards */
-    .time-tick.epoch-divider {
+    /* Dedicated Era Banner Corridor Gap (Entries Cannot Overlap) */
+    .epoch-divider-band {
       position: absolute;
       left: 0;
       width: 100%;
-      height: 1px;
-      border-top: 1px dashed rgba(224, 177, 83, 0.45);
-      background: linear-gradient(90deg, rgba(224, 177, 83, 0.15), transparent 35%);
+      height: var(--epoch-banner-height, 38px);
+      background: linear-gradient(90deg, rgba(224, 177, 83, 0.16) 0%, rgba(23, 26, 36, 0.88) 12%, rgba(23, 26, 36, 0.88) 88%, rgba(224, 177, 83, 0.16) 100%);
+      border-top: 1px dashed rgba(224, 177, 83, 0.55);
+      border-bottom: 1px solid rgba(224, 177, 83, 0.25);
+      z-index: 12;
       pointer-events: none;
-      z-index: 6;
+      display: flex;
+      align-items: center;
+      box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.4);
     }
 
-    .time-tick.epoch-divider::after {
-      content: attr(data-epoch-label);
-      position: absolute;
-      left: calc(var(--chrono-rail-width, 115px) + 14px);
-      top: -10px;
-      font-size: 0.65rem;
+    /* Horizontally Floating Sticky Era Title (Always Visible When Panned Right) */
+    .epoch-divider-label {
+      position: sticky;
+      left: calc(var(--chrono-rail-width, 115px) + 24px);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--panel-2);
+      border: 1px solid rgba(224, 177, 83, 0.55);
+      color: var(--accent);
+      padding: 3px 12px;
+      border-radius: 4px;
+      font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.08em;
-      color: rgba(224, 177, 83, 0.85);
-      background: var(--bg);
-      padding: 1px 8px;
-      border-radius: 3px;
-      border: 1px solid rgba(224, 177, 83, 0.35);
       text-transform: uppercase;
       white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+      pointer-events: auto;
+    }
+
+    .epoch-divider-label .epoch-glyph {
+      color: var(--accent);
+      font-size: 0.75rem;
     }
 
     /* SVG Overlay */
@@ -610,7 +627,7 @@
       position: absolute;
       left: 0;
       width: var(--chrono-rail-width, 115px);
-      z-index: 110;
+      z-index: 115;
       padding: 3px 6px;
       background: var(--panel-2);
       border: 1px solid var(--accent);
@@ -786,80 +803,82 @@
 </head>
 <body>
 
-  <!-- Top Controls -->
-  <div class="topbar">
-    <div class="brand">
-      <h1>THE READING ORDER</h1>
-      <span>Synoptic World Literature &amp; History Companion</span>
-    </div>
-
-    <div class="controls">
-      <label style="font-size:0.78rem;color:var(--muted);">View:</label>
-      <select id="tabSelect"></select>
-      <button id="btnManageTabs" title="Configure Google Sheet tabs and choose which tabs load into the default Master Chronology">⚙️ Sheet Tabs</button>
-
-      <button id="btnStrictCoords" class="guard-active" title="When active, hides unmigrated rows missing Plot Year Start (Col N) or Primary Macro-Region (Col P) so unfinished tabs never mess up the chart">
-        🛡️ Validated Coords Only
-      </button>
-
-      <select id="yModeSelect" title="Switch Y-Axis between True Chronological Time and Read Order">
-        <option value="chrono">Y-Axis: Chronological Time</option>
-        <option value="ordinal">Y-Axis: Read Order Sequence</option>
-      </select>
-
-      <!-- Accordion & Subregion Controls -->
-      <div class="accordion-group" title="Expand or collapse macro-region accordion drill-down">
-        <button id="btnExpandAll" title="Expand all continents into subregion lanes">⊞ Expand All</button>
-        <button id="btnCollapseAll" title="Collapse all continents to macro lanes">⊟ Collapse All</button>
+  <!-- Unified Fixed App Header (Topbar + Filter Bar Permanently Docked) -->
+  <header class="app-header" id="appHeader">
+    <div class="topbar" id="topbarEl">
+      <div class="brand">
+        <h1>THE READING ORDER</h1>
+        <span>Synoptic World Literature &amp; History Companion</span>
       </div>
 
-      <button id="btnToggleEmptyLanes" title="Toggle between showing only active subregions or all UN subregions">
-        🌐 Empty Lanes: Off
-      </button>
+      <div class="controls">
+        <label style="font-size:0.78rem;color:var(--muted);">View:</label>
+        <select id="tabSelect"></select>
+        <button id="btnManageTabs" title="Configure Google Sheet tabs and choose which tabs load into the default Master Chronology">⚙️ Sheet Tabs</button>
 
-      <select id="colorModeSelect" title="Highlight reading progress or library ownership">
-        <option value="tier">Color: Collection Tier</option>
-        <option value="read">Highlight: Read Status</option>
-        <option value="owned">Highlight: Owned Status</option>
-      </select>
+        <button id="btnStrictCoords" class="guard-active" title="When active, hides unmigrated rows missing Plot Year Start (Col N) or Primary Macro-Region (Col P) so unfinished tabs never mess up the chart">
+          🛡️ Validated Coords Only
+        </button>
 
-      <button id="btnToggleThread" class="active" title="Show/hide the Reading Order narrative thread">🧵 Read Thread</button>
-      <button id="btnToggleSpans" class="active" title="Show/hide History duration bars">📏 Era Spans</button>
+        <select id="yModeSelect" title="Switch Y-Axis between True Chronological Time and Read Order">
+          <option value="chrono">Y-Axis: Chronological Time</option>
+          <option value="ordinal">Y-Axis: Read Order Sequence</option>
+        </select>
 
-      <!-- Zoom Controls -->
-      <div class="zoom-group" title="Zoom chart (or use Ctrl/Shift + Mouse Wheel)">
-        <button id="btnZoomOut" title="Zoom Out">−</button>
-        <span class="zoom-readout" id="zoomReadout" title="Click to reset zoom to 100%">100%</span>
-        <button id="btnZoomIn" title="Zoom In">+</button>
-      </div>
-      <button id="btnWheelZoomMode" title="When active, scrolling the mouse wheel zooms directly without holding Ctrl/Shift">🔍 Wheel Zoom</button>
+        <!-- Accordion & Subregion Controls -->
+        <div class="accordion-group" title="Expand or collapse macro-region accordion drill-down">
+          <button id="btnExpandAll" title="Expand all continents into subregion lanes">⊞ Expand All</button>
+          <button id="btnCollapseAll" title="Collapse all continents to macro lanes">⊟ Collapse All</button>
+        </div>
 
-      <input type="text" id="searchInput" placeholder="Search title, author, region..." style="width:165px;" />
-    </div>
-  </div>
+        <button id="btnToggleEmptyLanes" title="Toggle between showing only active subregions or all UN subregions">
+          🌐 Empty Lanes: Off
+        </button>
 
-  <!-- Legend & Live Counts -->
-  <div class="subbar">
-    <div class="legend" id="tierLegend">
-      <span style="color:var(--muted);font-weight:600;">Filter Tiers:</span>
-      <div class="legend-item" data-tier="Main">
-        <span class="swatch" style="background:var(--tier-main-border)"></span>Main
-      </div>
-      <div class="legend-item" data-tier="Supplemental">
-        <span class="swatch" style="background:var(--tier-supp-border)"></span>Supplemental
-      </div>
-      <div class="legend-item" data-tier="History (Narrative)">
-        <span class="swatch" style="background:var(--tier-hist-border)"></span>History (Narrative)
-      </div>
-      <div class="legend-item" data-tier="Supporting (Scholarly)">
-        <span class="swatch" style="background:var(--tier-schol-border)"></span>Supporting (Scholarly)
-      </div>
-      <div class="legend-item" data-tier="General Reference">
-        <span class="swatch" style="background:var(--tier-ref-border)"></span>General Reference
+        <select id="colorModeSelect" title="Highlight reading progress or library ownership">
+          <option value="tier">Color: Collection Tier</option>
+          <option value="read">Highlight: Read Status</option>
+          <option value="owned">Highlight: Owned Status</option>
+        </select>
+
+        <button id="btnToggleThread" class="active" title="Show/hide the Reading Order narrative thread">🧵 Read Thread</button>
+        <button id="btnToggleSpans" class="active" title="Show/hide History duration bars">📏 Era Spans</button>
+
+        <!-- Zoom Controls -->
+        <div class="zoom-group" title="Zoom chart (or use Ctrl/Shift + Mouse Wheel)">
+          <button id="btnZoomOut" title="Zoom Out">−</button>
+          <span class="zoom-readout" id="zoomReadout" title="Click to reset zoom to 100%">100%</span>
+          <button id="btnZoomIn" title="Zoom In">+</button>
+        </div>
+        <button id="btnWheelZoomMode" title="When active, scrolling the mouse wheel zooms directly without holding Ctrl/Shift">🔍 Wheel Zoom</button>
+
+        <input type="text" id="searchInput" placeholder="Search title, author, region..." style="width:165px;" />
       </div>
     </div>
-    <div class="stats" id="statsBar">Loading live Google Sheet...</div>
-  </div>
+
+    <!-- Filter Bar / Legend -->
+    <div class="subbar" id="subbarEl">
+      <div class="legend" id="tierLegend">
+        <span style="color:var(--muted);font-weight:600;">Filter Tiers:</span>
+        <div class="legend-item" data-tier="Main">
+          <span class="swatch" style="background:var(--tier-main-border)"></span>Main
+        </div>
+        <div class="legend-item" data-tier="Supplemental">
+          <span class="swatch" style="background:var(--tier-supp-border)"></span>Supplemental
+        </div>
+        <div class="legend-item" data-tier="History (Narrative)">
+          <span class="swatch" style="background:var(--tier-hist-border)"></span>History (Narrative)
+        </div>
+        <div class="legend-item" data-tier="Supporting (Scholarly)">
+          <span class="swatch" style="background:var(--tier-schol-border)"></span>Supporting (Scholarly)
+        </div>
+        <div class="legend-item" data-tier="General Reference">
+          <span class="swatch" style="background:var(--tier-ref-border)"></span>General Reference
+        </div>
+      </div>
+      <div class="stats" id="statsBar">Loading live Google Sheet...</div>
+    </div>
+  </header>
 
   <!-- Main Timeline Stage -->
   <div class="viewport" id="viewport">
@@ -985,14 +1004,15 @@
     };
 
     /*************************************************************************
-     * 2. DYNAMIC HEADER OFFSET ENGINE
+     * 2. HEADER OFFSET SYNCHRONIZER (Flawless zero-gap docking)
      *************************************************************************/
     function updateStickyHeaderOffset() {
-      const topbar = document.querySelector('.topbar');
-      const subbar = document.querySelector('.subbar');
-      const total = (topbar?.offsetHeight || 0) + (subbar?.offsetHeight || 0);
-      if (total > 0) {
-        document.documentElement.style.setProperty('--header-stack-height', `${total}px`);
+      const header = document.getElementById('appHeader');
+      const total = header ? header.offsetHeight : 96;
+      document.documentElement.style.setProperty('--header-stack-height', `${total}px`);
+      const viewport = document.getElementById('viewport');
+      if (viewport) {
+        viewport.style.paddingTop = `${total}px`;
       }
     }
     window.addEventListener('resize', updateStickyHeaderOffset);
@@ -1265,7 +1285,7 @@
     }
 
     /*************************************************************************
-     * 4. TIME SCALE & TWO-TIER ACCORDION SWIMLANES
+     * 4. TIME SCALE & DEDICATED ERA BANNER CORRIDORS
      *************************************************************************/
     function formatYearLabel(y) {
       if (y <= -1e9) return `${(Math.abs(y) / 1e9).toFixed(1)} Ga`;
@@ -1286,8 +1306,8 @@
 
       const rawBreaks = [
         { min: -15e9, max: -1e6, label: "Cosmic & Geologic Deep Time (Ga – Ma)", pxPerItem: 75, minPx: 260 },
-        { min: -1e6, max: -10000, label: "Paleolithic & Pleistocene (1 Ma – 10,000 BCE)", pxPerItem: 75, minPx: 220 },
-        { min: -10000, max: -3500, label: "Neolithic & Early Horizon (10,000 – 3500 BCE)", pxPerItem: 75, minPx: 220 },
+        { min: -1e6, max: -10000, label: "Paleolithic & Pleistocene (1 Ma – 10,000 BCE)", pxPerItem: 75, minPx: 240 },
+        { min: -10000, max: -3500, label: "Neolithic & Early Horizon (10,000 – 3500 BCE)", pxPerItem: 75, minPx: 240 },
         { min: -3500, max: -1100, label: "Bronze Age Civilizations (3500 – 1100 BCE)", pxPerItem: 68, minPx: 420 },
         { min: -1100, max: -200, label: "Axial & Classical Age (1100 – 200 BCE)", pxPerItem: 68, minPx: 420 },
         { min: -200, max: 500, label: "Imperial & Late Antiquity (200 BCE – 500 CE)", pxPerItem: 68, minPx: 420 },
@@ -1296,8 +1316,11 @@
         { min: 1800, max: 2030, label: "Modern & Contemporary Era (1800 CE – Present)", pxPerItem: 68, minPx: 420 }
       ];
 
+      const EPOCH_BANNER_HEIGHT = Math.max(34, Math.round(38 * zoomFactor));
+      document.documentElement.style.setProperty('--epoch-banner-height', `${EPOCH_BANNER_HEIGHT}px`);
+
       const activeBands = [];
-      let currentTop = Math.round(40 * zoomFactor);
+      let currentTop = Math.round(20 * zoomFactor);
 
       for (const b of rawBreaks) {
         if (maxY < b.min || minY > b.max) continue;
@@ -1306,28 +1329,36 @@
         const countInBand = rows.filter(r => r.yStart >= b.min && r.yStart <= b.max).length;
         if (countInBand === 0 && activeBands.length === 0) continue;
 
-        const baseHeight = Math.max(b.minPx, countInBand * b.pxPerItem);
-        const height = Math.round(baseHeight * zoomFactor);
+        const baseContentHeight = Math.max(b.minPx, countInBand * b.pxPerItem);
+        const contentHeight = Math.round(baseContentHeight * zoomFactor);
+
         activeBands.push({
           yMin: bandMin,
           yMax: bandMax === bandMin ? bandMin + 1 : bandMax,
-          topPx: currentTop,
-          heightPx: height,
+          topPx: currentTop, // where epoch banner sits
+          bannerHeight: EPOCH_BANNER_HEIGHT,
+          contentTopPx: currentTop + EPOCH_BANNER_HEIGHT, // cards start strictly below the banner!
+          contentHeightPx: contentHeight,
+          totalHeightPx: EPOCH_BANNER_HEIGHT + contentHeight,
           label: b.label
         });
-        currentTop += height;
+
+        currentTop += EPOCH_BANNER_HEIGHT + contentHeight;
       }
 
       if (activeBands.length === 0) {
-        const fallbackHeight = Math.round(Math.max(800, rows.length * 72) * zoomFactor);
+        const fallbackContent = Math.round(Math.max(800, rows.length * 72) * zoomFactor);
         activeBands.push({
           yMin: minY,
           yMax: maxY === minY ? minY + 100 : maxY,
-          topPx: Math.round(40 * zoomFactor),
-          heightPx: fallbackHeight,
-          label: "Timeline"
+          topPx: Math.round(20 * zoomFactor),
+          bannerHeight: EPOCH_BANNER_HEIGHT,
+          contentTopPx: Math.round(20 * zoomFactor) + EPOCH_BANNER_HEIGHT,
+          contentHeightPx: fallbackContent,
+          totalHeightPx: EPOCH_BANNER_HEIGHT + fallbackContent,
+          label: "Chronology Timeline"
         });
-        currentTop = activeBands[0].topPx + fallbackHeight;
+        currentTop = activeBands[0].topPx + activeBands[0].totalHeightPx;
       }
 
       const yearToY = (y) => {
@@ -1338,18 +1369,18 @@
               const logMax = Math.log10(Math.abs(band.yMax) + 1);
               const logVal = Math.log10(Math.abs(y) + 1);
               const t = (logMin - logVal) / Math.max(0.0001, logMin - logMax);
-              return band.topPx + t * band.heightPx;
+              return band.contentTopPx + t * band.contentHeightPx;
             }
             const t = (y - band.yMin) / Math.max(1, band.yMax - band.yMin);
-            return band.topPx + t * band.heightPx;
+            return band.contentTopPx + t * band.contentHeightPx;
           }
         }
-        if (y < activeBands[0].yMin) return activeBands[0].topPx;
+        if (y < activeBands[0].yMin) return activeBands[0].contentTopPx;
         const last = activeBands[activeBands.length - 1];
-        return last.topPx + last.heightPx;
+        return last.contentTopPx + last.contentHeightPx;
       };
 
-      return { yearToY, bands: activeBands, totalHeight: currentTop + Math.round(120 * zoomFactor) };
+      return { yearToY, bands: activeBands, totalHeight: currentTop + Math.round(100 * zoomFactor) };
     }
 
     function resolveAccordionLanes(rows) {
@@ -1437,7 +1468,7 @@
     }
 
     /*************************************************************************
-     * 5. CHART RENDERER WITH OPTION B EPOCH DIVIDERS & DYNAMIC SIZING
+     * 5. CHART RENDERER (Clean Corridors, Dynamic Dates & Sticky Floating Era)
      *************************************************************************/
     function renderChart() {
       const rows = state.rows;
@@ -1456,7 +1487,7 @@
 
       const gridTemplate = `${timeAxisWidth}px repeat(${leafLanes.length}, minmax(${minLaneWidth}px, 1fr))`;
 
-      // 1. Two-Tier Sticky Header Row
+      // 1. Two-Tier Sticky Header Row (Flush Against Filter Bar)
       const laneHeaders = document.getElementById("laneHeaders");
       laneHeaders.style.gridTemplateColumns = gridTemplate;
       laneHeaders.style.gridTemplateRows = "auto auto";
@@ -1581,11 +1612,18 @@
           if (laneIdx === -1) laneIdx = 0;
         }
 
+        // Dedicated Era Corridor Guard: Card must start below its band's content top
+        let minBandTop = 0;
+        if (state.yMode === "chrono" && scaler) {
+          const b = scaler.bands.find(band => r.yStart >= band.yMin && r.yStart <= band.yMax) || scaler.bands[0];
+          if (b) minBandTop = b.contentTopPx;
+        }
+
         let idealY = state.yMode === "chrono"
           ? scaler.yearToY(r.yStart)
           : Math.round(40 * z) + idx * (CARD_HEIGHT + Math.round(14 * z));
 
-        const actualY = Math.max(idealY, laneBottomTracker[laneIdx]);
+        const actualY = Math.max(idealY, laneBottomTracker[laneIdx], minBandTop);
         laneBottomTracker[laneIdx] = actualY + CARD_HEIGHT + CARD_GAP;
 
         const endY = state.yMode === "chrono"
@@ -1625,53 +1663,86 @@
       bgGrid.innerHTML = `<div class="lane-bg-col"></div>` + leafLanes.map(() => `<div class="lane-bg-col"></div>`).join("");
       stage.appendChild(bgGrid);
 
-      // Left Chronology Rail & Option B Stage Epoch Dividers
+      // Left Chronology Rail
       const stickyRail = document.createElement("div");
       stickyRail.className = "sticky-chrono-rail";
       stickyRail.style.width = `${timeAxisWidth}px`;
       stickyRail.style.height = `${totalStageHeight}px`;
 
       if (state.yMode === "chrono" && scaler) {
+        // Collect & Dynamically Populate All Ticks So There Are Never Big Gaps
+        const ticksToRender = [];
+
         scaler.bands.forEach(b => {
-          // Option B: Full-width stage divider behind cards
-          const bandDiv = document.createElement("div");
-          bandDiv.className = "time-tick epoch-divider";
-          bandDiv.style.top = `${b.topPx}px`;
-          bandDiv.setAttribute("data-epoch-label", b.label);
-          stage.appendChild(bandDiv);
+          // Dedicated Era Corridor Banner on Stage
+          const banner = document.createElement("div");
+          banner.className = "epoch-divider-band";
+          banner.style.top = `${b.topPx}px`;
+          banner.innerHTML = `
+            <div class="epoch-divider-label">
+              <span class="epoch-glyph">✦</span>
+              <span>${b.label}</span>
+            </div>
+          `;
+          stage.appendChild(banner);
 
-          // Pinned rail year tick
-          const railEpoch = document.createElement("div");
-          railEpoch.style.position = "absolute";
-          railEpoch.style.top = `${b.topPx}px`;
-          railEpoch.style.left = "0";
-          railEpoch.style.width = "100%";
-          railEpoch.innerHTML = `<span class="rail-tick-label epoch-start">${formatYearLabel(b.yMin)}</span>`;
-          stickyRail.appendChild(railEpoch);
+          // Pinned epoch start tick
+          ticksToRender.push({ yPx: b.topPx, label: formatYearLabel(b.yMin), isEpoch: true });
 
-          // Intermediate ticks
-          const steps = 4;
-          for (let s = 1; s < steps; s++) {
-            const yVal = b.yMin + ((b.yMax - b.yMin) * s) / steps;
+          // Dynamically calculate intermediate ticks based on pixel height
+          const TARGET_PX_GAP = Math.round(75 * Math.max(0.7, z));
+          const numSteps = Math.max(3, Math.round(b.contentHeightPx / TARGET_PX_GAP));
+
+          for (let s = 1; s <= numSteps; s++) {
+            let yVal;
+            if (b.yMax - b.yMin > 1e6 && b.yMin < -1e6) {
+              const logMin = Math.log10(Math.abs(b.yMin) + 1);
+              const logMax = Math.log10(Math.abs(b.yMax) + 1);
+              const t = s / (numSteps + 1);
+              const logVal = logMin - t * (logMin - logMax);
+              yVal = -Math.round(Math.pow(10, logVal));
+            } else {
+              yVal = b.yMin + ((b.yMax - b.yMin) * s) / (numSteps + 1);
+            }
             const yPx = scaler.yearToY(yVal);
+            ticksToRender.push({ yPx, label: formatYearLabel(yVal), isEpoch: false });
+          }
+        });
+
+        // Also add key book-anchor year ticks to ensure zero dead spots
+        rows.forEach(r => {
+          if (r.yStart) {
+            const yPx = scaler.yearToY(r.yStart);
+            ticksToRender.push({ yPx, label: formatYearLabel(r.yStart), isEpoch: false });
+          }
+        });
+
+        // Sort & eliminate collisions (minimum 26px vertical clearance)
+        ticksToRender.sort((a, b) => a.yPx - b.yPx);
+        let lastRenderedY = -999;
+
+        ticksToRender.forEach(t => {
+          if (t.yPx - lastRenderedY >= 26) {
+            lastRenderedY = t.yPx;
 
             const tickLine = document.createElement("div");
             tickLine.className = "time-tick";
-            tickLine.style.top = `${yPx}px`;
+            tickLine.style.top = `${t.yPx}px`;
             stage.appendChild(tickLine);
 
             const tickLbl = document.createElement("div");
-            tickLbl.className = "rail-tick-label";
-            tickLbl.style.top = `${yPx}px`;
-            tickLbl.textContent = formatYearLabel(yVal);
+            tickLbl.className = `rail-tick-label ${t.isEpoch ? "epoch-start" : ""}`;
+            tickLbl.style.top = `${t.yPx}px`;
+            tickLbl.textContent = t.label;
             stickyRail.appendChild(tickLbl);
           }
         });
       } else {
+        // Ordinal Read Order Ticks
         positionedNodes
           .filter(n => n.visible)
           .forEach((n, idx) => {
-            if (idx === 0 || (idx + 1) % 5 === 0) {
+            if (idx === 0 || (idx + 1) % 4 === 0) {
               const tickLine = document.createElement("div");
               tickLine.className = "time-tick";
               tickLine.style.top = `${n.centerY}px`;
@@ -1904,17 +1975,17 @@
 
       const scrollY = window.scrollY;
       const viewH = window.innerHeight;
-      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 93;
+      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 96;
 
       const { topPx, bottomPx, startLabel, endLabel } = activeTimespanData;
 
       // Start Callout Clamping (Top edge)
-      if (topPx < scrollY + headerH) {
+      if (topPx < scrollY + headerH + 60) {
         calloutStart.classList.add("is-clamped");
-        calloutStart.style.top = `${headerH + 6}px`;
+        calloutStart.style.top = `${headerH + 64}px`;
         calloutStart.innerHTML = `▲ ${startLabel} <span style="font-size:0.6rem;opacity:0.75;">(above)</span>`;
         calloutStart.title = "Click to scroll up to timespan start";
-        calloutStart.onclick = () => window.scrollTo({ top: Math.max(0, topPx - headerH - 20), behavior: "smooth" });
+        calloutStart.onclick = () => window.scrollTo({ top: Math.max(0, topPx - headerH - 80), behavior: "smooth" });
       } else {
         calloutStart.classList.remove("is-clamped");
         calloutStart.style.top = `${topPx}px`;
@@ -2038,10 +2109,10 @@
       showTimespanHighlight(node.top, node.endY, formatYearLabel(node.yStart), formatYearLabel(node.yEnd));
       highlightPairedCards(node);
 
-      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 93;
+      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 96;
       window.scrollTo({
         left: Math.max(0, node.left - window.innerWidth / 3),
-        top: Math.max(0, node.top - headerH - 40),
+        top: Math.max(0, node.top - headerH - 80),
         behavior: "smooth"
       });
       openDrawer(node);
@@ -2058,7 +2129,7 @@
       const ratio = clamped / oldZoom;
 
       const timeAxisWidth = 115;
-      const headerOffset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 93;
+      const headerOffset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 96;
 
       const docX = window.scrollX + clientX;
       const docY = window.scrollY + clientY;
@@ -2086,7 +2157,7 @@
 
       viewport.addEventListener("mousedown", (e) => {
         if (e.button !== 0) return;
-        if (e.target.closest(".lane-headers") || e.target.closest(".timespan-callout")) return;
+        if (e.target.closest(".lane-headers") || e.target.closest(".timespan-callout") || e.target.closest(".epoch-divider-label")) return;
 
         panState.isDown = true;
         panState.hasMoved = false;
