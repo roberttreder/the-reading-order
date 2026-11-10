@@ -16,6 +16,14 @@
       --thread: #f59e0b;
       --sec-thread: #38bdf8;
 
+      /* Macro-Region Color Accents */
+      --macro-offgrid: #a855f7;
+      --macro-africa: #f97316;
+      --macro-europe: #38bdf8;
+      --macro-asia: #10b981;
+      --macro-oceania: #f43f5e;
+      --macro-americas: #eab308;
+
       /* Collection Tier Colors */
       --tier-main-bg: #2b2212;
       --tier-main-border: #eab308;
@@ -134,7 +142,7 @@
       font-weight: 600;
     }
 
-    .zoom-group {
+    .zoom-group, .accordion-group {
       display: inline-flex;
       align-items: center;
       background: var(--panel-2);
@@ -143,14 +151,14 @@
       overflow: hidden;
     }
 
-    .zoom-group button {
+    .zoom-group button, .accordion-group button {
       border: none;
       border-radius: 0;
       padding: 6px 9px;
       background: transparent;
     }
 
-    .zoom-group button:hover {
+    .zoom-group button:hover, .accordion-group button:hover {
       background: rgba(224, 177, 83, 0.15);
     }
 
@@ -233,21 +241,24 @@
       cursor: grab;
     }
 
-    /* Sticky Swimlane Header Row */
+    /* Option A: Two-Tier Sticky Bracket Header */
     .lane-headers {
       position: sticky;
       top: 93px;
       z-index: 95;
       display: grid;
+      grid-template-rows: auto auto;
       background: var(--panel);
       border-bottom: 2px solid var(--border);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     }
 
-    /* Double-Pinned Corner Header (Sticky Top + Sticky Left) */
+    /* Double-Pinned Corner Header spanning both tiers */
     .time-axis-header {
       position: sticky;
       left: 0;
+      grid-column: 1;
+      grid-row: 1 / span 2;
       z-index: 105;
       background: var(--panel);
       padding: 10px 8px;
@@ -257,30 +268,128 @@
       letter-spacing: 0.05em;
       color: var(--accent);
       border-right: 2px solid var(--border);
+      border-bottom: 2px solid var(--border);
       text-align: center;
       box-shadow: 4px 0 12px rgba(0, 0, 0, 0.45);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 4px;
     }
 
-    .lane-header {
-      padding: 10px 12px;
+    .time-axis-sub {
+      font-size: 0.65rem;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: none;
+    }
+
+    /* Tier 1: Macro-Region Bracket Banner */
+    .macro-bracket-banner {
+      grid-row: 1;
+      padding: 8px 12px;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+
+    .macro-bracket-banner:hover {
+      background: var(--panel-2);
+    }
+
+    .macro-bracket-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .macro-bracket-color-bar {
+      width: 4px;
+      height: 14px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .macro-bracket-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .macro-count-pill {
+      font-size: 0.68rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 600;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+
+    .btn-macro-accordion {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+
+    .btn-macro-accordion:hover {
+      border-color: var(--accent);
+      background: rgba(224, 177, 83, 0.15);
+      color: #fff;
+    }
+
+    /* Tier 2: Subregion / Summary Leaf Header */
+    .sub-leaf-header {
+      grid-row: 2;
+      padding: 6px 10px;
       border-right: 1px solid var(--border);
       text-align: center;
-      background: var(--panel);
+      background: rgba(23, 26, 36, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      min-height: 42px;
     }
 
-    .lane-header .macro {
-      font-size: 0.85rem;
-      font-weight: 700;
+    .sub-leaf-title {
+      font-size: 0.76rem;
+      font-weight: 600;
       color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
     }
 
-    .lane-header .sub {
-      font-size: 0.7rem;
+    .sub-leaf-meta {
+      font-size: 0.66rem;
       color: var(--muted);
-      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
     }
 
     /* Canvas Container */
@@ -812,10 +921,15 @@
         <option value="ordinal">Y-Axis: Read Order Sequence</option>
       </select>
 
-      <select id="xModeSelect" title="Switch X-Axis between 6 Macro-Regions and Granular UN Subregions">
-        <option value="macro">X-Axis: 6 UN Macro-Regions</option>
-        <option value="subregion">X-Axis: Granular Subregions</option>
-      </select>
+      <!-- Accordion & Subregion Controls -->
+      <div class="accordion-group" title="Expand or collapse macro-region accordion drill-down">
+        <button id="btnExpandAll" title="Expand all continents into subregion lanes">⊞ Expand All</button>
+        <button id="btnCollapseAll" title="Collapse all continents to macro lanes">⊟ Collapse All</button>
+      </div>
+
+      <button id="btnToggleEmptyLanes" title="Toggle between showing only active subregions or all UN subregions">
+        🌐 Empty Lanes: Off
+      </button>
 
       <select id="colorModeSelect" title="Highlight reading progress or library ownership">
         <option value="tier">Color: Collection Tier</option>
@@ -826,7 +940,7 @@
       <button id="btnToggleThread" class="active" title="Show/hide the Reading Order narrative thread">🧵 Read Thread</button>
       <button id="btnToggleSpans" class="active" title="Show/hide History duration bars">📏 Era Spans</button>
 
-      <!-- Chunk 2.3 Zoom Controls -->
+      <!-- Zoom Controls -->
       <div class="zoom-group" title="Zoom chart (or use Ctrl/Shift + Mouse Wheel)">
         <button id="btnZoomOut" title="Zoom Out">−</button>
         <span class="zoom-readout" id="zoomReadout" title="Click to reset zoom to 100%">100%</span>
@@ -903,13 +1017,11 @@
 
   <script>
     /*************************************************************************
-     * 1. DEFAULT CONFIGURATION (Master Chronology Default + Safe Tab Gating)
+     * 1. DEFAULT CONFIGURATION & UN GEOSCHEME ROSTER
      *************************************************************************/
     const DEFAULT_PUBLISHED_BASE =
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1at2lgur-bO7C2rC1VWtHmhGgi2nD8OTASKWDnAE_dq2Of_nRblgbNKL4URoZs26U7-xzuK3O1WVK/pub";
 
-    // Set enabled: true for tabs ready for the default Master Chronology.
-    // Set enabled: false for unfinished tabs (or Reference) so they don't mess up the default view.
     const DEFAULT_TABS = [
       { name: "01. Prehistory–1177 BCE Bronze Age", gid: "429450416", enabled: true },
       { name: "02. 1100–200 BCE Axial & Classical", gid: "1421629170", enabled: true },
@@ -932,14 +1044,23 @@
       { name: "00. General Reference", gid: "1394318577", enabled: false }
     ];
 
-    const MACRO_LANES = [
-      { id: "Off-Grid", label: "Off-Grid & Cosmic", sub: "Space, Geologic, Polar, Global" },
-      { id: "Africa", label: "Africa", sub: "Northern & Sub-Saharan Africa" },
-      { id: "Europe", label: "Europe", sub: "Southern, Western, Northern, Eastern" },
-      { id: "Asia", label: "Asia", sub: "Western, Central, South, East & SE Asia" },
-      { id: "Oceania", label: "Oceania", sub: "Australia, NZ, Melanesia, Polynesia" },
-      { id: "Americas", label: "The Americas", sub: "Latin America, Caribbean & North America" }
+    const MACRO_DEFS = [
+      { id: "Off-Grid", label: "Off-Grid & Cosmic", sub: "Space, Geologic, Polar, Global", color: "var(--macro-offgrid)" },
+      { id: "Africa", label: "Africa", sub: "Northern & Sub-Saharan Africa", color: "var(--macro-africa)" },
+      { id: "Europe", label: "Europe", sub: "Southern, Western, Northern, Eastern", color: "var(--macro-europe)" },
+      { id: "Asia", label: "Asia", sub: "Western, Central, South, East & SE Asia", color: "var(--macro-asia)" },
+      { id: "Oceania", label: "Oceania", sub: "Australia, NZ, Melanesia, Polynesia", color: "var(--macro-oceania)" },
+      { id: "Americas", label: "The Americas", sub: "Latin America, Caribbean & North America", color: "var(--macro-americas)" }
     ];
+
+    const UN_CANONICAL_SUBREGIONS = {
+      "Off-Grid": ["Space / Cosmic", "Planetary / Geologic", "Polar", "Global / Comparative"],
+      "Africa": ["Northern Africa", "Eastern Africa", "Middle Africa", "Southern Africa", "Western Africa"],
+      "Europe": ["Southern Europe", "Western Europe", "Northern Europe", "Eastern Europe"],
+      "Asia": ["Western Asia", "Central Asia", "Southern Asia", "Eastern Asia", "South-eastern Asia"],
+      "Oceania": ["Australia and New Zealand", "Melanesia", "Micronesia", "Polynesia"],
+      "Americas": ["Northern America", "Central America", "Caribbean", "South America"]
+    };
 
     const MIN_ZOOM = 0.45;
     const MAX_ZOOM = 2.25;
@@ -952,7 +1073,8 @@
       quarantinedCount: 0,
       strictCoordsOnly: true,
       yMode: "chrono",
-      xMode: "macro",
+      expandedMacros: new Set(),
+      showEmptySubregions: false,
       colorMode: "tier",
       showThread: true,
       showSpans: true,
@@ -1263,7 +1385,7 @@
     }
 
     /*************************************************************************
-     * 5. PIECEWISE CHRONOLOGICAL TIME AXIS & SWIMLANE LAYOUT ENGINE
+     * 5. PIECEWISE CHRONOLOGICAL TIME AXIS & ACCORDION RESOLUTION
      *************************************************************************/
     function formatYearLabel(y) {
       if (y <= -1e9) return `${(Math.abs(y) / 1e9).toFixed(1)} Ga`;
@@ -1350,30 +1472,108 @@
       return { yearToY, bands: activeBands, totalHeight: currentTop + Math.round(120 * zoomFactor) };
     }
 
-    function getActiveLanes(rows) {
-      if (state.xMode === "macro") return MACRO_LANES;
+    function resolveAccordionLanes(rows) {
+      const macroWorkCounts = new Map();
+      const subWorkCounts = new Map();
 
-      const macroOrder = ["Off-Grid", "Africa", "Europe", "Asia", "Oceania", "Americas"];
-      const seen = new Map();
+      MACRO_DEFS.forEach(m => macroWorkCounts.set(m.id, 0));
+
       rows.forEach(r => {
-        const subName = r.sub || r.macro || "Unclassified";
-        const key = `${r.macro}|||${subName}`;
-        if (!seen.has(key)) {
-          seen.set(key, {
-            id: key,
-            macro: r.macro,
-            label: subName,
-            sub: r.macro
+        const m = r.macro || "Off-Grid";
+        macroWorkCounts.set(m, (macroWorkCounts.get(m) || 0) + 1);
+
+        const subKey = `${m}|||${r.sub || m}`;
+        subWorkCounts.set(subKey, (subWorkCounts.get(subKey) || 0) + 1);
+      });
+
+      const macroGroups = [];
+      const leafLanes = [];
+      let currentCol = 2;
+
+      MACRO_DEFS.forEach(mDef => {
+        const isExpanded = state.expandedMacros.has(mDef.id);
+        const mCount = macroWorkCounts.get(mDef.id) || 0;
+
+        if (!isExpanded) {
+          leafLanes.push({
+            id: mDef.id,
+            macroId: mDef.id,
+            label: mDef.label,
+            subMeta: mDef.sub,
+            isSub: false,
+            count: mCount
           });
+
+          macroGroups.push({
+            def: mDef,
+            isExpanded: false,
+            workCount: mCount,
+            colSpan: 1,
+            startCol: currentCol
+          });
+
+          currentCol += 1;
+        } else {
+          let subNames = [];
+
+          if (!state.showEmptySubregions) {
+            const activeSet = new Set();
+            rows.forEach(r => {
+              if (r.macro === mDef.id) {
+                activeSet.add(r.sub || r.macro || "General");
+              }
+            });
+            subNames = Array.from(activeSet);
+            const canonicalOrder = UN_CANONICAL_SUBREGIONS[mDef.id] || [];
+            subNames.sort((a, b) => {
+              const ia = canonicalOrder.indexOf(a);
+              const ib = canonicalOrder.indexOf(b);
+              if (ia !== -1 && ib !== -1) return ia - ib;
+              if (ia !== -1) return -1;
+              if (ib !== -1) return 1;
+              return a.localeCompare(b);
+            });
+          } else {
+            const canonical = UN_CANONICAL_SUBREGIONS[mDef.id] || [];
+            const combined = new Set(canonical);
+            rows.forEach(r => {
+              if (r.macro === mDef.id && r.sub) combined.add(r.sub);
+            });
+            subNames = Array.from(combined);
+          }
+
+          if (subNames.length === 0) {
+            subNames = [mDef.label];
+          }
+
+          const spanCount = subNames.length;
+          macroGroups.push({
+            def: mDef,
+            isExpanded: true,
+            workCount: mCount,
+            colSpan: spanCount,
+            startCol: currentCol
+          });
+
+          subNames.forEach(sName => {
+            const subKey = `${mDef.id}|||${sName}`;
+            const sCount = subWorkCounts.get(subKey) || 0;
+
+            leafLanes.push({
+              id: subKey,
+              macroId: mDef.id,
+              label: sName,
+              subMeta: `${mDef.id} Subregion`,
+              isSub: true,
+              count: sCount
+            });
+          });
+
+          currentCol += spanCount;
         }
       });
 
-      return [...seen.values()].sort((a, b) => {
-        const ma = macroOrder.indexOf(a.macro);
-        const mb = macroOrder.indexOf(b.macro);
-        if (ma !== mb) return (ma === -1 ? 99 : ma) - (mb === -1 ? 99 : mb);
-        return a.label.localeCompare(b.label);
-      });
+      return { macroGroups, leafLanes };
     }
 
     function getTierClass(tier) {
@@ -1386,38 +1586,88 @@
     }
 
     /*************************************************************************
-     * 6. RENDER SWIMLANES, STICKY Y-AXIS, 1-N NUMBERS & SPOTLIGHTS
+     * 6. RENDER TWO-TIER SWIMLANES & BOOK CARDS
      *************************************************************************/
     let currentScaler = null;
     let visibleSortedCache = [];
 
     function renderChart() {
       const rows = state.rows;
-      const lanes = getActiveLanes(rows);
+      const { macroGroups, leafLanes } = resolveAccordionLanes(rows);
       const z = state.zoom;
 
       document.getElementById("zoomReadout").textContent = `${Math.round(z * 100)}%`;
 
       const timeAxisWidth = 115;
-      const baseMinLaneWidth = state.xMode === "macro" ? 235 : 210;
+      const baseMinLaneWidth = 220;
       const minLaneWidth = Math.round(baseMinLaneWidth * z);
 
       const viewport = document.getElementById("viewport");
-      const totalWidth = Math.max(window.innerWidth, timeAxisWidth + lanes.length * minLaneWidth);
+      const totalWidth = Math.max(window.innerWidth, timeAxisWidth + leafLanes.length * minLaneWidth);
       viewport.style.width = `${totalWidth}px`;
 
-      const gridTemplate = `${timeAxisWidth}px repeat(${lanes.length}, minmax(${minLaneWidth}px, 1fr))`;
+      const gridTemplate = `${timeAxisWidth}px repeat(${leafLanes.length}, minmax(${minLaneWidth}px, 1fr))`;
 
       const laneHeaders = document.getElementById("laneHeaders");
       laneHeaders.style.gridTemplateColumns = gridTemplate;
-      laneHeaders.innerHTML = `<div class="time-axis-header">${
-        state.yMode === "chrono" ? "Chronology" : "Read Sequence"
-      }</div>` + lanes.map(l => `
-        <div class="lane-header">
-          <div class="macro">${l.label}</div>
-          <div class="sub">${l.sub || ""}</div>
-        </div>
-      `).join("");
+      laneHeaders.innerHTML = "";
+
+      const cornerHeader = document.createElement("div");
+      cornerHeader.className = "time-axis-header";
+      cornerHeader.innerHTML = `
+        <span>${state.yMode === "chrono" ? "Chronology" : "Read Seq"}</span>
+        <span class="time-axis-sub">${state.yMode === "chrono" ? "Time Axis" : "Order"}</span>
+      `;
+      laneHeaders.appendChild(cornerHeader);
+
+      macroGroups.forEach(mg => {
+        const banner = document.createElement("div");
+        banner.className = "macro-bracket-banner";
+        banner.style.gridColumn = `${mg.startCol} / span ${mg.colSpan}`;
+        banner.style.borderTop = `3px solid ${mg.def.color}`;
+
+        const toggleBtnLabel = mg.isExpanded ? "⊟ Collapse" : "⊞ Expand";
+        const toggleBtnTitle = mg.isExpanded
+          ? `Collapse ${mg.def.label} into a single macro lane`
+          : `Expand ${mg.def.label} into granular subregion lanes`;
+
+        banner.innerHTML = `
+          <div class="macro-bracket-info">
+            <span class="macro-bracket-color-bar" style="background:${mg.def.color}"></span>
+            <span class="macro-bracket-title">${mg.def.label}</span>
+            <span class="macro-count-pill" title="${mg.workCount} works in this continent">${mg.workCount}</span>
+          </div>
+          <button class="btn-macro-accordion" data-macro-id="${mg.def.id}" title="${toggleBtnTitle}">
+            ${toggleBtnLabel}
+          </button>
+        `;
+
+        banner.querySelector(".btn-macro-accordion").addEventListener("click", (e) => {
+          e.stopPropagation();
+          const mId = e.currentTarget.getAttribute("data-macro-id");
+          if (state.expandedMacros.has(mId)) {
+            state.expandedMacros.delete(mId);
+          } else {
+            state.expandedMacros.add(mId);
+          }
+          renderChart();
+        });
+
+        laneHeaders.appendChild(banner);
+      });
+
+      leafLanes.forEach((lane, idx) => {
+        const leaf = document.createElement("div");
+        leaf.className = "sub-leaf-header";
+        leaf.style.gridColumn = `${idx + 2}`;
+
+        const countBadge = lane.count > 0 ? ` (${lane.count})` : " (0)";
+        leaf.innerHTML = `
+          <div class="sub-leaf-title" title="${lane.label}">${lane.label}${countBadge}</div>
+          <div class="sub-leaf-meta" title="${lane.subMeta}">${lane.subMeta}</div>
+        `;
+        laneHeaders.appendChild(leaf);
+      });
 
       const stage = document.getElementById("chartStage");
       stage.innerHTML = "";
@@ -1461,12 +1711,17 @@
       }
 
       const usableWidth = totalWidth - timeAxisWidth;
-      const laneWidth = usableWidth / lanes.length;
+      const laneWidth = usableWidth / leafLanes.length;
 
       const laneIndexMap = new Map();
-      lanes.forEach((l, idx) => laneIndexMap.set(l.id, idx));
+      leafLanes.forEach((l, idx) => laneIndexMap.set(l.id, idx));
 
-      const laneBottomTracker = new Array(lanes.length).fill(Math.round(24 * z));
+      const macroFirstLaneMap = new Map();
+      leafLanes.forEach((l, idx) => {
+        if (!macroFirstLaneMap.has(l.macroId)) macroFirstLaneMap.set(l.macroId, idx);
+      });
+
+      const laneBottomTracker = new Array(leafLanes.length).fill(Math.round(24 * z));
       const positionedNodes = [];
 
       const placementOrder = state.yMode === "chrono"
@@ -1474,9 +1729,14 @@
         : [...rows];
 
       placementOrder.forEach((r, idx) => {
-        const laneKey = state.xMode === "macro" ? r.macro : `${r.macro}|||${r.sub || r.macro || "Unclassified"}`;
+        const isExpanded = state.expandedMacros.has(r.macro);
+        let laneKey = isExpanded ? `${r.macro}|||${r.sub || r.macro || "General"}` : r.macro;
         let laneIdx = laneIndexMap.get(laneKey);
-        if (laneIdx === undefined) laneIdx = 0;
+
+        if (laneIdx === undefined) {
+          laneIdx = macroFirstLaneMap.get(r.macro);
+          if (laneIdx === undefined) laneIdx = 0;
+        }
 
         let idealY = state.yMode === "chrono"
           ? currentScaler.yearToY(r.yStart)
@@ -1516,20 +1776,17 @@
       totalStageHeight = Math.max(totalStageHeight, Math.max(...laneBottomTracker) + 120);
       stage.style.height = `${totalStageHeight}px`;
 
-      // Background Swimlane Grid
       const bgGrid = document.createElement("div");
       bgGrid.className = "lane-bg-grid";
       bgGrid.style.gridTemplateColumns = gridTemplate;
-      bgGrid.innerHTML = `<div class="lane-bg-col"></div>` + lanes.map(() => `<div class="lane-bg-col"></div>`).join("");
+      bgGrid.innerHTML = `<div class="lane-bg-col"></div>` + leafLanes.map(() => `<div class="lane-bg-col"></div>`).join("");
       stage.appendChild(bgGrid);
 
-      // Timespan Highlighter Band
       const highlightBand = document.createElement("div");
       highlightBand.className = "timespan-highlight-band";
       highlightBand.id = "timespanBand";
       stage.appendChild(highlightBand);
 
-      // Sticky Floating Chronology Rail
       const stickyRail = document.createElement("div");
       stickyRail.className = "sticky-chrono-rail";
       stickyRail.style.width = `${timeAxisWidth}px`;
@@ -1601,7 +1858,6 @@
 
       stage.appendChild(stickyRail);
 
-      // Base SVG Layer for Read Order Narrative Thread
       const svgNS = "http://www.w3.org/2000/svg";
       const svg = document.createElementNS(svgNS, "svg");
       svg.setAttribute("class", "svg-overlay");
@@ -1636,7 +1892,6 @@
 
       stage.appendChild(svg);
 
-      // Spotlight SVG Layer
       const spotlightSvg = document.createElementNS(svgNS, "svg");
       spotlightSvg.setAttribute("class", "svg-spotlight");
       spotlightSvg.setAttribute("id", "spotlightSvg");
@@ -1644,7 +1899,6 @@
       spotlightSvg.setAttribute("height", totalStageHeight);
       stage.appendChild(spotlightSvg);
 
-      // Render Duration Bars & Book Cards
       let visibleCount = 0;
       let readCount = 0;
       let ownedCount = 0;
@@ -1725,10 +1979,16 @@
         ? `<span>🛡️ Quarantined: <strong>${state.quarantinedCount} unmigrated rows hidden</strong></span>`
         : "";
 
+      const expandedNames = Array.from(state.expandedMacros);
+      const accordionStatus = expandedNames.length > 0
+        ? `<span>📂 Expanded: <strong>${expandedNames.join(", ")}</strong></span>`
+        : `<span>📁 All Continents Collapsed</span>`;
+
       document.getElementById("statsBar").innerHTML = `
         <span>Showing <strong>1–${visibleCount}</strong> of ${rows.length} Works</span>
         <span>Read: <strong>${readCount}</strong></span>
         <span>Owned: <strong>${ownedCount}</strong></span>
+        ${accordionStatus}
         ${quarantineNote}
         <span class="nav-hint">🖐️ Drag canvas to pan • Ctrl/Shift + Wheel to zoom</span>
       `;
@@ -2025,7 +2285,7 @@
     }
 
     /*************************************************************************
-     * 9. INTERACTIVE 2D CLICK-AND-DRAG PAN & CURSOR-CENTERED ZOOM
+     * 9. INTERACTIVE 2D PAN & CURSOR-CENTERED ZOOM
      *************************************************************************/
     function applyZoomAtPoint(newZoom, clientX, clientY) {
       const clamped = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Number(newZoom.toFixed(2))));
@@ -2133,7 +2393,7 @@
     }
 
     /*************************************************************************
-     * 10. UI EVENT LISTENERS & TAB MANAGEMENT MODAL
+     * 10. UI EVENT LISTENERS & ACCORDION BUTTONS
      *************************************************************************/
     function populateTabDropdown() {
       const sel = document.getElementById("tabSelect");
@@ -2169,8 +2429,22 @@
       renderChart();
     });
 
-    document.getElementById("xModeSelect").addEventListener("change", (e) => {
-      state.xMode = e.target.value;
+    document.getElementById("btnExpandAll").addEventListener("click", () => {
+      MACRO_DEFS.forEach(m => state.expandedMacros.add(m.id));
+      renderChart();
+    });
+
+    document.getElementById("btnCollapseAll").addEventListener("click", () => {
+      state.expandedMacros.clear();
+      renderChart();
+    });
+
+    document.getElementById("btnToggleEmptyLanes").addEventListener("click", (e) => {
+      state.showEmptySubregions = !state.showEmptySubregions;
+      e.currentTarget.classList.toggle("active", state.showEmptySubregions);
+      e.currentTarget.textContent = state.showEmptySubregions
+        ? "🌐 Empty Lanes: On"
+        : "🌐 Empty Lanes: Off";
       renderChart();
     });
 
