@@ -1,1302 +1,1315 @@
 <!DOCTYPE html>
-<!-- THE READING ORDER SYNOPTIC COMPANION | Build: v1.5.0 (2026-11-10) | Branch: main -->
+<!-- THE READING ORDER SYNOPTIC COMPANION | Build: v1.5.1 (2026-11-10) | Branch: main -->
 <html lang="en">
 <head>
- <meta charset="UTF-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>The Reading Order — Synoptic Visual Companion</title>
- <style>
- :root {
- --bg: #0f1117;
- --panel: #171a24;
- --panel-2: #1f2433;
- --border: #2c3347;
- --text: #e8ecf4;
- --muted: #9aa4bf;
- --accent: #e0b153;
- --thread: #f59e0b;
- --sec-thread: #38bdf8;
- --header-stack-height: 96px;
- --chrono-rail-width: 115px;
- --epoch-banner-height: 38px;
-
- /* Collection Tier Colors */
- --tier-main-bg: #2b2212;
- --tier-main-border: #eab308;
- --tier-main-badge: #facc15;
-
- --tier-supp-bg: #1e2430;
- --tier-supp-border: #94a3b8;
- --tier-supp-badge: #cbd5e1;
-
- --tier-hist-bg: #132338;
- --tier-hist-border: #38bdf8;
- --tier-hist-badge: #7dd3fc;
-
- --tier-schol-bg: #231834;
- --tier-schol-border: #c084fc;
- --tier-schol-badge: #d8b4fe;
-
- --tier-ref-bg: #142e27;
- --tier-ref-border: #34d399;
- --tier-ref-badge: #6ee7b7;
- }
-
- * {
- box-sizing: border-box;
- margin: 0;
- padding: 0;
- }
-
- body {
- background: var(--bg);
- color: var(--text);
- font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
- overflow-x: auto;
- min-height: 100vh;
- }
-
- body.is-panning,
- body.is-panning * {
- cursor: grabbing !important;
- user-select: none !important;
- }
-
- /* Fixed Top Header Wrapper (Topbar + Filter Bar Permanently Docked) */
- .app-header {
- position: fixed;
- top: 0;
- left: 0;
- width: 100vw;
- z-index: 130;
- background: rgba(23, 26, 36, 0.98);
- backdrop-filter: blur(12px);
- box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
- }
-
- /* Top Control Bar */
- .topbar {
- padding: 9px 18px;
- display: flex;
- flex-wrap: wrap;
- gap: 10px;
- align-items: center;
- justify-content: space-between;
- border-bottom: 1px solid var(--border);
- }
-
- .brand {
- display: flex;
- align-items: center;
- gap: 12px;
- }
-
- .brand h1 {
- font-size: 1.12rem;
- font-weight: 700;
- letter-spacing: 0.02em;
- color: var(--accent);
- }
-
- .brand span {
- font-size: 0.78rem;
- color: var(--muted);
- }
-
- .controls {
- display: flex;
- flex-wrap: wrap;
- gap: 8px;
- align-items: center;
- }
-
- select, input[type="text"], button {
- background: var(--panel-2);
- color: var(--text);
- border: 1px solid var(--border);
- border-radius: 6px;
- padding: 5px 9px;
- font-size: 0.8rem;
- outline: none;
- }
-
- select:focus, input[type="text"]:focus, button:hover {
- border-color: var(--accent);
- }
-
- button {
- cursor: pointer;
- font-weight: 500;
- transition: all 0.15s ease;
- }
-
- button.active {
- background: var(--accent);
- color: #111;
- border-color: var(--accent);
- font-weight: 600;
- }
-
- button.guard-active {
- border-color: #38bdf8;
- background: rgba(56, 189, 248, 0.15);
- color: #38bdf8;
- }
-
- .accordion-group {
- display: inline-flex;
- border: 1px solid var(--border);
- border-radius: 6px;
- overflow: hidden;
- }
-
- .accordion-group button {
- border: none;
- border-radius: 0;
- padding: 5px 8px;
- background: var(--panel-2);
- font-size: 0.76rem;
- }
-
- .accordion-group button:hover {
- background: rgba(224, 177, 83, 0.18);
- }
-
- .zoom-group {
- display: inline-flex;
- align-items: center;
- background: var(--panel-2);
- border: 1px solid var(--border);
- border-radius: 6px;
- overflow: hidden;
- }
-
- .zoom-group button {
- border: none;
- border-radius: 0;
- padding: 5px 8px;
- background: transparent;
- }
-
- .zoom-group button:hover {
- background: rgba(224, 177, 83, 0.15);
- }
-
- .zoom-readout {
- font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
- font-size: 0.75rem;
- color: var(--accent);
- padding: 0 5px;
- min-width: 44px;
- text-align: center;
- cursor: pointer;
- user-select: none;
- }
-
- /* Subbar / Filter Bar */
- .subbar {
- padding: 6px 18px;
- display: flex;
- flex-wrap: wrap;
- gap: 14px;
- align-items: center;
- justify-content: space-between;
- font-size: 0.76rem;
- background: rgba(15, 17, 23, 0.96);
- }
-
- .legend {
- display: flex;
- flex-wrap: wrap;
- gap: 8px;
- align-items: center;
- }
-
- .legend-item {
- display: inline-flex;
- align-items: center;
- gap: 5px;
- cursor: pointer;
- padding: 2px 7px;
- border-radius: 4px;
- border: 1px solid transparent;
- user-select: none;
- }
-
- .legend-item.muted {
- opacity: 0.35;
- }
-
- .swatch {
- width: 10px;
- height: 10px;
- border-radius: 2px;
- display: inline-block;
- }
-
- .stats {
- color: var(--muted);
- display: flex;
- flex-wrap: wrap;
- gap: 12px;
- align-items: center;
- }
-
- .nav-hint {
- color: var(--muted);
- font-size: 0.72rem;
- opacity: 0.85;
- }
-
- /* Viewport & Stage */
- .viewport {
- position: relative;
- min-width: 100%;
- padding-top: var(--header-stack-height, 96px);
- padding-bottom: 120px;
- cursor: grab;
- }
-
- /* Sticky Swimlane Two-Tier Bracket Headers (Flush Against Subbar) */
- .lane-headers {
- position: sticky;
- top: var(--header-stack-height, 96px);
- z-index: 100;
- display: grid;
- background: var(--panel);
- border-bottom: 2px solid var(--border);
- box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
- }
-
- .time-axis-header {
- position: sticky;
- left: 0;
- top: var(--header-stack-height, 96px);
- z-index: 110;
- background: var(--panel);
- grid-row: 1 / span 2;
- padding: 8px 6px;
- font-size: 0.74rem;
- font-weight: 700;
- text-transform: uppercase;
- letter-spacing: 0.05em;
- color: var(--accent);
- border-right: 2px solid var(--border);
- border-bottom: 2px solid var(--border);
- text-align: center;
- display: flex;
- flex-direction: column;
- align-items: center;
- justify-content: center;
- box-shadow: 4px 0 12px rgba(0, 0, 0, 0.5);
- }
-
- .time-axis-header span.sub {
- font-size: 0.65rem;
- color: var(--muted);
- text-transform: none;
- letter-spacing: normal;
- margin-top: 2px;
- }
-
- /* Tier 1: Macro-Region Banner */
- .macro-bracket-cell {
- padding: 6px 8px;
- text-align: center;
- border-right: 1px solid var(--border);
- border-bottom: 1px solid var(--border);
- background: rgba(23, 26, 36, 0.98);
- display: flex;
- align-items: center;
- justify-content: space-between;
- gap: 6px;
- }
-
- .macro-title-group {
- display: inline-flex;
- align-items: center;
- gap: 6px;
- text-align: left;
- }
-
- .macro-tint-dot {
- width: 4px;
- height: 14px;
- border-radius: 2px;
- display: inline-block;
- }
-
- .macro-bracket-title {
- font-size: 0.82rem;
- font-weight: 700;
- color: var(--text);
- white-space: nowrap;
- }
-
- .macro-count-badge {
- font-size: 0.68rem;
- padding: 1px 5px;
- border-radius: 10px;
- background: rgba(255, 255, 255, 0.08);
- color: var(--muted);
- font-family: ui-monospace, monospace;
- }
-
- .macro-toggle-btn {
- background: var(--panel-2);
- border: 1px solid var(--border);
- border-radius: 4px;
- padding: 2px 6px;
- font-size: 0.68rem;
- color: var(--text);
- cursor: pointer;
- display: inline-flex;
- align-items: center;
- gap: 3px;
- }
-
- .macro-toggle-btn:hover {
- border-color: var(--accent);
- background: rgba(224, 177, 83, 0.15);
- }
-
- /* Tier 2: Leaf Subregion Headers */
- .lane-leaf-header {
- padding: 6px 8px;
- border-right: 1px solid var(--border);
- text-align: center;
- background: var(--panel);
- display: flex;
- flex-direction: column;
- align-items: center;
- justify-content: center;
- }
-
- .lane-leaf-title {
- font-size: 0.74rem;
- font-weight: 600;
- color: var(--text);
- white-space: nowrap;
- overflow: hidden;
- text-overflow: ellipsis;
- max-width: 100%;
- }
-
- .lane-leaf-sub {
- font-size: 0.64rem;
- color: var(--muted);
- margin-top: 2px;
- white-space: nowrap;
- overflow: hidden;
- text-overflow: ellipsis;
- max-width: 100%;
- }
-
- /* Canvas Container */
- .chart-stage {
- position: relative;
- width: 100%;
- }
-
- /* Sticky Chronology Rail (Left Y-Axis) */
- .sticky-chrono-rail {
- position: sticky;
- left: 0;
- top: 0;
- z-index: 80;
- background: rgba(15, 17, 23, 0.96);
- backdrop-filter: blur(8px);
- border-right: 2px solid var(--border);
- box-shadow: 6px 0 18px rgba(0, 0, 0, 0.6);
- pointer-events: none;
- }
-
- .rail-tick-label {
- position: absolute;
- left: 0;
- width: 100%;
- padding: 2px 10px 2px 4px;
- font-size: 0.68rem;
- font-weight: 600;
- color: var(--muted);
- text-align: right;
- transform: translateY(-50%);
- white-space: nowrap;
- font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
- }
-
- .rail-tick-label.epoch-start {
- color: var(--accent);
- font-weight: 700;
- }
-
- /* Background Swimlane Columns */
- .lane-bg-grid {
- position: absolute;
- inset: 0;
- display: grid;
- pointer-events: none;
- }
-
- .lane-bg-col {
- border-right: 1px dashed rgba(255, 255, 255, 0.05);
- height: 100%;
- }
-
- .lane-bg-col:nth-child(even) {
- background: rgba(255, 255, 255, 0.012);
- }
-
- /* Horizontal Time Gridlines */
- .time-tick {
- position: absolute;
- left: 0;
- width: 100%;
- border-top: 1px solid rgba(255, 255, 255, 0.05);
- pointer-events: none;
- z-index: 5;
- }
-
- /* Dedicated Era Banner Corridor Gap (Entries Cannot Overlap) */
- .epoch-divider-band {
- position: absolute;
- left: 0;
- width: 100%;
- height: var(--epoch-banner-height, 38px);
- background: linear-gradient(90deg, rgba(224, 177, 83, 0.16) 0%, rgba(23, 26, 36, 0.88) 12%, rgba(23, 26, 36, 0.88) 88%, rgba(224, 177, 83, 0.16) 100%);
- border-top: 1px dashed rgba(224, 177, 83, 0.55);
- border-bottom: 1px solid rgba(224, 177, 83, 0.25);
- z-index: 12;
- pointer-events: none;
- display: flex;
- align-items: center;
- box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.4);
- }
-
- /* Horizontally Floating Sticky Era Title (Always Visible When Panned Right) */
- .epoch-divider-label {
- position: sticky;
- left: calc(var(--chrono-rail-width, 115px) + 24px);
- display: inline-flex;
- align-items: center;
- gap: 7px;
- background: var(--panel-2);
- border: 1px solid rgba(224, 177, 83, 0.55);
- color: var(--accent);
- padding: 3px 12px;
- border-radius: 4px;
- font-size: 0.7rem;
- font-weight: 700;
- letter-spacing: 0.08em;
- text-transform: uppercase;
- white-space: nowrap;
- box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
- pointer-events: auto;
- }
-
- .epoch-divider-label .epoch-glyph {
- color: var(--accent);
- font-size: 0.75rem;
- }
-
- /* SVG Overlay */
- .svg-overlay {
- position: absolute;
- inset: 0;
- width: 100%;
- height: 100%;
- pointer-events: none;
- z-index: 15;
- }
-
- /* Duration Span Bars */
- .duration-bar {
- position: absolute;
- width: 5px;
- border-radius: 3px;
- opacity: 0.45;
- z-index: 10;
- pointer-events: none;
- transition: opacity 0.2s;
- }
-
- /* Book Node Cards */
- .book-card {
- position: absolute;
- z-index: 20;
- border-radius: 7px;
- padding: 5px 8px;
- border: 1px solid var(--border);
- background: var(--panel-2);
- cursor: pointer;
- transition: transform 0.14s ease, box-shadow 0.14s ease, opacity 0.2s ease;
- box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
- overflow: hidden;
- user-select: none;
- }
-
- .book-card:hover {
- transform: translateY(-2px) scale(1.015);
- z-index: 50;
- box-shadow: 0 8px 22px rgba(0, 0, 0, 0.65);
- }
-
- .book-card.tier-main { background: var(--tier-main-bg); border-color: var(--tier-main-border); }
- .book-card.tier-supp { background: var(--tier-supp-bg); border-color: var(--tier-supp-border); }
- .book-card.tier-hist { background: var(--tier-hist-bg); border-color: var(--tier-hist-border); }
- .book-card.tier-schol { background: var(--tier-schol-bg); border-color: var(--tier-schol-border); border-style: dashed; }
- .book-card.tier-ref { background: var(--tier-ref-bg); border-color: var(--tier-ref-border); }
-
- .book-card.dimmed { opacity: 0.18; filter: grayscale(80%); pointer-events: none; }
- .book-card.paired-target {
- border-color: #38bdf8 !important;
- box-shadow: 0 0 14px rgba(56, 189, 248, 0.5) !important;
- }
-
- .card-top {
- display: flex;
- align-items: center;
- justify-content: space-between;
- gap: 4px;
- font-size: 0.65rem;
- margin-bottom: 2px;
- }
-
- .ro-badge {
- font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
- font-weight: 700;
- color: var(--accent);
- background: rgba(0, 0, 0, 0.42);
- padding: 1px 5px;
- border-radius: 3px;
- border: 1px solid rgba(224, 177, 83, 0.25);
- }
-
- .paired-badge {
- font-size: 0.62rem;
- padding: 1px 4px;
- border-radius: 3px;
- background: rgba(56, 189, 248, 0.2);
- color: #38bdf8;
- border: 1px solid rgba(56, 189, 248, 0.4);
- }
-
- .subregion-pill {
- color: var(--muted);
- font-size: 0.63rem;
- white-space: nowrap;
- overflow: hidden;
- text-overflow: ellipsis;
- max-width: 60%;
- }
-
- .card-title {
- font-size: 0.77rem;
- font-weight: 700;
- line-height: 1.22;
- color: var(--text);
- display: -webkit-box;
- -webkit-line-clamp: 2;
- -webkit-box-orient: vertical;
- overflow: hidden;
- }
-
- .card-meta {
- margin-top: 2px;
- font-size: 0.66rem;
- color: var(--muted);
- white-space: nowrap;
- overflow: hidden;
- text-overflow: ellipsis;
- }
-
- /* Timespan Hover Highlight Band */
- .timespan-band {
- position: absolute;
- left: 0;
- width: 100%;
- background: rgba(224, 177, 83, 0.08);
- border-top: 1px solid rgba(224, 177, 83, 0.45);
- border-bottom: 1px solid rgba(224, 177, 83, 0.45);
- pointer-events: none;
- z-index: 8;
- transition: opacity 0.15s ease;
- }
-
- /* Timespan Sticky Clamped Callout Badges */
- .timespan-callout {
- position: absolute;
- left: 0;
- width: var(--chrono-rail-width, 115px);
- z-index: 115;
- padding: 3px 6px;
- background: var(--panel-2);
- border: 1px solid var(--accent);
- color: var(--accent);
- font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
- font-size: 0.68rem;
- font-weight: 700;
- text-align: right;
- box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
- border-radius: 0 4px 4px 0;
- box-sizing: border-box;
- user-select: none;
- }
-
- .timespan-callout.is-clamped {
- position: fixed;
- cursor: pointer;
- background: rgba(23, 26, 36, 0.96);
- backdrop-filter: blur(8px);
- border-color: #facc15;
- box-shadow: 0 6px 14px rgba(0, 0, 0, 0.7);
- }
-
- .timespan-callout.is-clamped:hover {
- background: rgba(224, 177, 83, 0.25);
- color: #fff;
- }
-
- /* Inspector Drawer */
- .drawer {
- position: fixed;
- top: 0;
- right: -480px;
- width: 460px;
- max-width: 92vw;
- height: 100vh;
- background: var(--panel);
- border-left: 1px solid var(--border);
- z-index: 200;
- padding: 22px;
- overflow-y: auto;
- transition: right 0.22s ease;
- box-shadow: -10px 0 30px rgba(0, 0, 0, 0.6);
- }
-
- .drawer.open { right: 0; }
-
- .drawer-close {
- float: right;
- background: transparent;
- border: 1px solid var(--border);
- color: var(--muted);
- padding: 4px 10px;
- border-radius: 4px;
- }
-
- .drawer h2 {
- font-size: 1.15rem;
- line-height: 1.35;
- margin: 12px 0 6px;
- color: var(--text);
- }
-
- .drawer .author {
- font-size: 0.9rem;
- color: var(--accent);
- margin-bottom: 12px;
- }
-
- .meta-grid {
- display: grid;
- grid-template-columns: 1fr 1fr;
- gap: 8px;
- background: var(--panel-2);
- padding: 12px;
- border-radius: 8px;
- border: 1px solid var(--border);
- margin-bottom: 14px;
- font-size: 0.78rem;
- }
-
- .meta-cell .label {
- color: var(--muted);
- font-size: 0.67rem;
- text-transform: uppercase;
- letter-spacing: 0.04em;
- }
-
- .meta-cell .val {
- color: var(--text);
- font-weight: 600;
- margin-top: 2px;
- }
-
- .notes-box {
- background: var(--panel-2);
- border: 1px solid var(--border);
- border-radius: 8px;
- padding: 12px;
- font-size: 0.84rem;
- line-height: 1.5;
- color: var(--text);
- white-space: pre-wrap;
- margin-bottom: 14px;
- }
-
- .paired-section {
- background: rgba(56, 189, 248, 0.06);
- border: 1px solid rgba(56, 189, 248, 0.3);
- border-radius: 8px;
- padding: 12px;
- margin-bottom: 14px;
- }
-
- .paired-section h4 {
- font-size: 0.74rem;
- color: #38bdf8;
- text-transform: uppercase;
- letter-spacing: 0.05em;
- margin-bottom: 8px;
- }
-
- .paired-link {
- display: flex;
- align-items: center;
- justify-content: space-between;
- padding: 6px 8px;
- border-radius: 5px;
- background: var(--panel-2);
- border: 1px solid var(--border);
- margin-bottom: 6px;
- cursor: pointer;
- font-size: 0.78rem;
- }
-
- .paired-link:hover {
- border-color: #38bdf8;
- }
-
- /* Modal Backdrop */
- .modal-backdrop {
- position: fixed;
- inset: 0;
- background: rgba(0, 0, 0, 0.65);
- z-index: 300;
- display: none;
- align-items: center;
- justify-content: center;
- }
- .modal-backdrop.open { display: flex; }
- .modal {
- background: var(--panel);
- border: 1px solid var(--border);
- border-radius: 10px;
- width: 580px;
- max-width: 94vw;
- padding: 20px;
- }
- .modal h3 { margin-bottom: 8px; color: var(--accent); }
- .modal p { font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; line-height: 1.45; }
- .modal textarea, .modal input {
- width: 100%;
- margin-bottom: 12px;
- background: var(--panel-2);
- color: var(--text);
- border: 1px solid var(--border);
- border-radius: 6px;
- padding: 8px;
- font-family: monospace;
- font-size: 0.8rem;
- }
- </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Reading Order — Synoptic Visual Companion</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --panel: #171a24;
+      --panel-2: #1f2433;
+      --border: #2c3347;
+      --text: #e8ecf4;
+      --muted: #9aa4bf;
+      --accent: #e0b153;
+      --thread: #f59e0b;
+      --sec-thread: #38bdf8;
+      --header-stack-height: 96px;
+      --chrono-rail-width: 115px;
+      --epoch-banner-height: 38px;
+
+      /* Collection Tier Colors */
+      --tier-main-bg: #2b2212;
+      --tier-main-border: #eab308;
+      --tier-main-badge: #facc15;
+
+      --tier-supp-bg: #1e2430;
+      --tier-supp-border: #94a3b8;
+      --tier-supp-badge: #cbd5e1;
+
+      --tier-hist-bg: #132338;
+      --tier-hist-border: #38bdf8;
+      --tier-hist-badge: #7dd3fc;
+
+      --tier-schol-bg: #231834;
+      --tier-schol-border: #c084fc;
+      --tier-schol-badge: #d8b4fe;
+
+      --tier-ref-bg: #142e27;
+      --tier-ref-border: #34d399;
+      --tier-ref-badge: #6ee7b7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      overflow-x: auto;
+      min-height: 100vh;
+    }
+
+    body.is-panning,
+    body.is-panning * {
+      cursor: grabbing !important;
+      user-select: none !important;
+    }
+
+    /* Fixed Top Header Wrapper (Topbar + Filter Bar Permanently Docked) */
+    .app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      z-index: 130;
+      background: rgba(23, 26, 36, 0.98);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Top Control Bar */
+    .topbar {
+      padding: 9px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand h1 {
+      font-size: 1.12rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--accent);
+    }
+
+    .brand span {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    select, input[type="text"], button {
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 9px;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    select:focus, input[type="text"]:focus, button:hover {
+      border-color: var(--accent);
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    button.active {
+      background: var(--accent);
+      color: #111;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    button.guard-active {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+    }
+
+    .accordion-group {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .accordion-group button {
+      border: none;
+      border-radius: 0;
+      padding: 5px 8px;
+      background: var(--panel-2);
+      font-size: 0.76rem;
+    }
+
+    .accordion-group button:hover {
+      background: rgba(224, 177, 83, 0.18);
+    }
+
+    .zoom-group {
+      display: inline-flex;
+      align-items: center;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .zoom-group button {
+      border: none;
+      border-radius: 0;
+      padding: 5px 8px;
+      background: transparent;
+    }
+
+    .zoom-group button:hover {
+      background: rgba(224, 177, 83, 0.15);
+    }
+
+    .zoom-readout {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      padding: 0 5px;
+      min-width: 44px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Subbar / Filter Bar */
+    .subbar {
+      padding: 6px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      background: rgba(15, 17, 23, 0.96);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .legend-item.muted {
+      opacity: 0.35;
+    }
+
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    .stats {
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .nav-hint {
+      color: var(--muted);
+      font-size: 0.72rem;
+      opacity: 0.85;
+    }
+
+    /* Viewport & Stage */
+    .viewport {
+      position: relative;
+      min-width: 100%;
+      padding-top: var(--header-stack-height, 96px);
+      padding-bottom: 120px;
+      cursor: grab;
+    }
+
+    /* Sticky Swimlane Two-Tier Bracket Headers (Flush Against Subbar) */
+    .lane-headers {
+      position: sticky;
+      top: var(--header-stack-height, 96px);
+      z-index: 100;
+      display: grid;
+      background: var(--panel);
+      border-bottom: 2px solid var(--border);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    }
+
+    .time-axis-header {
+      position: sticky;
+      left: 0;
+      top: var(--header-stack-height, 96px);
+      z-index: 110;
+      background: var(--panel);
+      grid-row: 1 / span 2;
+      padding: 8px 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      border-right: 2px solid var(--border);
+      border-bottom: 2px solid var(--border);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .time-axis-header span.sub {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-transform: none;
+      letter-spacing: normal;
+      margin-top: 2px;
+    }
+
+    /* Tier 1: Macro-Region Banner */
+    .macro-bracket-cell {
+      padding: 6px 8px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(23, 26, 36, 0.98);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .macro-title-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-align: left;
+    }
+
+    .macro-tint-dot {
+      width: 4px;
+      height: 14px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    .macro-bracket-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .macro-count-badge {
+      font-size: 0.68rem;
+      padding: 1px 5px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      font-family: ui-monospace, monospace;
+    }
+
+    .macro-toggle-btn {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.68rem;
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .macro-toggle-btn:hover {
+      border-color: var(--accent);
+      background: rgba(224, 177, 83, 0.15);
+    }
+
+    /* Tier 2: Leaf Subregion Headers */
+    .lane-leaf-header {
+      padding: 6px 8px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lane-leaf-title {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .lane-leaf-sub {
+      font-size: 0.64rem;
+      color: var(--muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    /* Canvas Container */
+    .chart-stage {
+      position: relative;
+      width: 100%;
+    }
+
+    /* Sticky Chronology Rail (Left Y-Axis) */
+    .sticky-chrono-rail {
+      position: sticky;
+      left: 0;
+      top: 0;
+      z-index: 80;
+      background: rgba(15, 17, 23, 0.96);
+      backdrop-filter: blur(8px);
+      border-right: 2px solid var(--border);
+      box-shadow: 6px 0 18px rgba(0, 0, 0, 0.6);
+      pointer-events: none;
+    }
+
+    .rail-tick-label {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      padding: 2px 10px 2px 4px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-align: right;
+      transform: translateY(-50%);
+      white-space: nowrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .rail-tick-label.epoch-start {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .rail-tick-label.milestone-major {
+      color: #facc15;
+      font-weight: 700;
+    }
+
+    /* Background Swimlane Columns */
+    .lane-bg-grid {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      pointer-events: none;
+    }
+
+    .lane-bg-col {
+      border-right: 1px dashed rgba(255, 255, 255, 0.05);
+      height: 100%;
+    }
+
+    .lane-bg-col:nth-child(even) {
+      background: rgba(255, 255, 255, 0.012);
+    }
+
+    /* Horizontal Time Gridlines */
+    .time-tick {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .time-tick.milestone-major {
+      border-top: 1px solid rgba(224, 177, 83, 0.35);
+    }
+
+    /* Dedicated Era Banner Corridor Gap (Entries Cannot Overlap) */
+    .epoch-divider-band {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: var(--epoch-banner-height, 38px);
+      background: linear-gradient(90deg, rgba(224, 177, 83, 0.16) 0%, rgba(23, 26, 36, 0.88) 12%, rgba(23, 26, 36, 0.88) 88%, rgba(224, 177, 83, 0.16) 100%);
+      border-top: 1px dashed rgba(224, 177, 83, 0.55);
+      border-bottom: 1px solid rgba(224, 177, 83, 0.25);
+      z-index: 12;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Horizontally Floating Sticky Era Title */
+    .epoch-divider-label {
+      position: sticky;
+      left: calc(var(--chrono-rail-width, 115px) + 24px);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--panel-2);
+      border: 1px solid rgba(224, 177, 83, 0.55);
+      color: var(--accent);
+      padding: 3px 12px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+      pointer-events: auto;
+    }
+
+    .epoch-divider-label .epoch-glyph {
+      color: var(--accent);
+      font-size: 0.75rem;
+    }
+
+    /* SVG Overlay */
+    .svg-overlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 15;
+    }
+
+    /* Duration Span Bars */
+    .duration-bar {
+      position: absolute;
+      width: 5px;
+      border-radius: 3px;
+      opacity: 0.45;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    /* Book Node Cards */
+    .book-card {
+      position: absolute;
+      z-index: 20;
+      border-radius: 7px;
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      cursor: pointer;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, opacity 0.2s ease;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .book-card:hover {
+      transform: translateY(-2px) scale(1.015);
+      z-index: 50;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.65);
+    }
+
+    .book-card.tier-main { background: var(--tier-main-bg); border-color: var(--tier-main-border); }
+    .book-card.tier-supp { background: var(--tier-supp-bg); border-color: var(--tier-supp-border); }
+    .book-card.tier-hist { background: var(--tier-hist-bg); border-color: var(--tier-hist-border); }
+    .book-card.tier-schol { background: var(--tier-schol-bg); border-color: var(--tier-schol-border); border-style: dashed; }
+    .book-card.tier-ref { background: var(--tier-ref-bg); border-color: var(--tier-ref-border); }
+
+    .book-card.dimmed { opacity: 0.18; filter: grayscale(80%); pointer-events: none; }
+    .book-card.paired-target {
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.5) !important;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 0.65rem;
+      margin-bottom: 2px;
+    }
+
+    .ro-badge {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(0, 0, 0, 0.42);
+      padding: 1px 5px;
+      border-radius: 3px;
+      border: 1px solid rgba(224, 177, 83, 0.25);
+    }
+
+    .paired-badge {
+      font-size: 0.62rem;
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .subregion-pill {
+      color: var(--muted);
+      font-size: 0.63rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 60%;
+    }
+
+    .card-title {
+      font-size: 0.77rem;
+      font-weight: 700;
+      line-height: 1.22;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-meta {
+      margin-top: 2px;
+      font-size: 0.66rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Timespan Hover Highlight Band */
+    .timespan-band {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      background: rgba(224, 177, 83, 0.08);
+      border-top: 1px solid rgba(224, 177, 83, 0.45);
+      border-bottom: 1px solid rgba(224, 177, 83, 0.45);
+      pointer-events: none;
+      z-index: 8;
+      transition: opacity 0.15s ease;
+    }
+
+    /* Timespan Sticky Clamped Callout Badges */
+    .timespan-callout {
+      position: absolute;
+      left: 0;
+      width: var(--chrono-rail-width, 115px);
+      z-index: 115;
+      padding: 3px 6px;
+      background: var(--panel-2);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-align: right;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      border-radius: 0 4px 4px 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    .timespan-callout.is-clamped {
+      position: fixed;
+      cursor: pointer;
+      background: rgba(23, 26, 36, 0.96);
+      backdrop-filter: blur(8px);
+      border-color: #facc15;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.7);
+    }
+
+    .timespan-callout.is-clamped:hover {
+      background: rgba(224, 177, 83, 0.25);
+      color: #fff;
+    }
+
+    /* Inspector Drawer */
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -480px;
+      width: 460px;
+      max-width: 92vw;
+      height: 100vh;
+      background: var(--panel);
+      border-left: 1px solid var(--border);
+      z-index: 200;
+      padding: 22px;
+      overflow-y: auto;
+      transition: right 0.22s ease;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .drawer.open { right: 0; }
+
+    .drawer-close {
+      float: right;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .drawer h2 {
+      font-size: 1.15rem;
+      line-height: 1.35;
+      margin: 12px 0 6px;
+      color: var(--text);
+    }
+
+    .drawer .author {
+      font-size: 0.9rem;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: var(--panel-2);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
+      font-size: 0.78rem;
+    }
+
+    .meta-cell .label {
+      color: var(--muted);
+      font-size: 0.67rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .meta-cell .val {
+      color: var(--text);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .notes-box {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: var(--text);
+      white-space: pre-wrap;
+      margin-bottom: 14px;
+    }
+
+    .paired-section {
+      background: rgba(56, 189, 248, 0.06);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .paired-section h4 {
+      font-size: 0.74rem;
+      color: #38bdf8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .paired-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px;
+      border-radius: 5px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      margin-bottom: 6px;
+      cursor: pointer;
+      font-size: 0.78rem;
+    }
+
+    .paired-link:hover {
+      border-color: #38bdf8;
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      width: 580px;
+      max-width: 94vw;
+      padding: 20px;
+    }
+    .modal h3 { margin-bottom: 8px; color: var(--accent); }
+    .modal p { font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; line-height: 1.45; }
+    .modal textarea, .modal input {
+      width: 100%;
+      margin-bottom: 12px;
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+  </style>
 </head>
 <body>
 
- <!-- Unified Fixed App Header (Topbar + Filter Bar Permanently Docked) -->
- <header class="app-header" id="appHeader">
- <div class="topbar" id="topbarEl">
- <div class="brand">
- <h1>THE READING ORDER</h1>
- <span>Synoptic World Literature &amp; History Companion</span>
- </div>
+  <!-- Unified Fixed App Header (Topbar + Filter Bar Permanently Docked) -->
+  <header class="app-header" id="appHeader">
+    <div class="topbar" id="topbarEl">
+      <div class="brand">
+        <h1>THE READING ORDER</h1>
+        <span>Synoptic World Literature &amp; History Companion</span>
+      </div>
 
- <div class="controls">
- <label style="font-size:0.78rem;color:var(--muted);">View:</label>
- <select id="tabSelect"></select>
- <button id="btnManageTabs" title="Configure Google Sheet tabs and choose which tabs load into the default Master Chronology">⚙️ Sheet Tabs</button>
+      <div class="controls">
+        <label style="font-size:0.78rem;color:var(--muted);">View:</label>
+        <select id="tabSelect"></select>
+        <button id="btnManageTabs" title="Configure Google Sheet tabs and choose which tabs load into the default Master Chronology">⚙️ Sheet Tabs</button>
 
- <button id="btnStrictCoords" class="guard-active" title="When active, hides unmigrated rows missing Plot Year Start (Col N) or Primary Macro-Region (Col P) so unfinished tabs never mess up the chart">
- 🛡️ Validated Coords Only
- </button>
+        <button id="btnStrictCoords" class="guard-active" title="When active, hides unmigrated rows missing Plot Year Start (Col N) or Primary Macro-Region (Col P) so unfinished tabs never mess up the chart">
+          🛡️ Validated Coords Only
+        </button>
 
- <select id="yModeSelect" title="Switch Y-Axis between True Chronological Time and Read Order">
- <option value="chrono">Y-Axis: Chronological Time</option>
- <option value="ordinal">Y-Axis: Read Order Sequence</option>
- </select>
+        <select id="yModeSelect" title="Switch Y-Axis between True Chronological Time and Read Order">
+          <option value="chrono">Y-Axis: Chronological Time</option>
+          <option value="ordinal">Y-Axis: Read Order Sequence</option>
+        </select>
 
- <!-- Accordion & Subregion Controls -->
- <div class="accordion-group" title="Expand or collapse macro-region accordion drill-down">
- <button id="btnExpandAll" title="Expand all continents into subregion lanes">⊞ Expand All</button>
- <button id="btnCollapseAll" title="Collapse all continents to macro lanes">⊟ Collapse All</button>
- </div>
+        <!-- Accordion & Subregion Controls -->
+        <div class="accordion-group" title="Expand or collapse macro-region accordion drill-down">
+          <button id="btnExpandAll" title="Expand all continents into subregion lanes">⊞ Expand All</button>
+          <button id="btnCollapseAll" title="Collapse all continents to macro lanes">⊟ Collapse All</button>
+        </div>
 
- <button id="btnToggleEmptyLanes" title="Toggle between showing only active subregions or all UN subregions">
- 🌐 Empty Lanes: Off
- </button>
+        <button id="btnToggleEmptyLanes" title="Toggle between showing only active subregions or all UN subregions">
+          🌐 Empty Lanes: Off
+        </button>
 
- <select id="colorModeSelect" title="Highlight reading progress or library ownership">
- <option value="tier">Color: Collection Tier</option>
- <option value="read">Highlight: Read Status</option>
- <option value="owned">Highlight: Owned Status</option>
- </select>
+        <select id="colorModeSelect" title="Highlight reading progress or library ownership">
+          <option value="tier">Color: Collection Tier</option>
+          <option value="read">Highlight: Read Status</option>
+          <option value="owned">Highlight: Owned Status</option>
+        </select>
 
- <button id="btnToggleThread" class="active" title="Show/hide the Reading Order narrative thread">🧵 Read Thread</button>
- <button id="btnToggleSpans" class="active" title="Show/hide History duration bars">📏 Era Spans</button>
+        <button id="btnToggleThread" class="active" title="Show/hide the Reading Order narrative thread">🧵 Read Thread</button>
+        <button id="btnToggleSpans" class="active" title="Show/hide History duration bars">📏 Era Spans</button>
 
- <!-- Zoom Controls -->
- <div class="zoom-group" title="Zoom chart (or use Ctrl/Shift + Mouse Wheel)">
- <button id="btnZoomOut" title="Zoom Out">−</button>
- <span class="zoom-readout" id="zoomReadout" title="Click to reset zoom to 100%">100%</span>
- <button id="btnZoomIn" title="Zoom In">+</button>
- </div>
- <button id="btnWheelZoomMode" title="When active, scrolling the mouse wheel zooms directly without holding Ctrl/Shift">🔍 Wheel Zoom</button>
+        <!-- Zoom Controls -->
+        <div class="zoom-group" title="Zoom chart (or use Ctrl/Shift + Mouse Wheel)">
+          <button id="btnZoomOut" title="Zoom Out">−</button>
+          <span class="zoom-readout" id="zoomReadout" title="Click to reset zoom to 100%">100%</span>
+          <button id="btnZoomIn" title="Zoom In">+</button>
+        </div>
+        <button id="btnWheelZoomMode" title="When active, scrolling the mouse wheel zooms directly without holding Ctrl/Shift">🔍 Wheel Zoom</button>
 
- <input type="text" id="searchInput" placeholder="Search title, author, region..." style="width:165px;" />
- </div>
- </div>
+        <input type="text" id="searchInput" placeholder="Search title, author, region..." style="width:165px;" />
+      </div>
+    </div>
 
- <!-- Filter Bar / Legend -->
- <div class="subbar" id="subbarEl">
- <div class="legend" id="tierLegend">
- <span style="color:var(--muted);font-weight:600;">Filter Tiers:</span>
- <div class="legend-item" data-tier="Main">
- <span class="swatch" style="background:var(--tier-main-border)"></span>Main
- </div>
- <div class="legend-item" data-tier="Supplemental">
- <span class="swatch" style="background:var(--tier-supp-border)"></span>Supplemental
- </div>
- <div class="legend-item" data-tier="History (Narrative)">
- <span class="swatch" style="background:var(--tier-hist-border)"></span>History (Narrative)
- </div>
- <div class="legend-item" data-tier="Supporting (Scholarly)">
- <span class="swatch" style="background:var(--tier-schol-border)"></span>Supporting (Scholarly)
- </div>
- <div class="legend-item" data-tier="General Reference">
- <span class="swatch" style="background:var(--tier-ref-border)"></span>General Reference
- </div>
- </div>
- <div class="stats" id="statsBar">Loading live Google Sheet...</div>
- </div>
- </header>
+    <!-- Filter Bar / Legend -->
+    <div class="subbar" id="subbarEl">
+      <div class="legend" id="tierLegend">
+        <span style="color:var(--muted);font-weight:600;">Filter Tiers:</span>
+        <div class="legend-item" data-tier="Main">
+          <span class="swatch" style="background:var(--tier-main-border)"></span>Main
+        </div>
+        <div class="legend-item" data-tier="Supplemental">
+          <span class="swatch" style="background:var(--tier-supp-border)"></span>Supplemental
+        </div>
+        <div class="legend-item" data-tier="History (Narrative)">
+          <span class="swatch" style="background:var(--tier-hist-border)"></span>History (Narrative)
+        </div>
+        <div class="legend-item" data-tier="Supporting (Scholarly)">
+          <span class="swatch" style="background:var(--tier-schol-border)"></span>Supporting (Scholarly)
+        </div>
+        <div class="legend-item" data-tier="General Reference">
+          <span class="swatch" style="background:var(--tier-ref-border)"></span>General Reference
+        </div>
+      </div>
+      <div class="stats" id="statsBar">Loading live Google Sheet...</div>
+    </div>
+  </header>
 
- <!-- Main Timeline Stage -->
- <div class="viewport" id="viewport">
- <div class="lane-headers" id="laneHeaders"></div>
- <div class="chart-stage" id="chartStage">
- <!-- Timespan Highlight Band & Sticky Clamped Callouts -->
- <div id="timespanBand" class="timespan-band" style="display:none;"></div>
- <div id="timespanStartBadge" class="timespan-callout" style="display:none;"></div>
- <div id="timespanEndBadge" class="timespan-callout" style="display:none;"></div>
- </div>
- </div>
+  <!-- Main Timeline Stage -->
+  <div class="viewport" id="viewport">
+    <div class="lane-headers" id="laneHeaders"></div>
+    <div class="chart-stage" id="chartStage">
+      <!-- Timespan Highlight Band & Sticky Clamped Callouts -->
+      <div id="timespanBand" class="timespan-band" style="display:none;"></div>
+      <div id="timespanStartBadge" class="timespan-callout" style="display:none;"></div>
+      <div id="timespanEndBadge" class="timespan-callout" style="display:none;"></div>
+    </div>
+  </div>
 
- <!-- Slide-out Inspector Drawer -->
- <aside class="drawer" id="drawer">
- <button class="drawer-close" id="drawerClose">✕ Close</button>
- <div id="drawerContent"></div>
- </aside>
+  <!-- Slide-out Inspector Drawer -->
+  <aside class="drawer" id="drawer">
+    <button class="drawer-close" id="drawerClose">✕ Close</button>
+    <div id="drawerContent"></div>
+  </aside>
 
- <!-- Modal for Managing Sheet Tabs -->
- <div class="modal-backdrop" id="modalBackdrop">
- <div class="modal">
- <h3>Configure Published Google Sheet Tabs</h3>
- <p>
- Your published Google Sheet base URL is pre-configured. You can enable or disable tabs for the default Master Chronology view by prefixing a line with <code>!</code> to exclude it (e.g. <code>!17. 1976–1989 Late Cold War | 109145688</code>).
- </p>
- <label style="font-size:0.75rem;color:var(--muted);">Published Base CSV URL:</label>
- <input type="text" id="baseCsvUrlInput" />
- <label style="font-size:0.75rem;color:var(--muted);">
- Tab List (One per line: <code>Tab Name | GID</code>):
- </label>
- <textarea id="tabsConfigTextarea" rows="8"></textarea>
- <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
- <button id="btnResetDefaultTabs" title="Reset saved browser tab settings back to DEFAULT_TABS in index.html">↺ Reset to Code Defaults</button>
- <div style="display:flex;gap:8px;">
- <button id="btnCancelModal">Cancel</button>
- <button id="btnSaveModal" class="active">Save &amp; Reload</button>
- </div>
- </div>
- </div>
- </div>
+  <!-- Modal for Managing Sheet Tabs -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <h3>Configure Published Google Sheet Tabs</h3>
+      <p>
+        Your published Google Sheet base URL is pre-configured. You can enable or disable tabs for the default Master Chronology view by prefixing a line with <code>!</code> to exclude it (e.g. <code>!17. 1976–1989 Late Cold War | 109145688</code>).
+      </p>
+      <label style="font-size:0.75rem;color:var(--muted);">Published Base CSV URL:</label>
+      <input type="text" id="baseCsvUrlInput" />
+      <label style="font-size:0.75rem;color:var(--muted);">
+        Tab List (One per line: <code>Tab Name | GID</code>):
+      </label>
+      <textarea id="tabsConfigTextarea" rows="8"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <button id="btnResetDefaultTabs" title="Reset saved browser tab settings back to DEFAULT_TABS in index.html">↺ Reset to Code Defaults</button>
+        <div style="display:flex;gap:8px;">
+          <button id="btnCancelModal">Cancel</button>
+          <button id="btnSaveModal" class="active">Save &amp; Reload</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
- <script>
- /*************************************************************************
- * 1. CONFIGURATION & REGISTRY (All 19 Tabs Pre-Configured)
- *************************************************************************/
- const DEFAULT_PUBLISHED_BASE =
- "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1at2lgur-bO7C2rC1VWtHmhGgi2nD8OTASKWDnAE_dq2Of_nRblgbNKL4URoZs26U7-xzuK3O1WVK/pub";
+  <script>
+    /*************************************************************************
+     * 1. CONFIGURATION & REGISTRY (All 19 Tabs Pre-Configured)
+     *************************************************************************/
+    const DEFAULT_PUBLISHED_BASE =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1at2lgur-bO7C2rC1VWtHmhGgi2nD8OTASKWDnAE_dq2Of_nRblgbNKL4URoZs26U7-xzuK3O1WVK/pub";
 
- const DEFAULT_TABS = [
- { name: "01. Prehistory–1177 BCE Bronze Age", gid: "429450416", enabled: true },
- { name: "02. 1100–200 BCE Axial & Classical", gid: "1421629170", enabled: true },
- { name: "03. 200 BCE–500 CE Late Antiquity", gid: "1357270877", enabled: true },
- { name: "04. 500–1050 Early Middle Ages", gid: "122415868", enabled: true },
- { name: "05. 1050–1450 High Middle Ages", gid: "1719394092", enabled: true },
- { name: "06. 1450–1616 Renaissance", gid: "1081815791", enabled: true },
- { name: "07. 1600–1699 17th C & Baroque", gid: "1710586163", enabled: true },
- { name: "08. 1700–1799 Enlightenment", gid: "21083586", enabled: true },
- { name: "09. 1800–1848 Romanticism", gid: "677063922", enabled: true },
- { name: "10. 1849–1899 Victorian Realism", gid: "1982498947", enabled: true },
- { name: "11. 1900–1918 Belle Époque & WWI", gid: "295378452", enabled: true },
- { name: "12. 1919–1929 Roaring Twenties & High Modernism", gid: "660834264", enabled: true },
- { name: "13. 1930–1938 Depression & Rise of Totalitarianism", gid: "1478444962", enabled: true },
- { name: "14. 1939–1949 WWII, Holocaust & Postwar Dawn", gid: "114590073", enabled: true },
- { name: "15. 1950–1961 Early Cold War & Existentialism", gid: "635324859", enabled: true },
- { name: "16. 1962–1975 The Long Sixties & Global Boom", gid: "1784838157", enabled: true },
- { name: "17. 1976–1989 Late Cold War & Postmodernism", gid: "109145688", enabled: false },
- { name: "18. 1990–Pres Contemporary", gid: "1412638559", enabled: false },
- { name: "00. General Reference", gid: "1394318577", enabled: false }
- ];
+    const DEFAULT_TABS = [
+      { name: "01. Prehistory–1177 BCE Bronze Age", gid: "429450416", enabled: true },
+      { name: "02. 1100–200 BCE Axial & Classical", gid: "1421629170", enabled: true },
+      { name: "03. 200 BCE–500 CE Late Antiquity", gid: "1357270877", enabled: true },
+      { name: "04. 500–1050 Early Middle Ages", gid: "122415868", enabled: true },
+      { name: "05. 1050–1450 High Middle Ages", gid: "1719394092", enabled: true },
+      { name: "06. 1450–1616 Renaissance", gid: "1081815791", enabled: true },
+      { name: "07. 1600–1699 17th C & Baroque", gid: "1710586163", enabled: true },
+      { name: "08. 1700–1799 Enlightenment", gid: "21083586", enabled: true },
+      { name: "09. 1800–1848 Romanticism", gid: "677063922", enabled: true },
+      { name: "10. 1849–1899 Victorian Realism", gid: "1982498947", enabled: true },
+      { name: "11. 1900–1918 Belle Époque & WWI", gid: "295378452", enabled: true },
+      { name: "12. 1919–1929 Roaring Twenties & High Modernism", gid: "660834264", enabled: true },
+      { name: "13. 1930–1938 Depression & Rise of Totalitarianism", gid: "1478444962", enabled: true },
+      { name: "14. 1939–1949 WWII, Holocaust & Postwar Dawn", gid: "114590073", enabled: true },
+      { name: "15. 1950–1961 Early Cold War & Existentialism", gid: "635324859", enabled: true },
+      { name: "16. 1962–1975 The Long Sixties & Global Boom", gid: "1784838157", enabled: true },
+      { name: "17. 1976–1989 Late Cold War & Postmodernism", gid: "109145688", enabled: false },
+      { name: "18. 1990–Pres Contemporary", gid: "1412638559", enabled: false },
+      { name: "00. General Reference", gid: "1394318577", enabled: false }
+    ];
 
- const MACRO_DEFS = [
- { id: "Off-Grid", label: "Off-Grid & Cosmic", tint: "#a855f7", sub: "Space, Geologic, Polar, Global" },
- { id: "Africa", label: "Africa", tint: "#10b981", sub: "Northern & Sub-Saharan Africa" },
- { id: "Americas", label: "The Americas", tint: "#f97316", sub: "Latin America, Caribbean & North America" },
- { id: "Asia", label: "Asia", tint: "#ef4444", sub: "Western, Central, South, East & SE Asia" },
- { id: "Europe", label: "Europe", tint: "#3b82f6", sub: "Southern, Western, Northern, Eastern" },
- { id: "Oceania", label: "Oceania", tint: "#14b8a6", sub: "Australia, NZ, Melanesia, Polynesia" }
- ];
+    const MACRO_DEFS = [
+      { id: "Off-Grid", label: "Off-Grid & Cosmic", tint: "#a855f7", sub: "Space, Geologic, Polar, Global" },
+      { id: "Africa", label: "Africa", tint: "#10b981", sub: "Northern & Sub-Saharan Africa" },
+      { id: "Americas", label: "The Americas", tint: "#f97316", sub: "Latin America, Caribbean & North America" },
+      { id: "Asia", label: "Asia", tint: "#ef4444", sub: "Western, Central, South, East & SE Asia" },
+      { id: "Europe", label: "Europe", tint: "#3b82f6", sub: "Southern, Western, Northern, Eastern" },
+      { id: "Oceania", label: "Oceania", tint: "#14b8a6", sub: "Australia, NZ, Melanesia, Polynesia" }
+    ];
 
- const UN_CANONICAL_SUBREGIONS = {
- "Africa": ["Northern Africa", "Eastern Africa", "Middle Africa", "Southern Africa", "Western Africa"],
- "Americas": ["Latin America and the Caribbean", "Central America", "South America", "Caribbean", "Northern America"],
- "Asia": ["Western Asia", "Central Asia", "Southern Asia", "Eastern Asia", "South-eastern Asia", "Northern Asia"],
- "Europe": ["Southern Europe", "Western Europe", "Northern Europe", "Eastern Europe"],
- "Oceania": ["Australia and New Zealand", "Melanesia", "Micronesia", "Polynesia"],
- "Off-Grid": ["Space / Cosmic", "Planetary / Geologic", "Polar", "Global / Comparative", "Global Prehistory", "Global Macro-History", "Vertebrate Evolution"]
- };
+    const UN_CANONICAL_SUBREGIONS = {
+      "Africa": ["Northern Africa", "Eastern Africa", "Middle Africa", "Southern Africa", "Western Africa"],
+      "Americas": ["Latin America and the Caribbean", "Central America", "South America", "Caribbean", "Northern America"],
+      "Asia": ["Western Asia", "Central Asia", "Southern Asia", "Eastern Asia", "South-eastern Asia", "Northern Asia"],
+      "Europe": ["Southern Europe", "Western Europe", "Northern Europe", "Eastern Europe"],
+      "Oceania": ["Australia and New Zealand", "Melanesia", "Micronesia", "Polynesia"],
+      "Off-Grid": ["Space / Cosmic", "Planetary / Geologic", "Polar", "Global / Comparative", "Global Prehistory", "Global Macro-History", "Vertebrate Evolution"]
+    };
 
- const MIN_ZOOM = 0.45;
- const MAX_ZOOM = 2.25;
+    const MIN_ZOOM = 0.45;
+    const MAX_ZOOM = 2.25;
 
- let state = {
- baseCsvUrl: localStorage.getItem("ro_base_csv") || DEFAULT_PUBLISHED_BASE,
- tabs: JSON.parse(localStorage.getItem("ro_tabs_v2") || "null") || DEFAULT_TABS,
- activeTabKey: "ALL_VALIDATED",
- rows: [],
- yMode: "chrono",
- colorMode: "tier",
- strictCoordsOnly: true,
- expandedMacros: new Set(),
- showEmptySubregions: false,
- showThread: true,
- showSpans: true,
- searchQuery: "",
- hiddenTiers: new Set(),
- hoveredRowId: null,
- selectedRowId: null,
- zoom: 1.0,
- directWheelZoom: false,
- positionedMap: new Map()
- };
+    let state = {
+      baseCsvUrl: localStorage.getItem("ro_base_csv") || DEFAULT_PUBLISHED_BASE,
+      tabs: JSON.parse(localStorage.getItem("ro_tabs_v2") || "null") || DEFAULT_TABS,
+      activeTabKey: "ALL_VALIDATED",
+      rows: [],
+      yMode: "chrono",
+      colorMode: "tier",
+      strictCoordsOnly: true,
+      expandedMacros: new Set(),
+      showEmptySubregions: false,
+      showThread: true,
+      showSpans: true,
+      searchQuery: "",
+      hiddenTiers: new Set(),
+      hoveredRowId: null,
+      selectedRowId: null,
+      zoom: 1.0,
+      directWheelZoom: false,
+      positionedMap: new Map()
+    };
 
- let activeTimespanData = null;
+    let activeTimespanData = null;
 
- let panState = {
- isDown: false,
- hasMoved: false,
- startX: 0,
- startY: 0,
- scrollLeft: 0,
- scrollTop: 0,
- suppressClickUntil: 0
- };
+    let panState = {
+      isDown: false,
+      hasMoved: false,
+      startX: 0,
+      startY: 0,
+      scrollLeft: 0,
+      scrollTop: 0,
+      suppressClickUntil: 0
+    };
 
- /*************************************************************************
- * 2. HEADER OFFSET SYNCHRONIZER (Flawless zero-gap docking)
- *************************************************************************/
- function updateStickyHeaderOffset() {
- const header = document.getElementById('appHeader');
- const total = header ? header.offsetHeight : 96;
- document.documentElement.style.setProperty('--header-stack-height', `${total}px`);
- const viewport = document.getElementById('viewport');
- if (viewport) {
- viewport.style.paddingTop = `${total}px`;
- }
- }
- window.addEventListener('resize', updateStickyHeaderOffset);
- window.addEventListener('DOMContentLoaded', updateStickyHeaderOffset);
+    /*************************************************************************
+     * 2. HEADER OFFSET SYNCHRONIZER (Flawless zero-gap docking)
+     *************************************************************************/
+    function updateStickyHeaderOffset() {
+      const header = document.getElementById('appHeader');
+      const total = header ? header.offsetHeight : 96;
+      document.documentElement.style.setProperty('--header-stack-height', `${total}px`);
+      const viewport = document.getElementById('viewport');
+      if (viewport) {
+        viewport.style.paddingTop = `${total}px`;
+      }
+    }
+    window.addEventListener('resize', updateStickyHeaderOffset);
+    window.addEventListener('DOMContentLoaded', updateStickyHeaderOffset);
 
- /*************************************************************************
- * 3. CSV PARSER & ROW NORMALIZER
- *************************************************************************/
- function parseCSV(text) {
- const rows = [];
- let curRow = [];
- let curVal = "";
- let inQuotes = false;
+    /*************************************************************************
+     * 3. CSV PARSER & ROW NORMALIZER
+     *************************************************************************/
+    function parseCSV(text) {
+      const rows = [];
+      let curRow = [];
+      let curVal = "";
+      let inQuotes = false;
 
- for (let i = 0; i < text.length; i++) {
- const ch = text[i];
- const next = text[i + 1];
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        const next = text[i + 1];
 
- if (inQuotes) {
- if (ch === '"' && next === '"') {
- curVal += '"';
- i++;
- } else if (ch === '"') {
- inQuotes = false;
- } else {
- curVal += ch;
- }
- } else {
- if (ch === '"') {
- inQuotes = true;
- } else if (ch === ",") {
- curRow.push(curVal.trim());
- curVal = "";
- } else if (ch === "\n" || (ch === "\r" && next === "\n")) {
- if (ch === "\r") i++;
- curRow.push(curVal.trim());
- if (curRow.some(cell => cell !== "")) rows.push(curRow);
- curRow = [];
- curVal = "";
- } else {
- curVal += ch;
- }
- }
- }
- if (curVal.length > 0 || curRow.length > 0) {
- curRow.push(curVal.trim());
- if (curRow.some(cell => cell !== "")) rows.push(curRow);
- }
- return rows;
- }
+        if (inQuotes) {
+          if (ch === '"' && next === '"') {
+            curVal += '"';
+            i++;
+          } else if (ch === '"') {
+            inQuotes = false;
+          } else {
+            curVal += ch;
+          }
+        } else {
+          if (ch === '"') {
+            inQuotes = true;
+          } else if (ch === ",") {
+            curRow.push(curVal.trim());
+            curVal = "";
+          } else if (ch === "\n" || (ch === "\r" && next === "\n")) {
+            if (ch === "\r") i++;
+            curRow.push(curVal.trim());
+            if (curRow.some(cell => cell !== "")) rows.push(curRow);
+            curRow = [];
+            curVal = "";
+          } else {
+            curVal += ch;
+          }
+        }
+      }
+      if (curVal.length > 0 || curRow.length > 0) {
+        curRow.push(curVal.trim());
+        if (curRow.some(cell => cell !== "")) rows.push(curRow);
+      }
+      return rows;
+    }
 
- function inferYearsFromEraString(eraStr, readOrder) {
- if (!eraStr) return { start: Math.round(readOrder), end: Math.round(readOrder) };
- const s = eraStr.replace(/,/g, "");
+    function inferYearsFromEraString(eraStr, readOrder) {
+      if (!eraStr) return { start: Math.round(readOrder), end: Math.round(readOrder) };
+      const s = eraStr.replace(/,/g, "");
 
- const bilMatch = s.match(/(\d+(?:\.\d+)?)\s*(?:Billion|Ga)/i);
- if (bilMatch) {
- const y = -Math.round(parseFloat(bilMatch[1]) * 1e9);
- return { start: y, end: y };
- }
- const milMatch = s.match(/(\d+(?:\.\d+)?)\s*(?:Million|Ma)/i);
- if (milMatch) {
- const y = -Math.round(parseFloat(milMatch[1]) * 1e6);
- return { start: y, end: y };
- }
+      const bilMatch = s.match(/(\d+(?:\.\d+)?)\s*(?:Billion|Ga)/i);
+      if (bilMatch) {
+        const y = -Math.round(parseFloat(bilMatch[1]) * 1e9);
+        return { start: y, end: y };
+      }
+      const milMatch = s.match(/(\d+(?:\.\d+)?)\s*(?:Million|Ma)/i);
+      if (milMatch) {
+        const y = -Math.round(parseFloat(milMatch[1]) * 1e6);
+        return { start: y, end: y };
+      }
 
- const centMatch = s.match(/(\d+)(?:st|nd|rd|th)\s*C(?:entury|\.)?\s*(BCE|BC|CE|AD)?/i);
- if (centMatch) {
- const c = parseInt(centMatch[1], 10);
- const isBCE = /BCE|BC/i.test(centMatch[2] || s);
- const year = isBCE ? -((c - 1) * 100 + 50) : (c - 1) * 100 + 50;
- return { start: year, end: year };
- }
+      const centMatch = s.match(/(\d+)(?:st|nd|rd|th)\s*C(?:entury|\.)?\s*(BCE|BC|CE|AD)?/i);
+      if (centMatch) {
+        const c = parseInt(centMatch[1], 10);
+        const isBCE = /BCE|BC/i.test(centMatch[2] || s);
+        const year = isBCE ? -((c - 1) * 100 + 50) : (c - 1) * 100 + 50;
+        return { start: year, end: year };
+      }
 
- const clean = s.replace(/\(Pub\.?\s*\d{4}\)/gi, "");
- const nums = [...clean.matchAll(/(\d{1,6})\s*(BCE|BC|CE|AD)?/gi)];
- if (nums.length > 0) {
- const hasGlobalBCE = /BCE|BC/i.test(clean);
- const parseToken = (m) => {
- let val = parseInt(m[1], 10);
- const tag = m[2] ? m[2].toUpperCase() : "";
- if (tag === "BCE" || tag === "BC" || (!tag && hasGlobalBCE)) val = -val;
- return val;
- };
- const y1 = parseToken(nums[0]);
- const y2 = nums.length > 1 ? parseToken(nums[1]) : y1;
- return { start: Math.min(y1, y2), end: Math.max(y1, y2) };
- }
+      const clean = s.replace(/\(Pub\.?\s*\d{4}\)/gi, "");
+      const nums = [...clean.matchAll(/(\d{1,6})\s*(BCE|BC|CE|AD)?/gi)];
+      if (nums.length > 0) {
+        const hasGlobalBCE = /BCE|BC/i.test(clean);
+        const parseToken = (m) => {
+          let val = parseInt(m[1], 10);
+          const tag = m[2] ? m[2].toUpperCase() : "";
+          if (tag === "BCE" || tag === "BC" || (!tag && hasGlobalBCE)) val = -val;
+          return val;
+        };
+        const y1 = parseToken(nums[0]);
+        const y2 = nums.length > 1 ? parseToken(nums[1]) : y1;
+        return { start: Math.min(y1, y2), end: Math.max(y1, y2) };
+      }
 
- return { start: 0, end: 0 };
- }
+      return { start: 0, end: 0 };
+    }
 
- function inferRegionFallback(lang, lcc, title, notes) {
- const blob = `${lang} ${lcc} ${title} ${notes}`.toLowerCase();
- if (/egypt|nubia|aksum|ethiopia|swahili|yoruba|mali|sundiata|africa|coptic|ge'ez|amharic|maghreb/.test(blob)) {
- return { macro: "Africa", inter: "Northern / Sub-Saharan", sub: "Africa (Inferred)" };
- }
- if (/maya|aztec|inca|nahuatl|quiche|popol vuh|americas|united states|american|mexico|brazil|caribbean|andes/.test(blob)) {
- return { macro: "Americas", inter: "Americas", sub: "Americas (Inferred)" };
- }
- if (/polynesia|maori|aboriginal|australia|oceania|hawaii|pacific|melanesia/.test(blob)) {
- return { macro: "Oceania", inter: "—", sub: "Oceania (Inferred)" };
- }
- if (/sumer|akkad|babylon|assyria|ugarit|hebrew|persia|iran|turk|sanskrit|pali|india|china|chinese|japan|japanese|korea|vietnam|tibetan|mongol/.test(blob)) {
- return { macro: "Asia", inter: "—", sub: "Asia (Inferred)" };
- }
- if (/cosmic|universe|big bang|paleo|geolog|antarctica|arctic|biosphere/.test(blob)) {
- return { macro: "Off-Grid", inter: "Global / Cosmic", sub: "Off-Grid (Inferred)" };
- }
- return { macro: "Europe", inter: "—", sub: "Europe (Inferred)" };
- }
+    function inferRegionFallback(lang, lcc, title, notes) {
+      const blob = `${lang} ${lcc} ${title} ${notes}`.toLowerCase();
+      if (/egypt|nubia|aksum|ethiopia|swahili|yoruba|mali|sundiata|africa|coptic|ge'ez|amharic|maghreb/.test(blob)) {
+        return { macro: "Africa", inter: "Northern / Sub-Saharan", sub: "Africa (Inferred)" };
+      }
+      if (/maya|aztec|inca|nahuatl|quiche|popol vuh|americas|united states|american|mexico|brazil|caribbean|andes/.test(blob)) {
+        return { macro: "Americas", inter: "Americas", sub: "Americas (Inferred)" };
+      }
+      if (/polynesia|maori|aboriginal|australia|oceania|hawaii|pacific|melanesia/.test(blob)) {
+        return { macro: "Oceania", inter: "—", sub: "Oceania (Inferred)" };
+      }
+      if (/sumer|akkad|babylon|assyria|ugarit|hebrew|persia|iran|turk|sanskrit|pali|india|china|chinese|japan|japanese|korea|vietnam|tibetan|mongol/.test(blob)) {
+        return { macro: "Asia", inter: "—", sub: "Asia (Inferred)" };
+      }
+      if (/cosmic|universe|big bang|paleo|geolog|antarctica|arctic|biosphere/.test(blob)) {
+        return { macro: "Off-Grid", inter: "Global / Cosmic", sub: "Off-Grid (Inferred)" };
+      }
+      return { macro: "Europe", inter: "—", sub: "Europe (Inferred)" };
+    }
 
- function parseTabRows(csvText, tabName, tabIdx) {
- const rawGrid = parseCSV(csvText);
- let startIdx = 0;
- for (let i = 0; i < Math.min(5, rawGrid.length); i++) {
- if (/read\s*order/i.test(rawGrid[i][0] || "") || /title/i.test(rawGrid[i][2] || "")) {
- startIdx = i + 1;
- break;
- }
- }
+    function parseTabRows(csvText, tabName, tabIdx) {
+      const rawGrid = parseCSV(csvText);
+      let startIdx = 0;
+      for (let i = 0; i < Math.min(5, rawGrid.length); i++) {
+        if (/read\s*order/i.test(rawGrid[i][0] || "") || /title/i.test(rawGrid[i][2] || "")) {
+          startIdx = i + 1;
+          break;
+        }
+      }
 
- const parsed = [];
- for (let i = startIdx; i < rawGrid.length; i++) {
- const r = rawGrid[i];
- const roRaw = parseFloat(r[0]);
- const title = (r[2] || "").trim();
- if (isNaN(roRaw) || !title) continue;
+      const parsed = [];
+      for (let i = startIdx; i < rawGrid.length; i++) {
+        const r = rawGrid[i];
+        const roRaw = parseFloat(r[0]);
+        const title = (r[2] || "").trim();
+        if (isNaN(roRaw) || !title) continue;
 
- const eraDate = r[1] || "";
- const author = r[3] || "";
- const type = r[4] || "";
- const tier = r[5] || "Main";
- const origLang = r[6] || "";
- const lcc = r[7] || "";
- const readStatus = /^(yes|true|1|y)$/i.test((r[8] || "").trim());
- const dateCompleted = r[9] || "";
- const notes = r[10] || "";
- const rating = r[11] || "";
- const ownedStatus = /^(yes|true|1|y)$/i.test((r[12] || "").trim());
+        const eraDate = r[1] || "";
+        const author = r[3] || "";
+        const type = r[4] || "";
+        const tier = r[5] || "Main";
+        const origLang = r[6] || "";
+        const lcc = r[7] || "";
+        const readStatus = /^(yes|true|1|y)$/i.test((r[8] || "").trim());
+        const dateCompleted = r[9] || "";
+        const notes = r[10] || "";
+        const rating = r[11] || "";
+        const ownedStatus = /^(yes|true|1|y)$/i.test((r[12] || "").trim());
 
- let yStart = parseFloat((r[13] || "").replace(/,/g, ""));
- let yEnd = parseFloat((r[14] || "").replace(/,/g, ""));
- const hasExplicitCoords = !isNaN(yStart);
+        let yStart = parseFloat((r[13] || "").replace(/,/g, ""));
+        let yEnd = parseFloat((r[14] || "").replace(/,/g, ""));
+        const hasExplicitCoords = !isNaN(yStart);
 
- if (isNaN(yStart)) {
- const inf = inferYearsFromEraString(eraDate, roRaw);
- yStart = inf.start;
- yEnd = inf.end;
- } else if (isNaN(yEnd)) {
- yEnd = yStart;
- }
+        if (isNaN(yStart)) {
+          const inf = inferYearsFromEraString(eraDate, roRaw);
+          yStart = inf.start;
+          yEnd = inf.end;
+        } else if (isNaN(yEnd)) {
+          yEnd = yStart;
+        }
 
- let macro = (r[15] || "").trim();
- let inter = (r[16] || "").trim();
- let sub = (r[17] || "").trim();
- let secRegions = (r[18] || "").trim();
+        let macro = (r[15] || "").trim();
+        let inter = (r[16] || "").trim();
+        let sub = (r[17] || "").trim();
+        let secRegions = (r[18] || "").trim();
 
- if (!macro) {
- const infReg = inferRegionFallback(origLang, lcc, title, notes);
- macro = infReg.macro;
- inter = infReg.inter;
- sub = infReg.sub;
- }
+        if (!macro) {
+          const infReg = inferRegionFallback(origLang, lcc, title, notes);
+          macro = infReg.macro;
+          inter = infReg.inter;
+          sub = infReg.sub;
+        }
 
- const scopeSubtitle = (r[19] || "").trim();
- const workGroupId = (r[20] || "").trim();
- const pairedReadOrdersRaw = (r[21] || "").trim();
- const themeTags = (r[22] || "").trim();
- const authorBio = (r[23] || "").trim();
- const isbn = (r[24] || "").trim();
+        const scopeSubtitle = (r[19] || "").trim();
+        const workGroupId = (r[20] || "").trim();
+        const pairedReadOrdersRaw = (r[21] || "").trim();
+        const themeTags = (r[22] || "").trim();
+        const authorBio = (r[23] || "").trim();
+        const isbn = (r[24] || "").trim();
 
- const pairedList = pairedReadOrdersRaw
- ? pairedReadOrdersRaw.split(/[;,]/).map(s => parseFloat(s.trim())).filter(n => !isNaN(n))
- : [];
+        const pairedList = pairedReadOrdersRaw
+          ? pairedReadOrdersRaw.split(/[;,]/).map(s => parseFloat(s.trim())).filter(n => !isNaN(n))
+          : [];
 
- parsed.push({
- id: `tab${tabIdx}-row${i}-${roRaw}`,
- tabName,
- readOrder: roRaw,
- eraDate,
- title,
- author,
- type,
- tier,
- origLang,
- lcc,
- readStatus,
- dateCompleted,
- notes,
- rating,
- ownedStatus,
- yStart,
- yEnd: Math.max(yStart, yEnd),
- macro,
- inter,
- sub,
- secRegions,
- scopeSubtitle,
- workGroupId,
- pairedReadOrdersRaw,
- pairedList,
- themeTags,
- authorBio,
- isbn,
- hasExplicitCoords
- });
- }
- return parsed;
- }
+        parsed.push({
+          id: `tab${tabIdx}-row${i}-${roRaw}`,
+          tabName,
+          readOrder: roRaw,
+          eraDate,
+          title,
+          author,
+          type,
+          tier,
+          origLang,
+          lcc,
+          readStatus,
+          dateCompleted,
+          notes,
+          rating,
+          ownedStatus,
+          yStart,
+          yEnd: Math.max(yStart, yEnd),
+          macro,
+          inter,
+          sub,
+          secRegions,
+          scopeSubtitle,
+          workGroupId,
+          pairedReadOrdersRaw,
+          pairedList,
+          themeTags,
+          authorBio,
+          isbn,
+          hasExplicitCoords
+        });
+      }
+      return parsed;
+    }
 
- function buildCsvUrl(tab) {
- if (tab.gid.startsWith("http")) return tab.gid;
- const base = state.baseCsvUrl.split("?")[0];
- return `${base}?gid=${encodeURIComponent(tab.gid)}&single=true&output=csv`;
- }
+    function buildCsvUrl(tab) {
+      if (tab.gid.startsWith("http")) return tab.gid;
+      const base = state.baseCsvUrl.split("?")[0];
+      return `${base}?gid=${encodeURIComponent(tab.gid)}&single=true&output=csv`;
+    }
 
- async function loadActiveSelection() {
- let targetTabs = [];
+    async function loadActiveSelection() {
+      let targetTabs = [];
 
- if (state.activeTabKey === "ALL_VALIDATED") {
- targetTabs = state.tabs
- .map((t, idx) => ({ ...t, idx }))
- .filter(t => t.enabled !== false);
- if (targetTabs.length === 0 && state.tabs.length > 0) {
- targetTabs = [{ ...state.tabs[0], idx: 0 }];
- }
- } else {
- const idx = parseInt(state.activeTabKey, 10) || 0;
- const tab = state.tabs[idx] || state.tabs[0];
- targetTabs = [{ ...tab, idx }];
- }
+      if (state.activeTabKey === "ALL_VALIDATED") {
+        targetTabs = state.tabs
+          .map((t, idx) => ({ ...t, idx }))
+          .filter(t => t.enabled !== false);
+        if (targetTabs.length === 0 && state.tabs.length > 0) {
+          targetTabs = [{ ...state.tabs[0], idx: 0 }];
+        }
+      } else {
+        const idx = parseInt(state.activeTabKey, 10) || 0;
+        const tab = state.tabs[idx] || state.tabs[0];
+        targetTabs = [{ ...tab, idx }];
+      }
 
- const label = state.activeTabKey === "ALL_VALIDATED"
- ? `Master Chronology (${targetTabs.length} validated tabs)`
- : targetTabs[0].name;
+      const label = state.activeTabKey === "ALL_VALIDATED"
+        ? `Master Chronology (${targetTabs.length} validated tabs)`
+        : targetTabs[0].name;
 
- document.getElementById("statsBar").textContent = `Fetching live CSV for ${label}...`;
+      document.getElementById("statsBar").textContent = `Fetching live CSV for ${label}...`;
 
- const settled = await Promise.allSettled(
- targetTabs.map(async (t) => {
- const url = buildCsvUrl(t);
- const res = await fetch(url, { cache: "no-store" });
- if (!res.ok) throw new Error(`${t.name} (HTTP ${res.status})`);
- const text = await res.text();
- if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
- throw new Error(`${t.name} (Tab not published)`);
- }
- return parseTabRows(text, t.name, t.idx);
- })
- );
+      try {
+        const settled = await Promise.allSettled(
+          targetTabs.map(async (t) => {
+            const url = buildCsvUrl(t);
+            const res = await fetch(url, { cache: "no-store" });
+            if (!res.ok) throw new Error(`${t.name} (HTTP ${res.status})`);
+            const text = await res.text();
+            if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
+              throw new Error(`${t.name} (Tab not published)`);
+            }
+            return parseTabRows(text, t.name, t.idx);
+          })
+        );
 
- const loadedRows = [];
- settled.forEach(r => {
- if (r.status === "fulfilled") loadedRows.push(...r.value);
- });
+        const loadedRows = [];
+        settled.forEach(r => {
+          if (r.status === "fulfilled") loadedRows.push(...r.value);
+        });
 
- loadedRows.sort((a, b) => a.readOrder - b.readOrder);
+        loadedRows.sort((a, b) => a.readOrder - b.readOrder);
 
- state.rows = state.strictCoordsOnly
- ? loadedRows.filter(r => r.hasExplicitCoords)
- : loadedRows;
+        state.rows = state.strictCoordsOnly
+          ? loadedRows.filter(r => r.hasExplicitCoords)
+          : loadedRows;
 
- if (state.rows.length === 0 && loadedRows.length > 0) {
- state.rows = loadedRows;
- }
+        if (state.rows.length === 0 && loadedRows.length > 0) {
+          state.rows = loadedRows;
+        }
 
- renderChart();
- updateStickyHeaderOffset();
- }
+        renderChart();
+        updateStickyHeaderOffset();
+      } catch (err) {
+        document.getElementById("statsBar").textContent = `Error loading Google Sheet tabs: ${err.message}`;
+      }
+    }
 
- /*************************************************************************
- * 4. TIME SCALE & DEDICATED ERA BANNER CORRIDORS
- *************************************************************************/
- function formatYearLabel(y) {
- if (y <= -1e9) return `${(Math.abs(y) / 1e9).toFixed(1)} Ga`;
- if (y <= -1e6) return `${(Math.abs(y) / 1e6).toFixed(0)} Ma`;
- if (y < 0) return `${Math.abs(Math.round(y)).toLocaleString()} BCE`;
- if (y === 0) return `1 CE`;
- return `${Math.round(y)} CE`;
- }
+    /*************************************************************************
+     * 4. TIME SCALE & DEDICATED ERA BANNER CORRIDORS
+     *************************************************************************/
+    function formatYearLabel(y) {
+      if (y <= -1e9) return `${(Math.abs(y) / 1e9).toFixed(1)} Ga`;
+      if (y <= -1e6) return `${(Math.abs(y) / 1e6).toFixed(0)} Ma`;
+      if (y < 0) return `${Math.abs(Math.round(y)).toLocaleString()} BCE`;
+      if (y === 0) return `1 CE`;
+      return `${Math.round(y)} CE`;
+    }
 
- const HISTORIC_MILESTONES = [
+    const HISTORIC_MILESTONES = [
       -13.8e9, -4.54e9, -541e6, -375e6, -252e6, -66e6, -2e6, -40000,
       -10000, -5000, -3500, -2500, -1750, -1177, -1000, -753, -500, -431, -323, -221, -200, -44, 0,
       70, 313, 476, 500, 622, 800, 1000, 1066, 1215, 1348, 1453, 1492, 1500,
@@ -1346,10 +1359,8 @@
       RAW_ERAS.forEach(era => {
         if (maxY < era.min || minY >= era.max) return;
 
-        // Rows belonging strictly to this era window [min, max)
         const eraRows = rows.filter(r => r.yStart >= era.min && r.yStart < era.max);
 
-        // Find maximum cards stacked in any single lane for this era
         const laneCounts = {};
         eraRows.forEach(r => {
           const key = r.sub || r.macro || "Off-Grid";
@@ -1429,220 +1440,220 @@
     }
 
     function resolveAccordionLanes(rows) {
- const activeSubsByMacro = new Map();
- MACRO_DEFS.forEach(m => activeSubsByMacro.set(m.id, new Set()));
+      const activeSubsByMacro = new Map();
+      MACRO_DEFS.forEach(m => activeSubsByMacro.set(m.id, new Set()));
 
- rows.forEach(r => {
- const macroKey = MACRO_DEFS.some(m => m.id === r.macro) ? r.macro : "Off-Grid";
- const subName = (r.sub || "").trim() || macroKey;
- activeSubsByMacro.get(macroKey).add(subName);
- });
+      rows.forEach(r => {
+        const macroKey = MACRO_DEFS.some(m => m.id === r.macro) ? r.macro : "Off-Grid";
+        const subName = (r.sub || "").trim() || macroKey;
+        activeSubsByMacro.get(macroKey).add(subName);
+      });
 
- const macroBanners = [];
- const leafLanes = [];
+      const macroBanners = [];
+      const leafLanes = [];
 
- MACRO_DEFS.forEach(m => {
- const isExpanded = state.expandedMacros.has(m.id);
- const rowCount = rows.filter(r => (r.macro === m.id) || (!m.id && r.macro === "Off-Grid")).length;
+      MACRO_DEFS.forEach(m => {
+        const isExpanded = state.expandedMacros.has(m.id);
+        const rowCount = rows.filter(r => (r.macro === m.id) || (!m.id && r.macro === "Off-Grid")).length;
 
- let constituentSubs = [];
- if (state.showEmptySubregions && UN_CANONICAL_SUBREGIONS[m.id]) {
- constituentSubs = [...UN_CANONICAL_SUBREGIONS[m.id]];
- } else {
- constituentSubs = [...activeSubsByMacro.get(m.id)];
- if (constituentSubs.length === 0) constituentSubs = [m.id];
- }
+        let constituentSubs = [];
+        if (state.showEmptySubregions && UN_CANONICAL_SUBREGIONS[m.id]) {
+          constituentSubs = [...UN_CANONICAL_SUBREGIONS[m.id]];
+        } else {
+          constituentSubs = [...activeSubsByMacro.get(m.id)];
+          if (constituentSubs.length === 0) constituentSubs = [m.id];
+        }
 
- if (!isExpanded) {
- const laneId = m.id;
- leafLanes.push({
- id: laneId,
- macro: m.id,
- sub: m.id,
- label: m.label,
- subLabel: m.sub,
- tint: m.tint,
- isMacroCollapsed: true
- });
- macroBanners.push({
- macro: m.id,
- label: m.label,
- sub: m.sub,
- tint: m.tint,
- colSpan: 1,
- isExpanded: false,
- count: rowCount
- });
- } else {
- macroBanners.push({
- macro: m.id,
- label: m.label,
- sub: m.sub,
- tint: m.tint,
- colSpan: constituentSubs.length,
- isExpanded: true,
- count: rowCount
- });
+        if (!isExpanded) {
+          const laneId = m.id;
+          leafLanes.push({
+            id: laneId,
+            macro: m.id,
+            sub: m.id,
+            label: m.label,
+            subLabel: m.sub,
+            tint: m.tint,
+            isMacroCollapsed: true
+          });
+          macroBanners.push({
+            macro: m.id,
+            label: m.label,
+            sub: m.sub,
+            tint: m.tint,
+            colSpan: 1,
+            isExpanded: false,
+            count: rowCount
+          });
+        } else {
+          macroBanners.push({
+            macro: m.id,
+            label: m.label,
+            sub: m.sub,
+            tint: m.tint,
+            colSpan: constituentSubs.length,
+            isExpanded: true,
+            count: rowCount
+          });
 
- constituentSubs.forEach(subName => {
- const laneId = `${m.id}|||${subName}`;
- const subCount = rows.filter(r => r.macro === m.id && ((r.sub || "").trim() === subName || (!r.sub && subName === m.id))).length;
- leafLanes.push({
- id: laneId,
- macro: m.id,
- sub: subName,
- label: subName,
- subLabel: `${m.label} (${subCount})`,
- tint: m.tint,
- isMacroCollapsed: false
- });
- });
- }
- });
+          constituentSubs.forEach(subName => {
+            const laneId = `${m.id}|||${subName}`;
+            const subCount = rows.filter(r => r.macro === m.id && ((r.sub || "").trim() === subName || (!r.sub && subName === m.id))).length;
+            leafLanes.push({
+              id: laneId,
+              macro: m.id,
+              sub: subName,
+              label: subName,
+              subLabel: `${m.label} (${subCount})`,
+              tint: m.tint,
+              isMacroCollapsed: false
+            });
+          });
+        }
+      });
 
- return { macroBanners, leafLanes };
- }
+      return { macroBanners, leafLanes };
+    }
 
- function getTierClass(tier) {
- const t = (tier || "").toLowerCase();
- if (t.includes("history")) return "tier-hist";
- if (t.includes("supporting") || t.includes("scholar")) return "tier-schol";
- if (t.includes("supplemental")) return "tier-supp";
- if (t.includes("reference")) return "tier-ref";
- return "tier-main";
- }
+    function getTierClass(tier) {
+      const t = (tier || "").toLowerCase();
+      if (t.includes("history")) return "tier-hist";
+      if (t.includes("supporting") || t.includes("scholar")) return "tier-schol";
+      if (t.includes("supplemental")) return "tier-supp";
+      if (t.includes("reference")) return "tier-ref";
+      return "tier-main";
+    }
 
- /*************************************************************************
- * 5. CHART RENDERER (Clean Corridors, Dynamic Dates & Sticky Floating Era)
- *************************************************************************/
- function renderChart() {
- const rows = state.rows;
- const { macroBanners, leafLanes } = resolveAccordionLanes(rows);
- const z = state.zoom;
+    /*************************************************************************
+     * 5. CHART RENDERER (Clean Corridors, Dynamic Dates & Sticky Floating Era)
+     *************************************************************************/
+    function renderChart() {
+      const rows = state.rows;
+      const { macroBanners, leafLanes } = resolveAccordionLanes(rows);
+      const z = state.zoom;
 
- document.getElementById("zoomReadout").textContent = `${Math.round(z * 100)}%`;
+      document.getElementById("zoomReadout").textContent = `${Math.round(z * 100)}%`;
 
- const timeAxisWidth = 115;
- const baseMinLaneWidth = 210;
- const minLaneWidth = Math.round(baseMinLaneWidth * z);
+      const timeAxisWidth = 115;
+      const baseMinLaneWidth = 210;
+      const minLaneWidth = Math.round(baseMinLaneWidth * z);
 
- const viewport = document.getElementById("viewport");
- const totalWidth = Math.max(window.innerWidth, timeAxisWidth + leafLanes.length * minLaneWidth);
- viewport.style.width = `${totalWidth}px`;
+      const viewport = document.getElementById("viewport");
+      const totalWidth = Math.max(window.innerWidth, timeAxisWidth + leafLanes.length * minLaneWidth);
+      viewport.style.width = `${totalWidth}px`;
 
- const gridTemplate = `${timeAxisWidth}px repeat(${leafLanes.length}, minmax(${minLaneWidth}px, 1fr))`;
+      const gridTemplate = `${timeAxisWidth}px repeat(${leafLanes.length}, minmax(${minLaneWidth}px, 1fr))`;
 
- // 1. Two-Tier Sticky Header Row (Flush Against Filter Bar)
- const laneHeaders = document.getElementById("laneHeaders");
- laneHeaders.style.gridTemplateColumns = gridTemplate;
- laneHeaders.style.gridTemplateRows = "auto auto";
+      // 1. Two-Tier Sticky Header Row (Flush Against Filter Bar)
+      const laneHeaders = document.getElementById("laneHeaders");
+      laneHeaders.style.gridTemplateColumns = gridTemplate;
+      laneHeaders.style.gridTemplateRows = "auto auto";
 
- let headerHTML = `
- <div class="time-axis-header">
- ${state.yMode === "chrono" ? "CHRONOLOGY" : "READ SEQ"}
- <span class="sub">${state.yMode === "chrono" ? "Time Axis" : "Order"}</span>
- </div>
- `;
+      let headerHTML = `
+        <div class="time-axis-header">
+          ${state.yMode === "chrono" ? "CHRONOLOGY" : "READ SEQ"}
+          <span class="sub">${state.yMode === "chrono" ? "Time Axis" : "Order"}</span>
+        </div>
+      `;
 
- // Tier 1: Continent Brackets
- macroBanners.forEach(mb => {
- headerHTML += `
- <div class="macro-bracket-cell" style="grid-column: span ${mb.colSpan}; border-top: 3px solid ${mb.tint};">
- <div class="macro-title-group">
- <span class="macro-tint-dot" style="background:${mb.tint};"></span>
- <span class="macro-bracket-title">${mb.label}</span>
- <span class="macro-count-badge">${mb.count}</span>
- </div>
- <button class="macro-toggle-btn" data-macro="${mb.macro}" title="${mb.isExpanded ? 'Collapse to single macro lane' : 'Expand into subregions'}">
- ${mb.isExpanded ? "⊟ Collapse" : "⊞ Expand"}
- </button>
- </div>
- `;
- });
+      // Tier 1: Continent Brackets
+      macroBanners.forEach(mb => {
+        headerHTML += `
+          <div class="macro-bracket-cell" style="grid-column: span ${mb.colSpan}; border-top: 3px solid ${mb.tint};">
+            <div class="macro-title-group">
+              <span class="macro-tint-dot" style="background:${mb.tint};"></span>
+              <span class="macro-bracket-title">${mb.label}</span>
+              <span class="macro-count-badge">${mb.count}</span>
+            </div>
+            <button class="macro-toggle-btn" data-macro="${mb.macro}" title="${mb.isExpanded ? 'Collapse to single macro lane' : 'Expand into subregions'}">
+              ${mb.isExpanded ? "⊟ Collapse" : "⊞ Expand"}
+            </button>
+          </div>
+        `;
+      });
 
- // Tier 2: Leaf Headers
- leafLanes.forEach(ll => {
- headerHTML += `
- <div class="lane-leaf-header">
- <div class="lane-leaf-title" title="${ll.label}">${ll.label}</div>
- <div class="lane-leaf-sub" title="${ll.subLabel}">${ll.subLabel}</div>
- </div>
- `;
- });
+      // Tier 2: Leaf Headers
+      leafLanes.forEach(ll => {
+        headerHTML += `
+          <div class="lane-leaf-header">
+            <div class="lane-leaf-title" title="${ll.label}">${ll.label}</div>
+            <div class="lane-leaf-sub" title="${ll.subLabel}">${ll.subLabel}</div>
+          </div>
+        `;
+      });
 
- laneHeaders.innerHTML = headerHTML;
+      laneHeaders.innerHTML = headerHTML;
 
- // Attach Expand/Collapse Handlers
- laneHeaders.querySelectorAll(".macro-toggle-btn").forEach(btn => {
- btn.addEventListener("click", (e) => {
- e.stopPropagation();
- const macroId = btn.getAttribute("data-macro");
- if (state.expandedMacros.has(macroId)) {
- state.expandedMacros.delete(macroId);
- } else {
- state.expandedMacros.add(macroId);
- }
- renderChart();
- updateStickyHeaderOffset();
- });
- });
+      // Attach Expand/Collapse Handlers
+      laneHeaders.querySelectorAll(".macro-toggle-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const macroId = btn.getAttribute("data-macro");
+          if (state.expandedMacros.has(macroId)) {
+            state.expandedMacros.delete(macroId);
+          } else {
+            state.expandedMacros.add(macroId);
+          }
+          renderChart();
+          updateStickyHeaderOffset();
+        });
+      });
 
- const stage = document.getElementById("chartStage");
- stage.innerHTML = `
- <div id="timespanBand" class="timespan-band" style="display:none;"></div>
- <div id="timespanStartBadge" class="timespan-callout" style="display:none;"></div>
- <div id="timespanEndBadge" class="timespan-callout" style="display:none;"></div>
- `;
+      const stage = document.getElementById("chartStage");
+      stage.innerHTML = `
+        <div id="timespanBand" class="timespan-band" style="display:none;"></div>
+        <div id="timespanStartBadge" class="timespan-callout" style="display:none;"></div>
+        <div id="timespanEndBadge" class="timespan-callout" style="display:none;"></div>
+      `;
 
- if (rows.length === 0) {
- stage.style.height = "400px";
- return;
- }
+      if (rows.length === 0) {
+        stage.style.height = "400px";
+        return;
+      }
 
- // Filter & Dynamic 1-N Reading Numbers
- const q = state.searchQuery.trim().toLowerCase();
- const isRowVisible = (n) => {
- if (state.hiddenTiers.has(n.tier)) return false;
- if (q) {
- const hay = `${n.title} ${n.author} ${n.sub} ${n.macro} ${n.origLang} ${n.notes} ${n.themeTags || ""}`.toLowerCase();
- if (!hay.includes(q)) return false;
- }
- if (state.colorMode === "read" && !n.readStatus) return false;
- if (state.colorMode === "owned" && !n.ownedStatus) return false;
- return true;
- };
+      // Filter & Dynamic 1-N Reading Numbers
+      const q = state.searchQuery.trim().toLowerCase();
+      const isRowVisible = (n) => {
+        if (state.hiddenTiers.has(n.tier)) return false;
+        if (q) {
+          const hay = `${n.title} ${n.author} ${n.sub} ${n.macro} ${n.origLang} ${n.notes} ${n.themeTags || ""}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        if (state.colorMode === "read" && !n.readStatus) return false;
+        if (state.colorMode === "owned" && !n.ownedStatus) return false;
+        return true;
+      };
 
- const dynamicSeqMap = new Map();
- let seqCounter = 1;
- rows.forEach(r => {
- if (isRowVisible(r)) {
- dynamicSeqMap.set(r.id, seqCounter++);
- }
- });
+      const dynamicSeqMap = new Map();
+      let seqCounter = 1;
+      rows.forEach(r => {
+        if (isRowVisible(r)) {
+          dynamicSeqMap.set(r.id, seqCounter++);
+        }
+      });
 
- // Layout Geometry
- const CARD_HEIGHT = Math.round(68 * Math.max(0.72, Math.min(1.35, z)));
- const CARD_GAP = Math.round(10 * z);
- let totalStageHeight = 1000;
- let scaler = null;
+      // Layout Geometry
+      const CARD_HEIGHT = Math.round(68 * Math.max(0.72, Math.min(1.35, z)));
+      const CARD_GAP = Math.round(12 * z);
+      let totalStageHeight = 1000;
+      let scaler = null;
 
- if (state.yMode === "chrono") {
- scaler = buildChronoScaler(rows, z);
- totalStageHeight = scaler.totalHeight;
- } else {
- totalStageHeight = rows.length * (CARD_HEIGHT + Math.round(16 * z)) + 120;
- }
+      if (state.yMode === "chrono") {
+        scaler = buildChronoScaler(rows, z);
+        totalStageHeight = scaler.totalHeight;
+      } else {
+        totalStageHeight = rows.length * (CARD_HEIGHT + Math.round(16 * z)) + 120;
+      }
 
- const usableWidth = totalWidth - timeAxisWidth;
- const laneWidth = usableWidth / leafLanes.length;
+      const usableWidth = totalWidth - timeAxisWidth;
+      const laneWidth = usableWidth / leafLanes.length;
 
- const laneIndexMap = new Map();
- leafLanes.forEach((l, idx) => laneIndexMap.set(l.id, idx));
+      const laneIndexMap = new Map();
+      leafLanes.forEach((l, idx) => laneIndexMap.set(l.id, idx));
 
- const laneBottomTracker = new Array(leafLanes.length).fill(Math.round(24 * z));
- const positionedNodes = [];
+      const laneBottomTracker = new Array(leafLanes.length).fill(Math.round(24 * z));
+      const positionedNodes = [];
 
- if (state.yMode === "chrono" && scaler) {
+      if (state.yMode === "chrono" && scaler) {
         // Place era by era with strict vertical boundaries and multi-lane clamping
         scaler.bands.forEach(b => {
           // Clamp all lane trackers to this era's contentTop
@@ -1730,26 +1741,25 @@
       }
 
       totalStageHeight = Math.max(totalStageHeight, Math.max(...laneBottomTracker) + 120);
- stage.style.height = `${totalStageHeight}px`;
+      stage.style.height = `${totalStageHeight}px`;
 
- state.positionedMap.clear();
- positionedNodes.forEach(n => state.positionedMap.set(n.id, n));
+      state.positionedMap.clear();
+      positionedNodes.forEach(n => state.positionedMap.set(n.id, n));
 
- // Background Swimlane Grid
- const bgGrid = document.createElement("div");
- bgGrid.className = "lane-bg-grid";
- bgGrid.style.gridTemplateColumns = gridTemplate;
- bgGrid.innerHTML = `<div class="lane-bg-col"></div>` + leafLanes.map(() => `<div class="lane-bg-col"></div>`).join("");
- stage.appendChild(bgGrid);
+      // Background Swimlane Grid
+      const bgGrid = document.createElement("div");
+      bgGrid.className = "lane-bg-grid";
+      bgGrid.style.gridTemplateColumns = gridTemplate;
+      bgGrid.innerHTML = `<div class="lane-bg-col"></div>` + leafLanes.map(() => `<div class="lane-bg-col"></div>`).join("");
+      stage.appendChild(bgGrid);
 
- // Left Chronology Rail
- const stickyRail = document.createElement("div");
- stickyRail.className = "sticky-chrono-rail";
- stickyRail.style.width = `${timeAxisWidth}px`;
- stickyRail.style.height = `${totalStageHeight}px`;
+      // Left Chronology Rail
+      const stickyRail = document.createElement("div");
+      stickyRail.className = "sticky-chrono-rail";
+      stickyRail.style.width = `${timeAxisWidth}px`;
+      stickyRail.style.height = `${totalStageHeight}px`;
 
- if (state.yMode === "chrono" && scaler) {
- if (state.yMode === "chrono" && scaler) {
+      if (state.yMode === "chrono" && scaler) {
         // Collect & prioritize ticks: Priority 1 (Era Starts & Protected Milestones), Priority 2 (Book Anchors), Priority 3 (Grid Steps)
         const rawTicks = [];
 
@@ -1776,7 +1786,6 @@
 
         // 2. Curated Historical Milestones (1000 BCE, 1492 CE, 1500 CE, 1776 CE, etc.)
         HISTORIC_MILESTONES.forEach(mYear => {
-          // Check if milestone falls within any active era band
           const b = scaler.bands.find(band => mYear >= band.min && mYear < band.max);
           if (b) {
             const yPx = scaler.yearToY(mYear);
@@ -1836,11 +1845,9 @@
         });
         const uniqueTicks = Array.from(labelMap.values());
 
-        // Always accept Priority 1 milestones
         const acceptedTicks = uniqueTicks.filter(t => t.priority === 1);
         acceptedTicks.sort((a, b) => a.yPx - b.yPx);
 
-        // Fill in Priority 2 (books) and Priority 3 (grid) only where clearance >= 22px
         const nonP1 = uniqueTicks.filter(t => t.priority > 1).sort((a, b) => a.priority - b.priority || a.yPx - b.yPx);
         nonP1.forEach(t => {
           if (acceptedTicks.every(a => Math.abs(t.yPx - a.yPx) >= 22)) {
@@ -1884,637 +1891,637 @@
 
       stage.appendChild(stickyRail);
 
- // SVG Connectors (Thread + Col V Paired Arcs)
- renderSvgLayer(totalWidth, totalStageHeight, positionedNodes, z);
-
- // Cards & Duration Bars
- let visibleCount = 0;
- let readCount = 0;
- let ownedCount = 0;
-
- positionedNodes.forEach(n => {
- if (n.readStatus) readCount++;
- if (n.ownedStatus) ownedCount++;
- if (n.visible) visibleCount++;
-
- if (state.showSpans && state.yMode === "chrono" && n.endY - n.top > CARD_HEIGHT + 8) {
- const bar = document.createElement("div");
- bar.className = "duration-bar";
- bar.style.left = `${n.left - 6}px`;
- bar.style.top = `${n.top}px`;
- bar.style.height = `${n.endY - n.top}px`;
- bar.style.background = n.tier.includes("History") ? "var(--tier-hist-border)" : "var(--tier-schol-border)";
- if (!n.visible) bar.style.opacity = "0.08";
- stage.appendChild(bar);
- }
-
- const card = document.createElement("div");
- card.id = `card-${n.id}`;
- card.className = `book-card ${getTierClass(n.tier)} ${n.visible ? "" : "dimmed"}`;
- card.style.left = `${n.left}px`;
- card.style.top = `${n.top}px`;
- card.style.width = `${n.width}px`;
- card.style.height = `${CARD_HEIGHT}px`;
-
- const badgeLabel = n.visible ? `#${n.displaySeq}` : "—";
- const hasPairs = n.pairedList && n.pairedList.length > 0;
-
- card.innerHTML = `
- <div class="card-top">
- <span class="ro-badge">${badgeLabel}</span>
- ${hasPairs ? '<span class="paired-badge">⇄ Paired</span>' : ""}
- <span class="subregion-pill" title="${n.macro} > ${n.inter} > ${n.sub}">${n.sub || n.macro}</span>
- </div>
- <div class="card-title" title="${n.title.replace(/\"/g, '&quot;')}">${n.title}</div>
- <div class="card-meta">${n.author} • ${n.eraDate}</div>
- `;
-
- card.addEventListener("mouseenter", () => {
- state.hoveredRowId = n.id;
- showTimespanHighlight(n.top, n.endY, formatYearLabel(n.yStart), formatYearLabel(n.yEnd));
- highlightPairedCards(n);
- });
-
- card.addEventListener("mouseleave", () => {
- state.hoveredRowId = null;
- if (!state.selectedRowId) {
- hideTimespanHighlight();
- clearPairedHighlight();
- } else {
- const selNode = state.positionedMap.get(state.selectedRowId);
- if (selNode) {
- showTimespanHighlight(selNode.top, selNode.endY, formatYearLabel(selNode.yStart), formatYearLabel(selNode.yEnd));
- highlightPairedCards(selNode);
- }
- }
- });
-
- card.addEventListener("click", (e) => {
- if (Date.now() < panState.suppressClickUntil) {
- e.stopPropagation();
- return;
- }
- state.selectedRowId = n.id;
- showTimespanHighlight(n.top, n.endY, formatYearLabel(n.yStart), formatYearLabel(n.yEnd));
- highlightPairedCards(n);
- openDrawer(n);
- });
-
- stage.appendChild(card);
- });
-
- const coordCount = rows.filter(r => r.hasExplicitCoords).length;
- document.getElementById("statsBar").innerHTML = `
- <span>Showing <strong>1–${visibleCount}</strong> of ${rows.length} Works</span>
- <span>Read: <strong>${readCount}</strong></span>
- <span>Owned: <strong>${ownedCount}</strong></span>
- <span>Coords: <strong>${coordCount}/${rows.length}</strong></span>
- <span class="nav-hint">🖐️ Drag canvas to pan • Ctrl/Shift + Wheel to zoom</span>
- `;
- }
-
- /*************************************************************************
- * 6. SVG CONNECTORS & BIDIRECTIONAL MAPPING ARCS
- *************************************************************************/
- function renderSvgLayer(totalWidth, totalHeight, nodes, z) {
- const stage = document.getElementById("chartStage");
- const svgNS = "http://www.w3.org/2000/svg";
- const svg = document.createElementNS(svgNS, "svg");
- svg.setAttribute("class", "svg-overlay");
- svg.setAttribute("width", totalWidth);
- svg.setAttribute("height", totalHeight);
-
- const visibleSorted = nodes
- .filter(n => n.visible)
- .sort((a, b) => a.readOrder - b.readOrder);
-
- // Global Thread
- if (state.showThread && visibleSorted.length > 1) {
- let d = "";
- visibleSorted.forEach((pt, idx) => {
- if (idx === 0) {
- d += `M ${pt.centerX} ${pt.centerY} `;
- } else {
- const prev = visibleSorted[idx - 1];
- const midY = (prev.centerY + pt.centerY) / 2;
- d += `C ${prev.centerX} ${midY}, ${pt.centerX} ${midY}, ${pt.centerX} ${pt.centerY} `;
- }
- });
- const path = document.createElementNS(svgNS, "path");
- path.setAttribute("d", d);
- path.setAttribute("fill", "none");
- path.setAttribute("stroke", "rgba(245, 158, 11, 0.4)");
- path.setAttribute("stroke-width", String(Math.max(1.5, 2.0 * z)));
- path.setAttribute("stroke-dasharray", "5,4");
- svg.appendChild(path);
- }
-
- // Col V Paired Read Order Arcs
- const activeId = state.hoveredRowId || state.selectedRowId;
- if (activeId) {
- const activeNode = state.positionedMap.get(activeId);
- if (activeNode && activeNode.pairedList && activeNode.pairedList.length > 0) {
- activeNode.pairedList.forEach(pairedRo => {
- const target = nodes.find(n => Math.abs(n.readOrder - pairedRo) < 0.0001);
- if (target) {
- const midY = (activeNode.centerY + target.centerY) / 2;
- const curveOffset = Math.min(180, Math.abs(activeNode.centerX - target.centerX) * 0.4);
- const ctrlY = midY - curveOffset * 0.3;
-
- const d = `M ${activeNode.centerX} ${activeNode.centerY} Q ${(activeNode.centerX + target.centerX)/2} ${ctrlY}, ${target.centerX} ${target.centerY}`;
- const arc = document.createElementNS(svgNS, "path");
- arc.setAttribute("d", d);
- arc.setAttribute("fill", "none");
- arc.setAttribute("stroke", "#38bdf8");
- arc.setAttribute("stroke-width", "2.5");
- arc.setAttribute("stroke-dasharray", "6,3");
- svg.appendChild(arc);
- }
- });
- }
- }
-
- stage.appendChild(svg);
- }
-
- function highlightPairedCards(node) {
- clearPairedHighlight();
- if (!node.pairedList || node.pairedList.length === 0) return;
-
- node.pairedList.forEach(ro => {
- const target = [...state.positionedMap.values()].find(n => Math.abs(n.readOrder - ro) < 0.0001);
- if (target) {
- const el = document.getElementById(`card-${target.id}`);
- if (el) el.classList.add("paired-target");
- }
- });
- }
-
- function clearPairedHighlight() {
- document.querySelectorAll(".book-card.paired-target").forEach(el => {
- el.classList.remove("paired-target");
- });
- }
-
- /*************************************************************************
- * 7. STICKY CLAMPED TIMESPAN CALLOUTS & SMOOTH JUMP-SCROLL
- *************************************************************************/
- function showTimespanHighlight(startY, endY, startLabel, endLabel) {
- const band = document.getElementById("timespanBand");
- const calloutStart = document.getElementById("timespanStartBadge");
- const calloutEnd = document.getElementById("timespanEndBadge");
- if (!band || !calloutStart || !calloutEnd) return;
-
- const topPx = Math.min(startY, endY);
- const heightPx = Math.max(18, Math.abs(endY - startY));
-
- band.style.top = `${topPx}px`;
- band.style.height = `${heightPx}px`;
- band.style.display = "block";
-
- activeTimespanData = {
- topPx,
- bottomPx: topPx + heightPx,
- startLabel,
- endLabel
- };
-
- updateTimespanClamping();
- }
-
- function hideTimespanHighlight() {
- const band = document.getElementById("timespanBand");
- const calloutStart = document.getElementById("timespanStartBadge");
- const calloutEnd = document.getElementById("timespanEndBadge");
- if (band) band.style.display = "none";
- if (calloutStart) calloutStart.style.display = "none";
- if (calloutEnd) calloutEnd.style.display = "none";
- activeTimespanData = null;
- }
-
- function updateTimespanClamping() {
- if (!activeTimespanData) return;
- const calloutStart = document.getElementById("timespanStartBadge");
- const calloutEnd = document.getElementById("timespanEndBadge");
- if (!calloutStart || !calloutEnd) return;
-
- const scrollY = window.scrollY;
- const viewH = window.innerHeight;
- const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 96;
-
- const { topPx, bottomPx, startLabel, endLabel } = activeTimespanData;
-
- // Start Callout Clamping (Top edge)
- if (topPx < scrollY + headerH + 60) {
- calloutStart.classList.add("is-clamped");
- calloutStart.style.top = `${headerH + 64}px`;
- calloutStart.innerHTML = `▲ ${startLabel} <span style="font-size:0.6rem;opacity:0.75;">(above)</span>`;
- calloutStart.title = "Click to scroll up to timespan start";
- calloutStart.onclick = () => window.scrollTo({ top: Math.max(0, topPx - headerH - 80), behavior: "smooth" });
- } else {
- calloutStart.classList.remove("is-clamped");
- calloutStart.style.top = `${topPx}px`;
- calloutStart.textContent = startLabel;
- calloutStart.title = "";
- calloutStart.onclick = null;
- }
- calloutStart.style.display = "block";
-
- // End Callout Clamping (Bottom edge)
- if (bottomPx > scrollY + viewH) {
- calloutEnd.classList.add("is-clamped");
- calloutEnd.style.top = "auto";
- calloutEnd.style.bottom = "16px";
- calloutEnd.innerHTML = `▼ ${endLabel} <span style="font-size:0.6rem;opacity:0.75;">(below)</span>`;
- calloutEnd.title = "Click to scroll down to timespan end";
- calloutEnd.onclick = () => window.scrollTo({ top: bottomPx - viewH + 40, behavior: "smooth" });
- } else {
- calloutEnd.classList.remove("is-clamped");
- calloutEnd.style.bottom = "auto";
- calloutEnd.style.top = `${bottomPx}px`;
- calloutEnd.textContent = endLabel;
- calloutEnd.title = "";
- calloutEnd.onclick = null;
- }
- calloutEnd.style.display = "block";
- }
-
- window.addEventListener("scroll", updateTimespanClamping, { passive: true });
-
- /*************************************************************************
- * 8. INSPECTOR DRAWER
- *************************************************************************/
- function openDrawer(n) {
- const drawer = document.getElementById("drawer");
- const content = document.getElementById("drawerContent");
- const seqText = n.displaySeq ? `#${n.displaySeq}` : "Filtered";
-
- let pairedHtml = "";
- if (n.pairedList && n.pairedList.length > 0) {
- pairedHtml = `
- <div class="paired-section">
- <h4>⇄ Paired Works (Col V)</h4>
- ${n.pairedList.map(ro => {
- const target = [...state.positionedMap.values()].find(p => Math.abs(p.readOrder - ro) < 0.0001);
- if (!target) return `<div style="font-size:0.75rem;color:var(--muted);">Read Order ${ro} (Not Loaded)</div>`;
- return `
- <div class="paired-link" onclick="jumpToCard('${target.id}')">
- <div>
- <strong>${target.title}</strong>
- <div style="font-size:0.68rem;color:var(--muted);">${target.author} • ${target.tier}</div>
- </div>
- <span class="ro-badge">#${target.displaySeq || target.readOrder}</span>
- </div>
- `;
- }).join("")}
- </div>
- `;
- }
-
- content.innerHTML = `
- <div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
- <span class="ro-badge" style="font-size:0.82rem;padding:3px 9px;">Reading # ${seqText}</span>
- <span style="font-family:monospace;font-size:0.75rem;color:var(--muted);background:var(--panel-2);padding:2px 7px;border-radius:4px;border:1px solid var(--border);">
- Sheet Decimal: ${n.readOrder}
- </span>
- <span style="font-size:0.78rem;color:var(--muted);">${n.tier}</span>
- </div>
- <h2>${n.title}</h2>
- <div class="author">${n.author}</div>
-
- <div class="meta-grid">
- <div class="meta-cell">
- <div class="label">Era / Date</div>
- <div class="val">${n.eraDate || "—"}</div>
- </div>
- <div class="meta-cell">
- <div class="label">Coverage Window</div>
- <div class="val">${formatYearLabel(n.yStart)} → ${formatYearLabel(n.yEnd)}</div>
- </div>
- <div class="meta-cell">
- <div class="label">Primary Geoscheme</div>
- <div class="val">${n.macro} &rsaquo; ${n.sub || "—"}</div>
- </div>
- <div class="meta-cell">
- <div class="label">Intermediary Region</div>
- <div class="val">${n.inter || "—"}</div>
- </div>
- <div class="meta-cell">
- <div class="label">Original Language</div>
- <div class="val">${n.origLang || "—"}</div>
- </div>
- <div class="meta-cell">
- <div class="label">LCC &amp; Genre</div>
- <div class="val">${n.lcc || "—"} (${n.type || "—"})</div>
- </div>
- <div class="meta-cell">
- <div class="label">Secondary Regions</div>
- <div class="val">${n.secRegions || "—"}</div>
- </div>
- <div class="meta-cell">
- <div class="label">Personal Status</div>
- <div class="val">Read: ${n.readStatus ? "Yes" : "No"} | Owned: ${n.ownedStatus ? "Yes" : "No"}</div>
- </div>
- </div>
-
- ${pairedHtml}
-
- <div style="font-size:0.74rem;text-transform:uppercase;color:var(--muted);margin-bottom:6px;letter-spacing:0.05em;">
- Curatorial &amp; Edition Notes
- </div>
- <div class="notes-box">${n.notes || "No curatorial notes recorded for this entry."}</div>
- `;
- drawer.classList.add("open");
- }
-
- function jumpToCard(nodeId) {
- const node = state.positionedMap.get(nodeId);
- if (!node) return;
- state.selectedRowId = nodeId;
- showTimespanHighlight(node.top, node.endY, formatYearLabel(node.yStart), formatYearLabel(node.yEnd));
- highlightPairedCards(node);
-
- const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 96;
- window.scrollTo({
- left: Math.max(0, node.left - window.innerWidth / 3),
- top: Math.max(0, node.top - headerH - 80),
- behavior: "smooth"
- });
- openDrawer(node);
- }
-
- /*************************************************************************
- * 9. 2D PAN & CURSOR-CENTERED ZOOM
- *************************************************************************/
- function applyZoomAtPoint(newZoom, clientX, clientY) {
- const clamped = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Number(newZoom.toFixed(2))));
- if (Math.abs(clamped - state.zoom) < 0.005) return;
-
- const oldZoom = state.zoom;
- const ratio = clamped / oldZoom;
-
- const timeAxisWidth = 115;
- const headerOffset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 96;
-
- const docX = window.scrollX + clientX;
- const docY = window.scrollY + clientY;
-
- state.zoom = clamped;
- renderChart();
- updateStickyHeaderOffset();
-
- const newDocX = docX > timeAxisWidth
- ? timeAxisWidth + (docX - timeAxisWidth) * ratio
- : docX;
- const newDocY = docY > headerOffset
- ? headerOffset + (docY - headerOffset) * ratio
- : docY;
-
- window.scrollTo({
- left: Math.max(0, newDocX - clientX),
- top: Math.max(0, newDocY - clientY),
- behavior: "instant"
- });
- }
-
- function initViewportInteractions() {
- const viewport = document.getElementById("viewport");
-
- viewport.addEventListener("mousedown", (e) => {
- if (e.button !== 0) return;
- if (e.target.closest(".lane-headers") || e.target.closest(".timespan-callout") || e.target.closest(".epoch-divider-label")) return;
-
- panState.isDown = true;
- panState.hasMoved = false;
- panState.startX = e.clientX;
- panState.startY = e.clientY;
- panState.scrollLeft = window.scrollX;
- panState.scrollTop = window.scrollY;
- });
-
- window.addEventListener("mousemove", (e) => {
- if (!panState.isDown) return;
- const dx = e.clientX - panState.startX;
- const dy = e.clientY - panState.startY;
-
- if (!panState.hasMoved && Math.hypot(dx, dy) > 5) {
- panState.hasMoved = true;
- document.body.classList.add("is-panning");
- }
-
- if (panState.hasMoved) {
- e.preventDefault();
- window.scrollTo({
- left: panState.scrollLeft - dx,
- top: panState.scrollTop - dy,
- behavior: "instant"
- });
- }
- });
-
- window.addEventListener("mouseup", () => {
- if (!panState.isDown) return;
- if (panState.hasMoved) {
- panState.suppressClickUntil = Date.now() + 180;
- }
- panState.isDown = false;
- panState.hasMoved = false;
- document.body.classList.remove("is-panning");
- });
-
- window.addEventListener("wheel", (e) => {
- if (e.target.closest(".drawer") || e.target.closest(".modal")) return;
-
- const shouldZoom = e.ctrlKey || e.metaKey || e.shiftKey || state.directWheelZoom;
- if (!shouldZoom) return;
-
- e.preventDefault();
- const direction = e.deltaY < 0 ? 1 : -1;
- const factor = direction > 0 ? 1.12 : 0.89;
- applyZoomAtPoint(state.zoom * factor, e.clientX, e.clientY);
- }, { passive: false });
-
- document.getElementById("btnZoomIn").addEventListener("click", () => {
- applyZoomAtPoint(state.zoom * 1.18, window.innerWidth / 2, window.innerHeight / 2);
- });
-
- document.getElementById("btnZoomOut").addEventListener("click", () => {
- applyZoomAtPoint(state.zoom * 0.85, window.innerWidth / 2, window.innerHeight / 2);
- });
-
- document.getElementById("zoomReadout").addEventListener("click", () => {
- applyZoomAtPoint(1.0, window.innerWidth / 2, window.innerHeight / 2);
- });
-
- document.getElementById("btnWheelZoomMode").addEventListener("click", (e) => {
- state.directWheelZoom = !state.directWheelZoom;
- e.currentTarget.classList.toggle("active", state.directWheelZoom);
- });
- }
-
- /*************************************************************************
- * 10. UI EVENT LISTENERS
- *************************************************************************/
- function populateTabDropdown() {
- const sel = document.getElementById("tabSelect");
- const enabledCount = state.tabs.filter(t => t.enabled !== false).length;
-
- let html = `<option value="ALL_VALIDATED" ${state.activeTabKey === "ALL_VALIDATED" ? "selected" : ""}>
- 🌐 All Validated Eras — Master Chronology (${enabledCount} Tabs)
- </option>`;
-
- html += state.tabs.map((t, idx) => `
- <option value="${idx}" ${state.activeTabKey === String(idx) ? "selected" : ""}>
- ${t.enabled === false ? "⚠️ " : ""}${t.name}
- </option>
- `).join("");
-
- sel.innerHTML = html;
- }
-
- document.getElementById("tabSelect").addEventListener("change", (e) => {
- state.activeTabKey = e.target.value;
- loadActiveSelection();
- });
-
- document.getElementById("btnStrictCoords").addEventListener("click", (e) => {
- state.strictCoordsOnly = !state.strictCoordsOnly;
- e.currentTarget.classList.toggle("guard-active", state.strictCoordsOnly);
- loadActiveSelection();
- });
-
- document.getElementById("yModeSelect").addEventListener("change", (e) => {
- state.yMode = e.target.value;
- renderChart();
- updateStickyHeaderOffset();
- });
-
- document.getElementById("colorModeSelect").addEventListener("change", (e) => {
- state.colorMode = e.target.value;
- renderChart();
- });
-
- document.getElementById("btnToggleThread").addEventListener("click", (e) => {
- state.showThread = !state.showThread;
- e.currentTarget.classList.toggle("active", state.showThread);
- renderChart();
- });
-
- document.getElementById("btnToggleSpans").addEventListener("click", (e) => {
- state.showSpans = !state.showSpans;
- e.currentTarget.classList.toggle("active", state.showSpans);
- renderChart();
- });
-
- document.getElementById("btnExpandAll").addEventListener("click", () => {
- MACRO_DEFS.forEach(m => state.expandedMacros.add(m.id));
- renderChart();
- updateStickyHeaderOffset();
- });
-
- document.getElementById("btnCollapseAll").addEventListener("click", () => {
- state.expandedMacros.clear();
- renderChart();
- updateStickyHeaderOffset();
- });
-
- document.getElementById("btnToggleEmptyLanes").addEventListener("click", (e) => {
- state.showEmptySubregions = !state.showEmptySubregions;
- e.currentTarget.textContent = state.showEmptySubregions ? "🌐 Empty Lanes: On" : "🌐 Empty Lanes: Off";
- e.currentTarget.classList.toggle("active", state.showEmptySubregions);
- renderChart();
- updateStickyHeaderOffset();
- });
-
- document.getElementById("searchInput").addEventListener("input", (e) => {
- state.searchQuery = e.target.value;
- renderChart();
- });
-
- document.querySelectorAll("#tierLegend .legend-item").forEach(el => {
- el.addEventListener("click", () => {
- const tier = el.getAttribute("data-tier");
- if (state.hiddenTiers.has(tier)) {
- state.hiddenTiers.delete(tier);
- el.classList.remove("muted");
- } else {
- state.hiddenTiers.add(tier);
- el.classList.add("muted");
- }
- renderChart();
- });
- });
-
- document.getElementById("drawerClose").addEventListener("click", () => {
- document.getElementById("drawer").classList.remove("open");
- state.selectedRowId = null;
- hideTimespanHighlight();
- clearPairedHighlight();
- });
-
- // Sheet Tab Modal
- document.getElementById("btnManageTabs").addEventListener("click", () => {
- document.getElementById("baseCsvUrlInput").value = state.baseCsvUrl;
- document.getElementById("tabsConfigTextarea").value = state.tabs
- .map(t => `${t.enabled === false ? "!" : ""}${t.name} | ${t.gid}`)
- .join("\n");
- document.getElementById("modalBackdrop").classList.add("open");
- });
-
- document.getElementById("btnResetDefaultTabs").addEventListener("click", () => {
- state.tabs = DEFAULT_TABS;
- state.baseCsvUrl = DEFAULT_PUBLISHED_BASE;
- localStorage.removeItem("ro_tabs_v2");
- localStorage.removeItem("ro_base_csv");
- document.getElementById("baseCsvUrlInput").value = DEFAULT_PUBLISHED_BASE;
- document.getElementById("tabsConfigTextarea").value = DEFAULT_TABS
- .map(t => `${t.enabled === false ? "!" : ""}${t.name} | ${t.gid}`)
- .join("\n");
- });
-
- document.getElementById("btnCancelModal").addEventListener("click", () => {
- document.getElementById("modalBackdrop").classList.remove("open");
- });
-
- document.getElementById("btnSaveModal").addEventListener("click", () => {
- const base = document.getElementById("baseCsvUrlInput").value.trim();
- const lines = document.getElementById("tabsConfigTextarea").value.split("\n");
- const newTabs = [];
-
- lines.forEach(line => {
- const trimmed = line.trim();
- if (!trimmed) return;
- const isExcluded = trimmed.startsWith("!");
- const cleanLine = isExcluded ? trimmed.slice(1).trim() : trimmed;
- const parts = cleanLine.split("|");
-
- if (parts.length >= 2) {
- newTabs.push({
- name: parts[0].trim(),
- gid: parts.slice(1).join("|").trim(),
- enabled: !isExcluded
- });
- }
- });
-
- if (base) {
- state.baseCsvUrl = base;
- localStorage.setItem("ro_base_csv", base);
- }
- if (newTabs.length > 0) {
- state.tabs = newTabs;
- localStorage.setItem("ro_tabs_v2", JSON.stringify(newTabs));
- }
-
- document.getElementById("modalBackdrop").classList.remove("open");
- populateTabDropdown();
- loadActiveSelection();
- });
-
- // Initialization
- populateTabDropdown();
- initViewportInteractions();
- loadActiveSelection();
- </script>
+      // SVG Connectors (Thread + Col V Paired Arcs)
+      renderSvgLayer(totalWidth, totalStageHeight, positionedNodes, z);
+
+      // Cards & Duration Bars
+      let visibleCount = 0;
+      let readCount = 0;
+      let ownedCount = 0;
+
+      positionedNodes.forEach(n => {
+        if (n.readStatus) readCount++;
+        if (n.ownedStatus) ownedCount++;
+        if (n.visible) visibleCount++;
+
+        if (state.showSpans && state.yMode === "chrono" && n.endY - n.top > CARD_HEIGHT + 8) {
+          const bar = document.createElement("div");
+          bar.className = "duration-bar";
+          bar.style.left = `${n.left - 6}px`;
+          bar.style.top = `${n.top}px`;
+          bar.style.height = `${n.endY - n.top}px`;
+          bar.style.background = n.tier.includes("History") ? "var(--tier-hist-border)" : "var(--tier-schol-border)";
+          if (!n.visible) bar.style.opacity = "0.08";
+          stage.appendChild(bar);
+        }
+
+        const card = document.createElement("div");
+        card.id = `card-${n.id}`;
+        card.className = `book-card ${getTierClass(n.tier)} ${n.visible ? "" : "dimmed"}`;
+        card.style.left = `${n.left}px`;
+        card.style.top = `${n.top}px`;
+        card.style.width = `${n.width}px`;
+        card.style.height = `${CARD_HEIGHT}px`;
+
+        const badgeLabel = n.visible ? `#${n.displaySeq}` : "—";
+        const hasPairs = n.pairedList && n.pairedList.length > 0;
+
+        card.innerHTML = `
+          <div class="card-top">
+            <span class="ro-badge">${badgeLabel}</span>
+            ${hasPairs ? '<span class="paired-badge">⇄ Paired</span>' : ""}
+            <span class="subregion-pill" title="${n.macro} > ${n.inter} > ${n.sub}">${n.sub || n.macro}</span>
+          </div>
+          <div class="card-title" title="${n.title.replace(/\"/g, '&quot;')}">${n.title}</div>
+          <div class="card-meta">${n.author} • ${n.eraDate}</div>
+        `;
+
+        card.addEventListener("mouseenter", () => {
+          state.hoveredRowId = n.id;
+          showTimespanHighlight(n.top, n.endY, formatYearLabel(n.yStart), formatYearLabel(n.yEnd));
+          highlightPairedCards(n);
+        });
+
+        card.addEventListener("mouseleave", () => {
+          state.hoveredRowId = null;
+          if (!state.selectedRowId) {
+            hideTimespanHighlight();
+            clearPairedHighlight();
+          } else {
+            const selNode = state.positionedMap.get(state.selectedRowId);
+            if (selNode) {
+              showTimespanHighlight(selNode.top, selNode.endY, formatYearLabel(selNode.yStart), formatYearLabel(selNode.yEnd));
+              highlightPairedCards(selNode);
+            }
+          }
+        });
+
+        card.addEventListener("click", (e) => {
+          if (Date.now() < panState.suppressClickUntil) {
+            e.stopPropagation();
+            return;
+          }
+          state.selectedRowId = n.id;
+          showTimespanHighlight(n.top, n.endY, formatYearLabel(n.yStart), formatYearLabel(n.yEnd));
+          highlightPairedCards(n);
+          openDrawer(n);
+        });
+
+        stage.appendChild(card);
+      });
+
+      const coordCount = rows.filter(r => r.hasExplicitCoords).length;
+      document.getElementById("statsBar").innerHTML = `
+        <span>Showing <strong>1–${visibleCount}</strong> of ${rows.length} Works</span>
+        <span>Read: <strong>${readCount}</strong></span>
+        <span>Owned: <strong>${ownedCount}</strong></span>
+        <span>Coords: <strong>${coordCount}/${rows.length}</strong></span>
+        <span class="nav-hint">🖐️ Drag canvas to pan • Ctrl/Shift + Wheel to zoom</span>
+      `;
+    }
+
+    /*************************************************************************
+     * 6. SVG CONNECTORS & BIDIRECTIONAL MAPPING ARCS
+     *************************************************************************/
+    function renderSvgLayer(totalWidth, totalHeight, nodes, z) {
+      const stage = document.getElementById("chartStage");
+      const svgNS = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("class", "svg-overlay");
+      svg.setAttribute("width", totalWidth);
+      svg.setAttribute("height", totalHeight);
+
+      const visibleSorted = nodes
+        .filter(n => n.visible)
+        .sort((a, b) => a.readOrder - b.readOrder);
+
+      // Global Thread
+      if (state.showThread && visibleSorted.length > 1) {
+        let d = "";
+        visibleSorted.forEach((pt, idx) => {
+          if (idx === 0) {
+            d += `M ${pt.centerX} ${pt.centerY} `;
+          } else {
+            const prev = visibleSorted[idx - 1];
+            const midY = (prev.centerY + pt.centerY) / 2;
+            d += `C ${prev.centerX} ${midY}, ${pt.centerX} ${midY}, ${pt.centerX} ${pt.centerY} `;
+          }
+        });
+        const path = document.createElementNS(svgNS, "path");
+        path.setAttribute("d", d);
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", "rgba(245, 158, 11, 0.4)");
+        path.setAttribute("stroke-width", String(Math.max(1.5, 2.0 * z)));
+        path.setAttribute("stroke-dasharray", "5,4");
+        svg.appendChild(path);
+      }
+
+      // Col V Paired Read Order Arcs
+      const activeId = state.hoveredRowId || state.selectedRowId;
+      if (activeId) {
+        const activeNode = state.positionedMap.get(activeId);
+        if (activeNode && activeNode.pairedList && activeNode.pairedList.length > 0) {
+          activeNode.pairedList.forEach(pairedRo => {
+            const target = nodes.find(n => Math.abs(n.readOrder - pairedRo) < 0.0001);
+            if (target) {
+              const midY = (activeNode.centerY + target.centerY) / 2;
+              const curveOffset = Math.min(180, Math.abs(activeNode.centerX - target.centerX) * 0.4);
+              const ctrlY = midY - curveOffset * 0.3;
+
+              const d = `M ${activeNode.centerX} ${activeNode.centerY} Q ${(activeNode.centerX + target.centerX)/2} ${ctrlY}, ${target.centerX} ${target.centerY}`;
+              const arc = document.createElementNS(svgNS, "path");
+              arc.setAttribute("d", d);
+              arc.setAttribute("fill", "none");
+              arc.setAttribute("stroke", "#38bdf8");
+              arc.setAttribute("stroke-width", "2.5");
+              arc.setAttribute("stroke-dasharray", "6,3");
+              svg.appendChild(arc);
+            }
+          });
+        }
+      }
+
+      stage.appendChild(svg);
+    }
+
+    function highlightPairedCards(node) {
+      clearPairedHighlight();
+      if (!node.pairedList || node.pairedList.length === 0) return;
+
+      node.pairedList.forEach(ro => {
+        const target = [...state.positionedMap.values()].find(n => Math.abs(n.readOrder - ro) < 0.0001);
+        if (target) {
+          const el = document.getElementById(`card-${target.id}`);
+          if (el) el.classList.add("paired-target");
+        }
+      });
+    }
+
+    function clearPairedHighlight() {
+      document.querySelectorAll(".book-card.paired-target").forEach(el => {
+        el.classList.remove("paired-target");
+      });
+    }
+
+    /*************************************************************************
+     * 7. STICKY CLAMPED TIMESPAN CALLOUTS & SMOOTH JUMP-SCROLL
+     *************************************************************************/
+    function showTimespanHighlight(startY, endY, startLabel, endLabel) {
+      const band = document.getElementById("timespanBand");
+      const calloutStart = document.getElementById("timespanStartBadge");
+      const calloutEnd = document.getElementById("timespanEndBadge");
+      if (!band || !calloutStart || !calloutEnd) return;
+
+      const topPx = Math.min(startY, endY);
+      const heightPx = Math.max(18, Math.abs(endY - startY));
+
+      band.style.top = `${topPx}px`;
+      band.style.height = `${heightPx}px`;
+      band.style.display = "block";
+
+      activeTimespanData = {
+        topPx,
+        bottomPx: topPx + heightPx,
+        startLabel,
+        endLabel
+      };
+
+      updateTimespanClamping();
+    }
+
+    function hideTimespanHighlight() {
+      const band = document.getElementById("timespanBand");
+      const calloutStart = document.getElementById("timespanStartBadge");
+      const calloutEnd = document.getElementById("timespanEndBadge");
+      if (band) band.style.display = "none";
+      if (calloutStart) calloutStart.style.display = "none";
+      if (calloutEnd) calloutEnd.style.display = "none";
+      activeTimespanData = null;
+    }
+
+    function updateTimespanClamping() {
+      if (!activeTimespanData) return;
+      const calloutStart = document.getElementById("timespanStartBadge");
+      const calloutEnd = document.getElementById("timespanEndBadge");
+      if (!calloutStart || !calloutEnd) return;
+
+      const scrollY = window.scrollY;
+      const viewH = window.innerHeight;
+      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 96;
+
+      const { topPx, bottomPx, startLabel, endLabel } = activeTimespanData;
+
+      // Start Callout Clamping (Top edge)
+      if (topPx < scrollY + headerH + 60) {
+        calloutStart.classList.add("is-clamped");
+        calloutStart.style.top = `${headerH + 64}px`;
+        calloutStart.innerHTML = `▲ ${startLabel} <span style="font-size:0.6rem;opacity:0.75;">(above)</span>`;
+        calloutStart.title = "Click to scroll up to timespan start";
+        calloutStart.onclick = () => window.scrollTo({ top: Math.max(0, topPx - headerH - 80), behavior: "smooth" });
+      } else {
+        calloutStart.classList.remove("is-clamped");
+        calloutStart.style.top = `${topPx}px`;
+        calloutStart.textContent = startLabel;
+        calloutStart.title = "";
+        calloutStart.onclick = null;
+      }
+      calloutStart.style.display = "block";
+
+      // End Callout Clamping (Bottom edge)
+      if (bottomPx > scrollY + viewH) {
+        calloutEnd.classList.add("is-clamped");
+        calloutEnd.style.top = "auto";
+        calloutEnd.style.bottom = "16px";
+        calloutEnd.innerHTML = `▼ ${endLabel} <span style="font-size:0.6rem;opacity:0.75;">(below)</span>`;
+        calloutEnd.title = "Click to scroll down to timespan end";
+        calloutEnd.onclick = () => window.scrollTo({ top: bottomPx - viewH + 40, behavior: "smooth" });
+      } else {
+        calloutEnd.classList.remove("is-clamped");
+        calloutEnd.style.bottom = "auto";
+        calloutEnd.style.top = `${bottomPx}px`;
+        calloutEnd.textContent = endLabel;
+        calloutEnd.title = "";
+        calloutEnd.onclick = null;
+      }
+      calloutEnd.style.display = "block";
+    }
+
+    window.addEventListener("scroll", updateTimespanClamping, { passive: true });
+
+    /*************************************************************************
+     * 8. INSPECTOR DRAWER
+     *************************************************************************/
+    function openDrawer(n) {
+      const drawer = document.getElementById("drawer");
+      const content = document.getElementById("drawerContent");
+      const seqText = n.displaySeq ? `#${n.displaySeq}` : "Filtered";
+
+      let pairedHtml = "";
+      if (n.pairedList && n.pairedList.length > 0) {
+        pairedHtml = `
+          <div class="paired-section">
+            <h4>⇄ Paired Works (Col V)</h4>
+            ${n.pairedList.map(ro => {
+              const target = [...state.positionedMap.values()].find(p => Math.abs(p.readOrder - ro) < 0.0001);
+              if (!target) return `<div style="font-size:0.75rem;color:var(--muted);">Read Order ${ro} (Not Loaded)</div>`;
+              return `
+                <div class="paired-link" onclick="jumpToCard('${target.id}')">
+                  <div>
+                    <strong>${target.title}</strong>
+                    <div style="font-size:0.68rem;color:var(--muted);">${target.author} • ${target.tier}</div>
+                  </div>
+                  <span class="ro-badge">#${target.displaySeq || target.readOrder}</span>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+      }
+
+      content.innerHTML = `
+        <div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="ro-badge" style="font-size:0.82rem;padding:3px 9px;">Reading # ${seqText}</span>
+          <span style="font-family:monospace;font-size:0.75rem;color:var(--muted);background:var(--panel-2);padding:2px 7px;border-radius:4px;border:1px solid var(--border);">
+            Sheet Decimal: ${n.readOrder}
+          </span>
+          <span style="font-size:0.78rem;color:var(--muted);">${n.tier}</span>
+        </div>
+        <h2>${n.title}</h2>
+        <div class="author">${n.author}</div>
+
+        <div class="meta-grid">
+          <div class="meta-cell">
+            <div class="label">Era / Date</div>
+            <div class="val">${n.eraDate || "—"}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Coverage Window</div>
+            <div class="val">${formatYearLabel(n.yStart)} → ${formatYearLabel(n.yEnd)}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Primary Geoscheme</div>
+            <div class="val">${n.macro} &rsaquo; ${n.sub || "—"}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Intermediary Region</div>
+            <div class="val">${n.inter || "—"}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Original Language</div>
+            <div class="val">${n.origLang || "—"}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">LCC &amp; Genre</div>
+            <div class="val">${n.lcc || "—"} (${n.type || "—"})</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Secondary Regions</div>
+            <div class="val">${n.secRegions || "—"}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="label">Personal Status</div>
+            <div class="val">Read: ${n.readStatus ? "Yes" : "No"} | Owned: ${n.ownedStatus ? "Yes" : "No"}</div>
+          </div>
+        </div>
+
+        ${pairedHtml}
+
+        <div style="font-size:0.74rem;text-transform:uppercase;color:var(--muted);margin-bottom:6px;letter-spacing:0.05em;">
+          Curatorial &amp; Edition Notes
+        </div>
+        <div class="notes-box">${n.notes || "No curatorial notes recorded for this entry."}</div>
+      `;
+      drawer.classList.add("open");
+    }
+
+    function jumpToCard(nodeId) {
+      const node = state.positionedMap.get(nodeId);
+      if (!node) return;
+      state.selectedRowId = nodeId;
+      showTimespanHighlight(node.top, node.endY, formatYearLabel(node.yStart), formatYearLabel(node.yEnd));
+      highlightPairedCards(node);
+
+      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 96;
+      window.scrollTo({
+        left: Math.max(0, node.left - window.innerWidth / 3),
+        top: Math.max(0, node.top - headerH - 80),
+        behavior: "smooth"
+      });
+      openDrawer(node);
+    }
+
+    /*************************************************************************
+     * 9. 2D PAN & CURSOR-CENTERED ZOOM
+     *************************************************************************/
+    function applyZoomAtPoint(newZoom, clientX, clientY) {
+      const clamped = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Number(newZoom.toFixed(2))));
+      if (Math.abs(clamped - state.zoom) < 0.005) return;
+
+      const oldZoom = state.zoom;
+      const ratio = clamped / oldZoom;
+
+      const timeAxisWidth = 115;
+      const headerOffset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 96;
+
+      const docX = window.scrollX + clientX;
+      const docY = window.scrollY + clientY;
+
+      state.zoom = clamped;
+      renderChart();
+      updateStickyHeaderOffset();
+
+      const newDocX = docX > timeAxisWidth
+        ? timeAxisWidth + (docX - timeAxisWidth) * ratio
+        : docX;
+      const newDocY = docY > headerOffset
+        ? headerOffset + (docY - headerOffset) * ratio
+        : docY;
+
+      window.scrollTo({
+        left: Math.max(0, newDocX - clientX),
+        top: Math.max(0, newDocY - clientY),
+        behavior: "instant"
+      });
+    }
+
+    function initViewportInteractions() {
+      const viewport = document.getElementById("viewport");
+
+      viewport.addEventListener("mousedown", (e) => {
+        if (e.button !== 0) return;
+        if (e.target.closest(".lane-headers") || e.target.closest(".timespan-callout") || e.target.closest(".epoch-divider-label")) return;
+
+        panState.isDown = true;
+        panState.hasMoved = false;
+        panState.startX = e.clientX;
+        panState.startY = e.clientY;
+        panState.scrollLeft = window.scrollX;
+        panState.scrollTop = window.scrollY;
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (!panState.isDown) return;
+        const dx = e.clientX - panState.startX;
+        const dy = e.clientY - panState.startY;
+
+        if (!panState.hasMoved && Math.hypot(dx, dy) > 5) {
+          panState.hasMoved = true;
+          document.body.classList.add("is-panning");
+        }
+
+        if (panState.hasMoved) {
+          e.preventDefault();
+          window.scrollTo({
+            left: panState.scrollLeft - dx,
+            top: panState.scrollTop - dy,
+            behavior: "instant"
+          });
+        }
+      });
+
+      window.addEventListener("mouseup", () => {
+        if (!panState.isDown) return;
+        if (panState.hasMoved) {
+          panState.suppressClickUntil = Date.now() + 180;
+        }
+        panState.isDown = false;
+        panState.hasMoved = false;
+        document.body.classList.remove("is-panning");
+      });
+
+      window.addEventListener("wheel", (e) => {
+        if (e.target.closest(".drawer") || e.target.closest(".modal")) return;
+
+        const shouldZoom = e.ctrlKey || e.metaKey || e.shiftKey || state.directWheelZoom;
+        if (!shouldZoom) return;
+
+        e.preventDefault();
+        const direction = e.deltaY < 0 ? 1 : -1;
+        const factor = direction > 0 ? 1.12 : 0.89;
+        applyZoomAtPoint(state.zoom * factor, e.clientX, e.clientY);
+      }, { passive: false });
+
+      document.getElementById("btnZoomIn").addEventListener("click", () => {
+        applyZoomAtPoint(state.zoom * 1.18, window.innerWidth / 2, window.innerHeight / 2);
+      });
+
+      document.getElementById("btnZoomOut").addEventListener("click", () => {
+        applyZoomAtPoint(state.zoom * 0.85, window.innerWidth / 2, window.innerHeight / 2);
+      });
+
+      document.getElementById("zoomReadout").addEventListener("click", () => {
+        applyZoomAtPoint(1.0, window.innerWidth / 2, window.innerHeight / 2);
+      });
+
+      document.getElementById("btnWheelZoomMode").addEventListener("click", (e) => {
+        state.directWheelZoom = !state.directWheelZoom;
+        e.currentTarget.classList.toggle("active", state.directWheelZoom);
+      });
+    }
+
+    /*************************************************************************
+     * 10. UI EVENT LISTENERS
+     *************************************************************************/
+    function populateTabDropdown() {
+      const sel = document.getElementById("tabSelect");
+      const enabledCount = state.tabs.filter(t => t.enabled !== false).length;
+
+      let html = `<option value="ALL_VALIDATED" ${state.activeTabKey === "ALL_VALIDATED" ? "selected" : ""}>
+        🌐 All Validated Eras — Master Chronology (${enabledCount} Tabs)
+      </option>`;
+
+      html += state.tabs.map((t, idx) => `
+        <option value="${idx}" ${state.activeTabKey === String(idx) ? "selected" : ""}>
+          ${t.enabled === false ? "⚠️ " : ""}${t.name}
+        </option>
+      `).join("");
+
+      sel.innerHTML = html;
+    }
+
+    document.getElementById("tabSelect").addEventListener("change", (e) => {
+      state.activeTabKey = e.target.value;
+      loadActiveSelection();
+    });
+
+    document.getElementById("btnStrictCoords").addEventListener("click", (e) => {
+      state.strictCoordsOnly = !state.strictCoordsOnly;
+      e.currentTarget.classList.toggle("guard-active", state.strictCoordsOnly);
+      loadActiveSelection();
+    });
+
+    document.getElementById("yModeSelect").addEventListener("change", (e) => {
+      state.yMode = e.target.value;
+      renderChart();
+      updateStickyHeaderOffset();
+    });
+
+    document.getElementById("colorModeSelect").addEventListener("change", (e) => {
+      state.colorMode = e.target.value;
+      renderChart();
+    });
+
+    document.getElementById("btnToggleThread").addEventListener("click", (e) => {
+      state.showThread = !state.showThread;
+      e.currentTarget.classList.toggle("active", state.showThread);
+      renderChart();
+    });
+
+    document.getElementById("btnToggleSpans").addEventListener("click", (e) => {
+      state.showSpans = !state.showSpans;
+      e.currentTarget.classList.toggle("active", state.showSpans);
+      renderChart();
+    });
+
+    document.getElementById("btnExpandAll").addEventListener("click", () => {
+      MACRO_DEFS.forEach(m => state.expandedMacros.add(m.id));
+      renderChart();
+      updateStickyHeaderOffset();
+    });
+
+    document.getElementById("btnCollapseAll").addEventListener("click", () => {
+      state.expandedMacros.clear();
+      renderChart();
+      updateStickyHeaderOffset();
+    });
+
+    document.getElementById("btnToggleEmptyLanes").addEventListener("click", (e) => {
+      state.showEmptySubregions = !state.showEmptySubregions;
+      e.currentTarget.textContent = state.showEmptySubregions ? "🌐 Empty Lanes: On" : "🌐 Empty Lanes: Off";
+      e.currentTarget.classList.toggle("active", state.showEmptySubregions);
+      renderChart();
+      updateStickyHeaderOffset();
+    });
+
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      state.searchQuery = e.target.value;
+      renderChart();
+    });
+
+    document.querySelectorAll("#tierLegend .legend-item").forEach(el => {
+      el.addEventListener("click", () => {
+        const tier = el.getAttribute("data-tier");
+        if (state.hiddenTiers.has(tier)) {
+          state.hiddenTiers.delete(tier);
+          el.classList.remove("muted");
+        } else {
+          state.hiddenTiers.add(tier);
+          el.classList.add("muted");
+        }
+        renderChart();
+      });
+    });
+
+    document.getElementById("drawerClose").addEventListener("click", () => {
+      document.getElementById("drawer").classList.remove("open");
+      state.selectedRowId = null;
+      hideTimespanHighlight();
+      clearPairedHighlight();
+    });
+
+    // Sheet Tab Modal
+    document.getElementById("btnManageTabs").addEventListener("click", () => {
+      document.getElementById("baseCsvUrlInput").value = state.baseCsvUrl;
+      document.getElementById("tabsConfigTextarea").value = state.tabs
+        .map(t => `${t.enabled === false ? "!" : ""}${t.name} | ${t.gid}`)
+        .join("\n");
+      document.getElementById("modalBackdrop").classList.add("open");
+    });
+
+    document.getElementById("btnResetDefaultTabs").addEventListener("click", () => {
+      state.tabs = DEFAULT_TABS;
+      state.baseCsvUrl = DEFAULT_PUBLISHED_BASE;
+      localStorage.removeItem("ro_tabs_v2");
+      localStorage.removeItem("ro_base_csv");
+      document.getElementById("baseCsvUrlInput").value = DEFAULT_PUBLISHED_BASE;
+      document.getElementById("tabsConfigTextarea").value = DEFAULT_TABS
+        .map(t => `${t.enabled === false ? "!" : ""}${t.name} | ${t.gid}`)
+        .join("\n");
+    });
+
+    document.getElementById("btnCancelModal").addEventListener("click", () => {
+      document.getElementById("modalBackdrop").classList.remove("open");
+    });
+
+    document.getElementById("btnSaveModal").addEventListener("click", () => {
+      const base = document.getElementById("baseCsvUrlInput").value.trim();
+      const lines = document.getElementById("tabsConfigTextarea").value.split("\n");
+      const newTabs = [];
+
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+        const isExcluded = trimmed.startsWith("!");
+        const cleanLine = isExcluded ? trimmed.slice(1).trim() : trimmed;
+        const parts = cleanLine.split("|");
+
+        if (parts.length >= 2) {
+          newTabs.push({
+            name: parts[0].trim(),
+            gid: parts.slice(1).join("|").trim(),
+            enabled: !isExcluded
+          });
+        }
+      });
+
+      if (base) {
+        state.baseCsvUrl = base;
+        localStorage.setItem("ro_base_csv", base);
+      }
+      if (newTabs.length > 0) {
+        state.tabs = newTabs;
+        localStorage.setItem("ro_tabs_v2", JSON.stringify(newTabs));
+      }
+
+      document.getElementById("modalBackdrop").classList.remove("open");
+      populateTabDropdown();
+      loadActiveSelection();
+    });
+
+    // Initialization
+    populateTabDropdown();
+    initViewportInteractions();
+    loadActiveSelection();
+  </script>
 </body>
 </html>
