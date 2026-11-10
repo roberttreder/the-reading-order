@@ -15,14 +15,8 @@
       --accent: #e0b153;
       --thread: #f59e0b;
       --sec-thread: #38bdf8;
-
-      /* Macro-Region Color Accents */
-      --macro-offgrid: #a855f7;
-      --macro-africa: #f97316;
-      --macro-europe: #38bdf8;
-      --macro-asia: #10b981;
-      --macro-oceania: #f43f5e;
-      --macro-americas: #eab308;
+      --header-stack-height: 93px;
+      --chrono-rail-width: 115px;
 
       /* Collection Tier Colors */
       --tier-main-bg: #2b2212;
@@ -75,10 +69,10 @@
       background: rgba(23, 26, 36, 0.96);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
-      padding: 12px 20px;
+      padding: 10px 18px;
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
       justify-content: space-between;
     }
@@ -90,14 +84,14 @@
     }
 
     .brand h1 {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       font-weight: 700;
       letter-spacing: 0.02em;
       color: var(--accent);
     }
 
     .brand span {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--muted);
     }
 
@@ -113,8 +107,8 @@
       color: var(--text);
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 6px 10px;
-      font-size: 0.82rem;
+      padding: 5px 9px;
+      font-size: 0.8rem;
       outline: none;
     }
 
@@ -136,13 +130,31 @@
     }
 
     button.guard-active {
-      background: rgba(52, 211, 153, 0.16);
-      color: #6ee7b7;
-      border-color: #34d399;
-      font-weight: 600;
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
     }
 
-    .zoom-group, .accordion-group {
+    .accordion-group {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .accordion-group button {
+      border: none;
+      border-radius: 0;
+      padding: 5px 8px;
+      background: var(--panel-2);
+      font-size: 0.76rem;
+    }
+
+    .accordion-group button:hover {
+      background: rgba(224, 177, 83, 0.18);
+    }
+
+    .zoom-group {
       display: inline-flex;
       align-items: center;
       background: var(--panel-2);
@@ -151,58 +163,58 @@
       overflow: hidden;
     }
 
-    .zoom-group button, .accordion-group button {
+    .zoom-group button {
       border: none;
       border-radius: 0;
-      padding: 6px 9px;
+      padding: 5px 8px;
       background: transparent;
     }
 
-    .zoom-group button:hover, .accordion-group button:hover {
+    .zoom-group button:hover {
       background: rgba(224, 177, 83, 0.15);
     }
 
     .zoom-readout {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       color: var(--accent);
-      padding: 0 6px;
-      min-width: 48px;
+      padding: 0 5px;
+      min-width: 44px;
       text-align: center;
       cursor: pointer;
       user-select: none;
     }
 
-    /* Legend & Stats Bar */
+    /* Subbar / Legend */
     .subbar {
       position: sticky;
-      top: 57px;
+      top: 50px;
       left: 0;
       z-index: 115;
       background: rgba(15, 17, 23, 0.94);
       border-bottom: 1px solid var(--border);
-      padding: 8px 20px;
+      padding: 6px 18px;
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 14px;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
     }
 
     .legend {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
     }
 
     .legend-item {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
-      padding: 3px 8px;
+      padding: 2px 7px;
       border-radius: 4px;
       border: 1px solid transparent;
       user-select: none;
@@ -213,9 +225,9 @@
     }
 
     .swatch {
-      width: 11px;
-      height: 11px;
-      border-radius: 3px;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
       display: inline-block;
     }
 
@@ -223,17 +235,17 @@
       color: var(--muted);
       display: flex;
       flex-wrap: wrap;
-      gap: 14px;
+      gap: 12px;
       align-items: center;
     }
 
     .nav-hint {
       color: var(--muted);
-      font-size: 0.73rem;
+      font-size: 0.72rem;
       opacity: 0.85;
     }
 
-    /* Main Timeline Viewport */
+    /* Viewport & Stage */
     .viewport {
       position: relative;
       min-width: 100%;
@@ -241,28 +253,26 @@
       cursor: grab;
     }
 
-    /* Option A: Two-Tier Sticky Bracket Header */
+    /* Sticky Swimlane Two-Tier Bracket Headers */
     .lane-headers {
       position: sticky;
-      top: 93px;
+      top: var(--header-stack-height, 93px);
       z-index: 95;
       display: grid;
-      grid-template-rows: auto auto;
       background: var(--panel);
       border-bottom: 2px solid var(--border);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
 
-    /* Double-Pinned Corner Header spanning both tiers */
     .time-axis-header {
       position: sticky;
       left: 0;
-      grid-column: 1;
-      grid-row: 1 / span 2;
+      top: var(--header-stack-height, 93px);
       z-index: 105;
       background: var(--panel);
-      padding: 10px 8px;
-      font-size: 0.75rem;
+      grid-row: 1 / span 2;
+      padding: 8px 6px;
+      font-size: 0.74rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -270,111 +280,96 @@
       border-right: 2px solid var(--border);
       border-bottom: 2px solid var(--border);
       text-align: center;
-      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.45);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.45);
     }
 
-    .time-axis-sub {
+    .time-axis-header span.sub {
       font-size: 0.65rem;
       color: var(--muted);
-      font-weight: 500;
       text-transform: none;
+      letter-spacing: normal;
+      margin-top: 2px;
     }
 
-    /* Tier 1: Macro-Region Bracket Banner */
-    .macro-bracket-banner {
-      grid-row: 1;
-      padding: 8px 12px;
-      background: var(--panel);
+    /* Tier 1: Overarching Macro-Region Banner */
+    .macro-bracket-cell {
+      padding: 6px 8px;
+      text-align: center;
       border-right: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
+      background: rgba(23, 26, 36, 0.98);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      user-select: none;
-      transition: background 0.15s ease;
+      gap: 6px;
     }
 
-    .macro-bracket-banner:hover {
-      background: var(--panel-2);
-    }
-
-    .macro-bracket-info {
-      display: flex;
+    .macro-title-group {
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
-      overflow: hidden;
+      gap: 6px;
+      text-align: left;
     }
 
-    .macro-bracket-color-bar {
+    .macro-tint-dot {
       width: 4px;
       height: 14px;
       border-radius: 2px;
-      flex-shrink: 0;
+      display: inline-block;
     }
 
     .macro-bracket-title {
       font-size: 0.82rem;
       font-weight: 700;
-      letter-spacing: 0.03em;
       color: var(--text);
       white-space: nowrap;
     }
 
-    .macro-count-pill {
+    .macro-count-badge {
       font-size: 0.68rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-weight: 600;
-      color: var(--muted);
-      background: rgba(255, 255, 255, 0.06);
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      font-family: ui-monospace, monospace;
     }
 
-    .btn-macro-accordion {
+    .macro-toggle-btn {
       background: var(--panel-2);
       border: 1px solid var(--border);
-      color: var(--accent);
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 2px 7px;
       border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.68rem;
+      color: var(--text);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      flex-shrink: 0;
-      transition: all 0.15s ease;
+      gap: 3px;
     }
 
-    .btn-macro-accordion:hover {
+    .macro-toggle-btn:hover {
       border-color: var(--accent);
       background: rgba(224, 177, 83, 0.15);
-      color: #fff;
     }
 
-    /* Tier 2: Subregion / Summary Leaf Header */
-    .sub-leaf-header {
-      grid-row: 2;
-      padding: 6px 10px;
+    /* Tier 2: Leaf Subregion Headers */
+    .lane-leaf-header {
+      padding: 6px 8px;
       border-right: 1px solid var(--border);
       text-align: center;
-      background: rgba(23, 26, 36, 0.7);
+      background: var(--panel);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2px;
-      min-height: 42px;
     }
 
-    .sub-leaf-title {
-      font-size: 0.76rem;
+    .lane-leaf-title {
+      font-size: 0.74rem;
       font-weight: 600;
       color: var(--text);
       white-space: nowrap;
@@ -383,9 +378,10 @@
       max-width: 100%;
     }
 
-    .sub-leaf-meta {
-      font-size: 0.66rem;
+    .lane-leaf-sub {
+      font-size: 0.64rem;
       color: var(--muted);
+      margin-top: 2px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -398,7 +394,7 @@
       width: 100%;
     }
 
-    /* Chunk 2.1: Sticky Floating Chronology Rail (Left Y-Axis) */
+    /* Sticky Chronology Rail (Left Y-Axis) */
     .sticky-chrono-rail {
       position: sticky;
       left: 0;
@@ -415,8 +411,8 @@
       position: absolute;
       left: 0;
       width: 100%;
-      padding: 3px 10px 3px 6px;
-      font-size: 0.72rem;
+      padding: 2px 8px 2px 4px;
+      font-size: 0.7rem;
       font-weight: 600;
       color: var(--muted);
       text-align: right;
@@ -429,55 +425,6 @@
       font-weight: 700;
     }
 
-    .rail-epoch-pill {
-      position: absolute;
-      left: 100%;
-      margin-left: 8px;
-      top: 5px;
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--accent);
-      background: rgba(23, 26, 36, 0.94);
-      border: 1px solid rgba(224, 177, 83, 0.4);
-      padding: 2px 9px;
-      border-radius: 4px;
-      white-space: nowrap;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-    }
-
-    /* Chunk 3.1: Hover/Selection Timespan Highlighter Band */
-    .timespan-highlight-band {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      background: linear-gradient(90deg, rgba(224, 177, 83, 0.16), rgba(56, 189, 248, 0.09) 45%, rgba(224, 177, 83, 0.12));
-      border-top: 1.5px solid rgba(224, 177, 83, 0.75);
-      border-bottom: 1.5px solid rgba(224, 177, 83, 0.75);
-      pointer-events: none;
-      z-index: 12;
-      display: none;
-      box-shadow: 0 0 24px rgba(224, 177, 83, 0.12);
-    }
-
-    .rail-span-callout {
-      position: absolute;
-      right: 6px;
-      background: #e0b153;
-      color: #0f1117;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.66rem;
-      font-weight: 800;
-      padding: 1px 6px;
-      border-radius: 3px;
-      white-space: nowrap;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-      z-index: 95;
-      display: none;
-      transform: translateY(-50%);
-    }
-
     /* Background Swimlane Columns */
     .lane-bg-grid {
       position: absolute;
@@ -487,7 +434,7 @@
     }
 
     .lane-bg-col {
-      border-right: 1px dashed rgba(255, 255, 255, 0.06);
+      border-right: 1px dashed rgba(255, 255, 255, 0.05);
       height: 100%;
     }
 
@@ -495,22 +442,46 @@
       background: rgba(255, 255, 255, 0.012);
     }
 
-    /* Horizontal Time Gridlines across Stage */
+    /* Horizontal Time Gridlines & Option B Epoch Dividers */
     .time-tick {
       position: absolute;
       left: 0;
       width: 100%;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
       pointer-events: none;
       z-index: 5;
     }
 
+    /* Option B: Full-width stage divider behind cards */
     .time-tick.epoch-divider {
-      border-top: 1px solid rgba(224, 177, 83, 0.38);
-      background: linear-gradient(90deg, rgba(224, 177, 83, 0.12), transparent 35%);
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      border-top: 1px dashed rgba(224, 177, 83, 0.45);
+      background: linear-gradient(90deg, rgba(224, 177, 83, 0.15), transparent 35%);
+      pointer-events: none;
+      z-index: 6;
     }
 
-    /* SVG Overlay for Read Order Thread & Connectors */
+    .time-tick.epoch-divider::after {
+      content: attr(data-epoch-label);
+      position: absolute;
+      left: calc(var(--chrono-rail-width, 115px) + 14px);
+      top: -10px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: rgba(224, 177, 83, 0.85);
+      background: var(--bg);
+      padding: 1px 8px;
+      border-radius: 3px;
+      border: 1px solid rgba(224, 177, 83, 0.35);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* SVG Overlay */
     .svg-overlay {
       position: absolute;
       inset: 0;
@@ -520,44 +491,15 @@
       z-index: 15;
     }
 
-    .svg-spotlight {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 42;
-    }
-
-    @keyframes flowDash {
-      to {
-        stroke-dashoffset: -28;
-      }
-    }
-
-    .animated-flow {
-      animation: flowDash 0.9s linear infinite;
-    }
-
-    /* Historical Duration Span Bars */
+    /* Duration Span Bars */
     .duration-bar {
       position: absolute;
-      width: 6px;
+      width: 5px;
       border-radius: 3px;
       opacity: 0.45;
       z-index: 10;
       pointer-events: none;
-      transition: opacity 0.18s ease, width 0.18s ease;
-    }
-
-    .duration-bar.dimmed-bar {
-      opacity: 0.08 !important;
-    }
-
-    .duration-bar.active-bar {
-      opacity: 0.95 !important;
-      width: 8px;
-      box-shadow: 0 0 10px rgba(224, 177, 83, 0.6);
+      transition: opacity 0.2s;
     }
 
     /* Book Node Cards */
@@ -565,59 +507,32 @@
       position: absolute;
       z-index: 20;
       border-radius: 7px;
-      padding: 6px 9px;
+      padding: 5px 8px;
       border: 1px solid var(--border);
       background: var(--panel-2);
       cursor: pointer;
-      transition: transform 0.14s ease, box-shadow 0.14s ease, opacity 0.2s ease, border-color 0.15s ease;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, opacity 0.2s ease;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
       overflow: hidden;
       user-select: none;
     }
 
-    .book-card:hover,
-    .book-card.selected-card {
+    .book-card:hover {
       transform: translateY(-2px) scale(1.015);
-      z-index: 55;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 0 2px var(--accent);
+      z-index: 50;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.65);
     }
 
-    .book-card.paired-card {
-      z-index: 48;
-      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35), 0 0 0 2px #38bdf8;
-    }
+    .book-card.tier-main { background: var(--tier-main-bg); border-color: var(--tier-main-border); }
+    .book-card.tier-supp { background: var(--tier-supp-bg); border-color: var(--tier-supp-border); }
+    .book-card.tier-hist { background: var(--tier-hist-bg); border-color: var(--tier-hist-border); }
+    .book-card.tier-schol { background: var(--tier-schol-bg); border-color: var(--tier-schol-border); border-style: dashed; }
+    .book-card.tier-ref { background: var(--tier-ref-bg); border-color: var(--tier-ref-border); }
 
-    .book-card.neighbor-card {
-      z-index: 47;
-      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.3), 0 0 0 1.5px #f59e0b;
-    }
-
-    .book-card.tier-main {
-      background: var(--tier-main-bg);
-      border-color: var(--tier-main-border);
-    }
-    .book-card.tier-supp {
-      background: var(--tier-supp-bg);
-      border-color: var(--tier-supp-border);
-    }
-    .book-card.tier-hist {
-      background: var(--tier-hist-bg);
-      border-color: var(--tier-hist-border);
-    }
-    .book-card.tier-schol {
-      background: var(--tier-schol-bg);
-      border-color: var(--tier-schol-border);
-      border-style: dashed;
-    }
-    .book-card.tier-ref {
-      background: var(--tier-ref-bg);
-      border-color: var(--tier-ref-border);
-    }
-
-    .book-card.dimmed {
-      opacity: 0.18;
-      filter: grayscale(80%);
-      pointer-events: none;
+    .book-card.dimmed { opacity: 0.18; filter: grayscale(80%); pointer-events: none; }
+    .book-card.paired-target {
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.5) !important;
     }
 
     .card-top {
@@ -625,7 +540,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 4px;
-      font-size: 0.66rem;
+      font-size: 0.65rem;
       margin-bottom: 2px;
     }
 
@@ -634,28 +549,23 @@
       font-weight: 700;
       color: var(--accent);
       background: rgba(0, 0, 0, 0.42);
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 3px;
       border: 1px solid rgba(224, 177, 83, 0.25);
     }
 
-    .paired-pill {
-      display: none;
-      font-size: 0.6rem;
-      font-weight: 700;
-      color: #0f1117;
-      background: #38bdf8;
-      padding: 0 5px;
+    .paired-badge {
+      font-size: 0.62rem;
+      padding: 1px 4px;
       border-radius: 3px;
-    }
-
-    .book-card.paired-card .paired-pill {
-      display: inline-block;
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
     }
 
     .subregion-pill {
       color: var(--muted);
-      font-size: 0.64rem;
+      font-size: 0.63rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -663,7 +573,7 @@
     }
 
     .card-title {
-      font-size: 0.78rem;
+      font-size: 0.77rem;
       font-weight: 700;
       line-height: 1.22;
       color: var(--text);
@@ -675,46 +585,66 @@
 
     .card-meta {
       margin-top: 2px;
-      font-size: 0.67rem;
+      font-size: 0.66rem;
       color: var(--muted);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* Compact Card Adaptations when Zoomed Out */
-    .book-card.compact-zoom {
-      padding: 4px 6px;
-    }
-    .book-card.compact-zoom .card-title {
-      font-size: 0.7rem;
-      -webkit-line-clamp: 1;
-    }
-    .book-card.compact-zoom .card-meta {
-      display: none;
-    }
-
-    .status-dots {
-      display: inline-flex;
-      gap: 4px;
-      align-items: center;
+    /* Timespan Hover Highlight Band */
+    .timespan-band {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      background: rgba(224, 177, 83, 0.08);
+      border-top: 1px solid rgba(224, 177, 83, 0.45);
+      border-bottom: 1px solid rgba(224, 177, 83, 0.45);
+      pointer-events: none;
+      z-index: 8;
+      transition: opacity 0.15s ease;
     }
 
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      display: inline-block;
+    /* Timespan Sticky Clamped Callout Badges */
+    .timespan-callout {
+      position: absolute;
+      left: 0;
+      width: var(--chrono-rail-width, 115px);
+      z-index: 110;
+      padding: 3px 6px;
+      background: var(--panel-2);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-align: right;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      border-radius: 0 4px 4px 0;
+      box-sizing: border-box;
+      user-select: none;
     }
-    .dot.read { background: #22c55e; }
-    .dot.owned { background: #3b82f6; }
 
-    /* Slide-out Inspector Drawer */
+    .timespan-callout.is-clamped {
+      position: fixed;
+      cursor: pointer;
+      background: rgba(23, 26, 36, 0.96);
+      backdrop-filter: blur(8px);
+      border-color: #facc15;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.7);
+    }
+
+    .timespan-callout.is-clamped:hover {
+      background: rgba(224, 177, 83, 0.25);
+      color: #fff;
+    }
+
+    /* Inspector Drawer */
     .drawer {
       position: fixed;
       top: 0;
-      right: -460px;
-      width: 440px;
+      right: -480px;
+      width: 460px;
       max-width: 92vw;
       height: 100vh;
       background: var(--panel);
@@ -726,9 +656,7 @@
       box-shadow: -10px 0 30px rgba(0, 0, 0, 0.6);
     }
 
-    .drawer.open {
-      right: 0;
-    }
+    .drawer.open { right: 0; }
 
     .drawer-close {
       float: right;
@@ -749,20 +677,7 @@
     .drawer .author {
       font-size: 0.9rem;
       color: var(--accent);
-      margin-bottom: 14px;
-    }
-
-    .drawer-nav {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .drawer-nav button {
-      flex: 1;
-      text-align: center;
-      font-size: 0.76rem;
-      padding: 6px 8px;
+      margin-bottom: 12px;
     }
 
     .meta-grid {
@@ -773,13 +688,13 @@
       padding: 12px;
       border-radius: 8px;
       border: 1px solid var(--border);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       font-size: 0.78rem;
     }
 
     .meta-cell .label {
       color: var(--muted);
-      font-size: 0.68rem;
+      font-size: 0.67rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
@@ -790,44 +705,52 @@
       margin-top: 2px;
     }
 
-    .paired-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-
-    .paired-link {
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      border-radius: 6px;
-      padding: 7px 10px;
-      font-size: 0.78rem;
-      color: var(--text);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .paired-link:hover {
-      border-color: #38bdf8;
-      background: rgba(56, 189, 248, 0.18);
-    }
-
     .notes-box {
       background: var(--panel-2);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 14px;
-      font-size: 0.85rem;
-      line-height: 1.55;
+      padding: 12px;
+      font-size: 0.84rem;
+      line-height: 1.5;
       color: var(--text);
       white-space: pre-wrap;
+      margin-bottom: 14px;
     }
 
-    /* Modal for Adding/Managing Sheet Tabs */
+    .paired-section {
+      background: rgba(56, 189, 248, 0.06);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .paired-section h4 {
+      font-size: 0.74rem;
+      color: #38bdf8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .paired-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px;
+      border-radius: 5px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      margin-bottom: 6px;
+      cursor: pointer;
+      font-size: 0.78rem;
+    }
+
+    .paired-link:hover {
+      border-color: #38bdf8;
+    }
+
+    /* Modal Backdrop */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -837,30 +760,18 @@
       align-items: center;
       justify-content: center;
     }
-    .modal-backdrop.open {
-      display: flex;
-    }
+    .modal-backdrop.open { display: flex; }
     .modal {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 10px;
-      width: 620px;
+      width: 580px;
       max-width: 94vw;
-      max-height: 90vh;
-      overflow-y: auto;
       padding: 20px;
     }
-    .modal h3 {
-      margin-bottom: 8px;
-      color: var(--accent);
-    }
-    .modal p {
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-bottom: 12px;
-      line-height: 1.45;
-    }
-    .modal textarea, .modal input[type="text"] {
+    .modal h3 { margin-bottom: 8px; color: var(--accent); }
+    .modal p { font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; line-height: 1.45; }
+    .modal textarea, .modal input {
       width: 100%;
       margin-bottom: 12px;
       background: var(--panel-2);
@@ -870,31 +781,6 @@
       padding: 8px;
       font-family: monospace;
       font-size: 0.8rem;
-    }
-    .tab-check-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 14px;
-      max-height: 200px;
-      overflow-y: auto;
-      background: var(--panel-2);
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-    }
-    .tab-check-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      gap: 8px;
-    }
-    .tab-check-item label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
     }
   </style>
 </head>
@@ -972,39 +858,39 @@
         <span class="swatch" style="background:var(--tier-ref-border)"></span>General Reference
       </div>
     </div>
-    <div class="stats" id="statsBar">Loading Master Chronology...</div>
+    <div class="stats" id="statsBar">Loading live Google Sheet...</div>
   </div>
 
   <!-- Main Timeline Stage -->
   <div class="viewport" id="viewport">
     <div class="lane-headers" id="laneHeaders"></div>
-    <div class="chart-stage" id="chartStage"></div>
+    <div class="chart-stage" id="chartStage">
+      <!-- Timespan Highlight Band & Sticky Clamped Callouts -->
+      <div id="timespanBand" class="timespan-band" style="display:none;"></div>
+      <div id="timespanStartBadge" class="timespan-callout" style="display:none;"></div>
+      <div id="timespanEndBadge" class="timespan-callout" style="display:none;"></div>
+    </div>
   </div>
 
-  <!-- Slide-out Book Inspector Drawer -->
+  <!-- Slide-out Inspector Drawer -->
   <aside class="drawer" id="drawer">
     <button class="drawer-close" id="drawerClose">✕ Close</button>
     <div id="drawerContent"></div>
   </aside>
 
-  <!-- Modal for Adding/Switching Tab GIDs & Master Chronology Inclusion -->
+  <!-- Modal for Managing Sheet Tabs -->
   <div class="modal-backdrop" id="modalBackdrop">
     <div class="modal">
       <h3>Configure Published Google Sheet Tabs</h3>
       <p>
-        Checked tabs automatically load into the default <strong>🌐 All Checked Eras (Master Chronology)</strong> view. Uncheck any unfinished later tabs so they don't clutter the master timeline (you can still preview unchecked tabs individually from the dropdown).
+        Your published Google Sheet base URL is pre-configured. You can enable or disable tabs for the default Master Chronology view by prefixing a line with <code>!</code> to exclude it (e.g. <code>!17. 1976–1989 Late Cold War | 109145688</code>).
       </p>
-      <label style="font-size:0.75rem;color:var(--muted);">Include in Default Master Chronology:</label>
-      <div class="tab-check-list" id="tabCheckList"></div>
-
       <label style="font-size:0.75rem;color:var(--muted);">Published Base CSV URL:</label>
       <input type="text" id="baseCsvUrlInput" />
-
       <label style="font-size:0.75rem;color:var(--muted);">
-        Tab List (One per line: <code>Tab Name | GID</code> — prefix a line with <code>!</code> to exclude it from the Master Chronology):
+        Tab List (One per line: <code>Tab Name | GID</code>):
       </label>
-      <textarea id="tabsConfigTextarea" rows="7"></textarea>
-
+      <textarea id="tabsConfigTextarea" rows="8"></textarea>
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
         <button id="btnResetDefaultTabs" title="Reset saved browser tab settings back to DEFAULT_TABS in index.html">↺ Reset to Code Defaults</button>
         <div style="display:flex;gap:8px;">
@@ -1017,7 +903,7 @@
 
   <script>
     /*************************************************************************
-     * 1. DEFAULT CONFIGURATION & UN GEOSCHEME ROSTER
+     * 1. CONFIGURATION & REGISTRY (All 19 Tabs Pre-Configured)
      *************************************************************************/
     const DEFAULT_PUBLISHED_BASE =
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1at2lgur-bO7C2rC1VWtHmhGgi2nD8OTASKWDnAE_dq2Of_nRblgbNKL4URoZs26U7-xzuK3O1WVK/pub";
@@ -1027,39 +913,39 @@
       { name: "02. 1100–200 BCE Axial & Classical", gid: "1421629170", enabled: true },
       { name: "03. 200 BCE–500 CE Late Antiquity", gid: "1357270877", enabled: true },
       { name: "04. 500–1050 Early Middle Ages", gid: "122415868", enabled: true },
-      { name: "05. 1050–1450 High Middle Ages", gid: "1719394092", enabled: false },
-      { name: "06. 1450–1616 Renaissance", gid: "1081815791", enabled: false },
-      { name: "07. 1600–1699 17th C & Baroque", gid: "1710586163", enabled: false },
-      { name: "08. 1700–1799 Enlightenment", gid: "21083586", enabled: false },
-      { name: "09. 1800–1848 Romanticism", gid: "677063922", enabled: false },
-      { name: "10. 1849–1899 Victorian Realism", gid: "1982498947", enabled: false },
-      { name: "11. 1900–1918 Belle Époque & WWI", gid: "295378452", enabled: false },
-      { name: "12. 1919–1929 Roaring Twenties & High Modernism", gid: "660834264", enabled: false },
-      { name: "13. 1930–1938 Depression & Rise of Totalitarianism", gid: "1478444962", enabled: false },
-      { name: "14. 1939–1949 WWII, Holocaust & Postwar Dawn", gid: "114590073", enabled: false },
-      { name: "15. 1950–1961 Early Cold War & Existentialism", gid: "635324859", enabled: false },
-      { name: "16. 1962–1975 The Long Sixties & Global Boom", gid: "1784838157", enabled: false },
+      { name: "05. 1050–1450 High Middle Ages", gid: "1719394092", enabled: true },
+      { name: "06. 1450–1616 Renaissance", gid: "1081815791", enabled: true },
+      { name: "07. 1600–1699 17th C & Baroque", gid: "1710586163", enabled: true },
+      { name: "08. 1700–1799 Enlightenment", gid: "21083586", enabled: true },
+      { name: "09. 1800–1848 Romanticism", gid: "677063922", enabled: true },
+      { name: "10. 1849–1899 Victorian Realism", gid: "1982498947", enabled: true },
+      { name: "11. 1900–1918 Belle Époque & WWI", gid: "295378452", enabled: true },
+      { name: "12. 1919–1929 Roaring Twenties & High Modernism", gid: "660834264", enabled: true },
+      { name: "13. 1930–1938 Depression & Rise of Totalitarianism", gid: "1478444962", enabled: true },
+      { name: "14. 1939–1949 WWII, Holocaust & Postwar Dawn", gid: "114590073", enabled: true },
+      { name: "15. 1950–1961 Early Cold War & Existentialism", gid: "635324859", enabled: true },
+      { name: "16. 1962–1975 The Long Sixties & Global Boom", gid: "1784838157", enabled: true },
       { name: "17. 1976–1989 Late Cold War & Postmodernism", gid: "109145688", enabled: false },
       { name: "18. 1990–Pres Contemporary", gid: "1412638559", enabled: false },
       { name: "00. General Reference", gid: "1394318577", enabled: false }
     ];
 
     const MACRO_DEFS = [
-      { id: "Off-Grid", label: "Off-Grid & Cosmic", sub: "Space, Geologic, Polar, Global", color: "var(--macro-offgrid)" },
-      { id: "Africa", label: "Africa", sub: "Northern & Sub-Saharan Africa", color: "var(--macro-africa)" },
-      { id: "Europe", label: "Europe", sub: "Southern, Western, Northern, Eastern", color: "var(--macro-europe)" },
-      { id: "Asia", label: "Asia", sub: "Western, Central, South, East & SE Asia", color: "var(--macro-asia)" },
-      { id: "Oceania", label: "Oceania", sub: "Australia, NZ, Melanesia, Polynesia", color: "var(--macro-oceania)" },
-      { id: "Americas", label: "The Americas", sub: "Latin America, Caribbean & North America", color: "var(--macro-americas)" }
+      { id: "Off-Grid", label: "Off-Grid & Cosmic", tint: "#a855f7", sub: "Space, Geologic, Polar, Global" },
+      { id: "Africa", label: "Africa", tint: "#10b981", sub: "Northern & Sub-Saharan Africa" },
+      { id: "Americas", label: "The Americas", tint: "#f97316", sub: "Latin America, Caribbean & North America" },
+      { id: "Asia", label: "Asia", tint: "#ef4444", sub: "Western, Central, South, East & SE Asia" },
+      { id: "Europe", label: "Europe", tint: "#3b82f6", sub: "Southern, Western, Northern, Eastern" },
+      { id: "Oceania", label: "Oceania", tint: "#14b8a6", sub: "Australia, NZ, Melanesia, Polynesia" }
     ];
 
     const UN_CANONICAL_SUBREGIONS = {
-      "Off-Grid": ["Space / Cosmic", "Planetary / Geologic", "Polar", "Global / Comparative"],
       "Africa": ["Northern Africa", "Eastern Africa", "Middle Africa", "Southern Africa", "Western Africa"],
+      "Americas": ["Latin America and the Caribbean", "Central America", "South America", "Caribbean", "Northern America"],
+      "Asia": ["Western Asia", "Central Asia", "Southern Asia", "Eastern Asia", "South-eastern Asia", "Northern Asia"],
       "Europe": ["Southern Europe", "Western Europe", "Northern Europe", "Eastern Europe"],
-      "Asia": ["Western Asia", "Central Asia", "Southern Asia", "Eastern Asia", "South-eastern Asia"],
       "Oceania": ["Australia and New Zealand", "Melanesia", "Micronesia", "Polynesia"],
-      "Americas": ["Northern America", "Central America", "Caribbean", "South America"]
+      "Off-Grid": ["Space / Cosmic", "Planetary / Geologic", "Polar", "Global / Comparative", "Global Prehistory", "Global Macro-History", "Vertebrate Evolution"]
     };
 
     const MIN_ZOOM = 0.45;
@@ -1070,22 +956,23 @@
       tabs: JSON.parse(localStorage.getItem("ro_tabs_v2") || "null") || DEFAULT_TABS,
       activeTabKey: "ALL_VALIDATED",
       rows: [],
-      quarantinedCount: 0,
-      strictCoordsOnly: true,
       yMode: "chrono",
+      colorMode: "tier",
+      strictCoordsOnly: true,
       expandedMacros: new Set(),
       showEmptySubregions: false,
-      colorMode: "tier",
       showThread: true,
       showSpans: true,
       searchQuery: "",
       hiddenTiers: new Set(),
-      selectedRowId: null,
       hoveredRowId: null,
+      selectedRowId: null,
       zoom: 1.0,
       directWheelZoom: false,
       positionedMap: new Map()
     };
+
+    let activeTimespanData = null;
 
     let panState = {
       isDown: false,
@@ -1098,7 +985,21 @@
     };
 
     /*************************************************************************
-     * 2. RFC-4180 CSV PARSER
+     * 2. DYNAMIC HEADER OFFSET ENGINE
+     *************************************************************************/
+    function updateStickyHeaderOffset() {
+      const topbar = document.querySelector('.topbar');
+      const subbar = document.querySelector('.subbar');
+      const total = (topbar?.offsetHeight || 0) + (subbar?.offsetHeight || 0);
+      if (total > 0) {
+        document.documentElement.style.setProperty('--header-stack-height', `${total}px`);
+      }
+    }
+    window.addEventListener('resize', updateStickyHeaderOffset);
+    window.addEventListener('DOMContentLoaded', updateStickyHeaderOffset);
+
+    /*************************************************************************
+     * 3. CSV PARSER & ROW NORMALIZER
      *************************************************************************/
     function parseCSV(text) {
       const rows = [];
@@ -1143,9 +1044,6 @@
       return rows;
     }
 
-    /*************************************************************************
-     * 3. FALLBACK DATE & GEOSCHEME INFERENCE
-     *************************************************************************/
     function inferYearsFromEraString(eraStr, readOrder) {
       if (!eraStr) return { start: Math.round(readOrder), end: Math.round(readOrder) };
       const s = eraStr.replace(/,/g, "");
@@ -1189,7 +1087,7 @@
 
     function inferRegionFallback(lang, lcc, title, notes) {
       const blob = `${lang} ${lcc} ${title} ${notes}`.toLowerCase();
-      if (/egypt|nubia|aksum|ethiopia|swahili|yoruba|mali|sundiata|africa|coptic|ge'ez|amharic|arabic.*ibb|maghreb/.test(blob)) {
+      if (/egypt|nubia|aksum|ethiopia|swahili|yoruba|mali|sundiata|africa|coptic|ge'ez|amharic|maghreb/.test(blob)) {
         return { macro: "Africa", inter: "Northern / Sub-Saharan", sub: "Africa (Inferred)" };
       }
       if (/maya|aztec|inca|nahuatl|quiche|popol vuh|americas|united states|american|mexico|brazil|caribbean|andes/.test(blob)) {
@@ -1198,22 +1096,13 @@
       if (/polynesia|maori|aboriginal|australia|oceania|hawaii|pacific|melanesia/.test(blob)) {
         return { macro: "Oceania", inter: "—", sub: "Oceania (Inferred)" };
       }
-      if (/sumer|akkad|babylon|assyria|ugarit|hebrew|persia|iran|arabic|turk|sanskrit|pali|india|china|chinese|japan|japanese|korea|vietnam|tibetan|mongol/.test(blob)) {
+      if (/sumer|akkad|babylon|assyria|ugarit|hebrew|persia|iran|turk|sanskrit|pali|india|china|chinese|japan|japanese|korea|vietnam|tibetan|mongol/.test(blob)) {
         return { macro: "Asia", inter: "—", sub: "Asia (Inferred)" };
       }
       if (/cosmic|universe|big bang|paleo|geolog|antarctica|arctic|biosphere/.test(blob)) {
         return { macro: "Off-Grid", inter: "Global / Cosmic", sub: "Off-Grid (Inferred)" };
       }
       return { macro: "Europe", inter: "—", sub: "Europe (Inferred)" };
-    }
-
-    /*************************************************************************
-     * 4. MULTI-TAB PARALLEL FETCHER & NORMALIZER
-     *************************************************************************/
-    function buildCsvUrl(tab) {
-      if (tab.gid.startsWith("http")) return tab.gid;
-      const base = state.baseCsvUrl.split("?")[0];
-      return `${base}?gid=${encodeURIComponent(tab.gid)}&single=true&output=csv`;
     }
 
     function parseTabRows(csvText, tabName, tabIdx) {
@@ -1247,12 +1136,7 @@
 
         let yStart = parseFloat((r[13] || "").replace(/,/g, ""));
         let yEnd = parseFloat((r[14] || "").replace(/,/g, ""));
-        let macro = (r[15] || "").trim();
-        let inter = (r[16] || "").trim();
-        let sub = (r[17] || "").trim();
-        let secRegions = (r[18] || "").trim();
-
-        const hasExplicitCoords = !isNaN(yStart) && Boolean(macro);
+        const hasExplicitCoords = !isNaN(yStart);
 
         if (isNaN(yStart)) {
           const inf = inferYearsFromEraString(eraDate, roRaw);
@@ -1261,6 +1145,11 @@
         } else if (isNaN(yEnd)) {
           yEnd = yStart;
         }
+
+        let macro = (r[15] || "").trim();
+        let inter = (r[16] || "").trim();
+        let sub = (r[17] || "").trim();
+        let secRegions = (r[18] || "").trim();
 
         if (!macro) {
           const infReg = inferRegionFallback(origLang, lcc, title, notes);
@@ -1315,6 +1204,12 @@
       return parsed;
     }
 
+    function buildCsvUrl(tab) {
+      if (tab.gid.startsWith("http")) return tab.gid;
+      const base = state.baseCsvUrl.split("?")[0];
+      return `${base}?gid=${encodeURIComponent(tab.gid)}&single=true&output=csv`;
+    }
+
     async function loadActiveSelection() {
       let targetTabs = [];
 
@@ -1332,15 +1227,15 @@
       }
 
       const label = state.activeTabKey === "ALL_VALIDATED"
-        ? `Master Chronology (${targetTabs.length} checked tab${targetTabs.length === 1 ? "" : "s"})`
+        ? `Master Chronology (${targetTabs.length} validated tabs)`
         : targetTabs[0].name;
 
-      document.getElementById("statsBar").textContent = `Fetching live CSV data for ${label}...`;
+      document.getElementById("statsBar").textContent = `Fetching live CSV for ${label}...`;
 
       const settled = await Promise.allSettled(
         targetTabs.map(async (t) => {
           const url = buildCsvUrl(t);
-          const res = await fetch(url);
+          const res = await fetch(url, { cache: "no-store" });
           if (!res.ok) throw new Error(`${t.name} (HTTP ${res.status})`);
           const text = await res.text();
           if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
@@ -1351,24 +1246,12 @@
       );
 
       const loadedRows = [];
-      const failedTabs = [];
-
-      settled.forEach((result, i) => {
-        if (result.status === "fulfilled") {
-          loadedRows.push(...result.value);
-        } else {
-          failedTabs.push(targetTabs[i].name);
-        }
+      settled.forEach(r => {
+        if (r.status === "fulfilled") loadedRows.push(...r.value);
       });
-
-      if (loadedRows.length === 0 && failedTabs.length > 0) {
-        document.getElementById("statsBar").innerHTML =
-          `<span style="color:#fbbf24;">Some published CSV links could not be reached. Showing available tabs...</span>`;
-      }
 
       loadedRows.sort((a, b) => a.readOrder - b.readOrder);
 
-      state.quarantinedCount = loadedRows.filter(r => !r.hasExplicitCoords).length;
       state.rows = state.strictCoordsOnly
         ? loadedRows.filter(r => r.hasExplicitCoords)
         : loadedRows;
@@ -1378,14 +1261,11 @@
       }
 
       renderChart();
-
-      if (failedTabs.length > 0) {
-        console.warn("Skipped unpublished or unreachable tabs:", failedTabs);
-      }
+      updateStickyHeaderOffset();
     }
 
     /*************************************************************************
-     * 5. PIECEWISE CHRONOLOGICAL TIME AXIS & ACCORDION RESOLUTION
+     * 4. TIME SCALE & TWO-TIER ACCORDION SWIMLANES
      *************************************************************************/
     function formatYearLabel(y) {
       if (y <= -1e9) return `${(Math.abs(y) / 1e9).toFixed(1)} Ga`;
@@ -1473,107 +1353,78 @@
     }
 
     function resolveAccordionLanes(rows) {
-      const macroWorkCounts = new Map();
-      const subWorkCounts = new Map();
-
-      MACRO_DEFS.forEach(m => macroWorkCounts.set(m.id, 0));
+      const activeSubsByMacro = new Map();
+      MACRO_DEFS.forEach(m => activeSubsByMacro.set(m.id, new Set()));
 
       rows.forEach(r => {
-        const m = r.macro || "Off-Grid";
-        macroWorkCounts.set(m, (macroWorkCounts.get(m) || 0) + 1);
-
-        const subKey = `${m}|||${r.sub || m}`;
-        subWorkCounts.set(subKey, (subWorkCounts.get(subKey) || 0) + 1);
+        const macroKey = MACRO_DEFS.some(m => m.id === r.macro) ? r.macro : "Off-Grid";
+        const subName = (r.sub || "").trim() || macroKey;
+        activeSubsByMacro.get(macroKey).add(subName);
       });
 
-      const macroGroups = [];
+      const macroBanners = [];
       const leafLanes = [];
-      let currentCol = 2;
 
-      MACRO_DEFS.forEach(mDef => {
-        const isExpanded = state.expandedMacros.has(mDef.id);
-        const mCount = macroWorkCounts.get(mDef.id) || 0;
+      MACRO_DEFS.forEach(m => {
+        const isExpanded = state.expandedMacros.has(m.id);
+        const rowCount = rows.filter(r => (r.macro === m.id) || (!m.id && r.macro === "Off-Grid")).length;
+
+        let constituentSubs = [];
+        if (state.showEmptySubregions && UN_CANONICAL_SUBREGIONS[m.id]) {
+          constituentSubs = [...UN_CANONICAL_SUBREGIONS[m.id]];
+        } else {
+          constituentSubs = [...activeSubsByMacro.get(m.id)];
+          if (constituentSubs.length === 0) constituentSubs = [m.id];
+        }
 
         if (!isExpanded) {
+          const laneId = m.id;
           leafLanes.push({
-            id: mDef.id,
-            macroId: mDef.id,
-            label: mDef.label,
-            subMeta: mDef.sub,
-            isSub: false,
-            count: mCount
+            id: laneId,
+            macro: m.id,
+            sub: m.id,
+            label: m.label,
+            subLabel: m.sub,
+            tint: m.tint,
+            isMacroCollapsed: true
           });
-
-          macroGroups.push({
-            def: mDef,
-            isExpanded: false,
-            workCount: mCount,
+          macroBanners.push({
+            macro: m.id,
+            label: m.label,
+            sub: m.sub,
+            tint: m.tint,
             colSpan: 1,
-            startCol: currentCol
+            isExpanded: false,
+            count: rowCount
           });
-
-          currentCol += 1;
         } else {
-          let subNames = [];
-
-          if (!state.showEmptySubregions) {
-            const activeSet = new Set();
-            rows.forEach(r => {
-              if (r.macro === mDef.id) {
-                activeSet.add(r.sub || r.macro || "General");
-              }
-            });
-            subNames = Array.from(activeSet);
-            const canonicalOrder = UN_CANONICAL_SUBREGIONS[mDef.id] || [];
-            subNames.sort((a, b) => {
-              const ia = canonicalOrder.indexOf(a);
-              const ib = canonicalOrder.indexOf(b);
-              if (ia !== -1 && ib !== -1) return ia - ib;
-              if (ia !== -1) return -1;
-              if (ib !== -1) return 1;
-              return a.localeCompare(b);
-            });
-          } else {
-            const canonical = UN_CANONICAL_SUBREGIONS[mDef.id] || [];
-            const combined = new Set(canonical);
-            rows.forEach(r => {
-              if (r.macro === mDef.id && r.sub) combined.add(r.sub);
-            });
-            subNames = Array.from(combined);
-          }
-
-          if (subNames.length === 0) {
-            subNames = [mDef.label];
-          }
-
-          const spanCount = subNames.length;
-          macroGroups.push({
-            def: mDef,
+          macroBanners.push({
+            macro: m.id,
+            label: m.label,
+            sub: m.sub,
+            tint: m.tint,
+            colSpan: constituentSubs.length,
             isExpanded: true,
-            workCount: mCount,
-            colSpan: spanCount,
-            startCol: currentCol
+            count: rowCount
           });
 
-          subNames.forEach(sName => {
-            const subKey = `${mDef.id}|||${sName}`;
-            const sCount = subWorkCounts.get(subKey) || 0;
-
+          constituentSubs.forEach(subName => {
+            const laneId = `${m.id}|||${subName}`;
+            const subCount = rows.filter(r => r.macro === m.id && ((r.sub || "").trim() === subName || (!r.sub && subName === m.id))).length;
             leafLanes.push({
-              id: subKey,
-              macroId: mDef.id,
-              label: sName,
-              subMeta: `${mDef.id} Subregion`,
-              isSub: true,
-              count: sCount
+              id: laneId,
+              macro: m.id,
+              sub: subName,
+              label: subName,
+              subLabel: `${m.label} (${subCount})`,
+              tint: m.tint,
+              isMacroCollapsed: false
             });
           });
-
-          currentCol += spanCount;
         }
       });
 
-      return { macroGroups, leafLanes };
+      return { macroBanners, leafLanes };
     }
 
     function getTierClass(tier) {
@@ -1586,20 +1437,17 @@
     }
 
     /*************************************************************************
-     * 6. RENDER TWO-TIER SWIMLANES & BOOK CARDS
+     * 5. CHART RENDERER WITH OPTION B EPOCH DIVIDERS & DYNAMIC SIZING
      *************************************************************************/
-    let currentScaler = null;
-    let visibleSortedCache = [];
-
     function renderChart() {
       const rows = state.rows;
-      const { macroGroups, leafLanes } = resolveAccordionLanes(rows);
+      const { macroBanners, leafLanes } = resolveAccordionLanes(rows);
       const z = state.zoom;
 
       document.getElementById("zoomReadout").textContent = `${Math.round(z * 100)}%`;
 
       const timeAxisWidth = 115;
-      const baseMinLaneWidth = 220;
+      const baseMinLaneWidth = 210;
       const minLaneWidth = Math.round(baseMinLaneWidth * z);
 
       const viewport = document.getElementById("viewport");
@@ -1608,81 +1456,79 @@
 
       const gridTemplate = `${timeAxisWidth}px repeat(${leafLanes.length}, minmax(${minLaneWidth}px, 1fr))`;
 
+      // 1. Two-Tier Sticky Header Row
       const laneHeaders = document.getElementById("laneHeaders");
       laneHeaders.style.gridTemplateColumns = gridTemplate;
-      laneHeaders.innerHTML = "";
+      laneHeaders.style.gridTemplateRows = "auto auto";
 
-      const cornerHeader = document.createElement("div");
-      cornerHeader.className = "time-axis-header";
-      cornerHeader.innerHTML = `
-        <span>${state.yMode === "chrono" ? "Chronology" : "Read Seq"}</span>
-        <span class="time-axis-sub">${state.yMode === "chrono" ? "Time Axis" : "Order"}</span>
+      let headerHTML = `
+        <div class="time-axis-header">
+          ${state.yMode === "chrono" ? "CHRONOLOGY" : "READ SEQ"}
+          <span class="sub">${state.yMode === "chrono" ? "Time Axis" : "Order"}</span>
+        </div>
       `;
-      laneHeaders.appendChild(cornerHeader);
 
-      macroGroups.forEach(mg => {
-        const banner = document.createElement("div");
-        banner.className = "macro-bracket-banner";
-        banner.style.gridColumn = `${mg.startCol} / span ${mg.colSpan}`;
-        banner.style.borderTop = `3px solid ${mg.def.color}`;
-
-        const toggleBtnLabel = mg.isExpanded ? "⊟ Collapse" : "⊞ Expand";
-        const toggleBtnTitle = mg.isExpanded
-          ? `Collapse ${mg.def.label} into a single macro lane`
-          : `Expand ${mg.def.label} into granular subregion lanes`;
-
-        banner.innerHTML = `
-          <div class="macro-bracket-info">
-            <span class="macro-bracket-color-bar" style="background:${mg.def.color}"></span>
-            <span class="macro-bracket-title">${mg.def.label}</span>
-            <span class="macro-count-pill" title="${mg.workCount} works in this continent">${mg.workCount}</span>
+      // Tier 1: Continent Brackets
+      macroBanners.forEach(mb => {
+        headerHTML += `
+          <div class="macro-bracket-cell" style="grid-column: span ${mb.colSpan}; border-top: 3px solid ${mb.tint};">
+            <div class="macro-title-group">
+              <span class="macro-tint-dot" style="background:${mb.tint};"></span>
+              <span class="macro-bracket-title">${mb.label}</span>
+              <span class="macro-count-badge">${mb.count}</span>
+            </div>
+            <button class="macro-toggle-btn" data-macro="${mb.macro}" title="${mb.isExpanded ? 'Collapse to single macro lane' : 'Expand into subregions'}">
+              ${mb.isExpanded ? "⊟ Collapse" : "⊞ Expand"}
+            </button>
           </div>
-          <button class="btn-macro-accordion" data-macro-id="${mg.def.id}" title="${toggleBtnTitle}">
-            ${toggleBtnLabel}
-          </button>
         `;
-
-        banner.querySelector(".btn-macro-accordion").addEventListener("click", (e) => {
-          e.stopPropagation();
-          const mId = e.currentTarget.getAttribute("data-macro-id");
-          if (state.expandedMacros.has(mId)) {
-            state.expandedMacros.delete(mId);
-          } else {
-            state.expandedMacros.add(mId);
-          }
-          renderChart();
-        });
-
-        laneHeaders.appendChild(banner);
       });
 
-      leafLanes.forEach((lane, idx) => {
-        const leaf = document.createElement("div");
-        leaf.className = "sub-leaf-header";
-        leaf.style.gridColumn = `${idx + 2}`;
-
-        const countBadge = lane.count > 0 ? ` (${lane.count})` : " (0)";
-        leaf.innerHTML = `
-          <div class="sub-leaf-title" title="${lane.label}">${lane.label}${countBadge}</div>
-          <div class="sub-leaf-meta" title="${lane.subMeta}">${lane.subMeta}</div>
+      // Tier 2: Leaf Headers
+      leafLanes.forEach(ll => {
+        headerHTML += `
+          <div class="lane-leaf-header">
+            <div class="lane-leaf-title" title="${ll.label}">${ll.label}</div>
+            <div class="lane-leaf-sub" title="${ll.subLabel}">${ll.subLabel}</div>
+          </div>
         `;
-        laneHeaders.appendChild(leaf);
+      });
+
+      laneHeaders.innerHTML = headerHTML;
+
+      // Attach Expand/Collapse Handlers
+      laneHeaders.querySelectorAll(".macro-toggle-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const macroId = btn.getAttribute("data-macro");
+          if (state.expandedMacros.has(macroId)) {
+            state.expandedMacros.delete(macroId);
+          } else {
+            state.expandedMacros.add(macroId);
+          }
+          renderChart();
+          updateStickyHeaderOffset();
+        });
       });
 
       const stage = document.getElementById("chartStage");
-      stage.innerHTML = "";
+      stage.innerHTML = `
+        <div id="timespanBand" class="timespan-band" style="display:none;"></div>
+        <div id="timespanStartBadge" class="timespan-callout" style="display:none;"></div>
+        <div id="timespanEndBadge" class="timespan-callout" style="display:none;"></div>
+      `;
 
       if (rows.length === 0) {
         stage.style.height = "400px";
-        document.getElementById("statsBar").innerHTML = `<span>No matching rows to display.</span>`;
         return;
       }
 
+      // Filter & Dynamic 1-N Reading Numbers
       const q = state.searchQuery.trim().toLowerCase();
       const isRowVisible = (n) => {
         if (state.hiddenTiers.has(n.tier)) return false;
         if (q) {
-          const hay = `${n.title} ${n.author} ${n.sub} ${n.macro} ${n.origLang} ${n.notes} ${n.scopeSubtitle || ""} ${n.themeTags || ""}`.toLowerCase();
+          const hay = `${n.title} ${n.author} ${n.sub} ${n.macro} ${n.origLang} ${n.notes} ${n.themeTags || ""}`.toLowerCase();
           if (!hay.includes(q)) return false;
         }
         if (state.colorMode === "read" && !n.readStatus) return false;
@@ -1698,15 +1544,16 @@
         }
       });
 
+      // Layout Geometry
       const CARD_HEIGHT = Math.round(68 * Math.max(0.72, Math.min(1.35, z)));
       const CARD_GAP = Math.round(10 * z);
       let totalStageHeight = 1000;
+      let scaler = null;
 
       if (state.yMode === "chrono") {
-        currentScaler = buildChronoScaler(rows, z);
-        totalStageHeight = currentScaler.totalHeight;
+        scaler = buildChronoScaler(rows, z);
+        totalStageHeight = scaler.totalHeight;
       } else {
-        currentScaler = null;
         totalStageHeight = rows.length * (CARD_HEIGHT + Math.round(16 * z)) + 120;
       }
 
@@ -1715,11 +1562,6 @@
 
       const laneIndexMap = new Map();
       leafLanes.forEach((l, idx) => laneIndexMap.set(l.id, idx));
-
-      const macroFirstLaneMap = new Map();
-      leafLanes.forEach((l, idx) => {
-        if (!macroFirstLaneMap.has(l.macroId)) macroFirstLaneMap.set(l.macroId, idx);
-      });
 
       const laneBottomTracker = new Array(leafLanes.length).fill(Math.round(24 * z));
       const positionedNodes = [];
@@ -1730,23 +1572,24 @@
 
       placementOrder.forEach((r, idx) => {
         const isExpanded = state.expandedMacros.has(r.macro);
-        let laneKey = isExpanded ? `${r.macro}|||${r.sub || r.macro || "General"}` : r.macro;
-        let laneIdx = laneIndexMap.get(laneKey);
+        const subKey = (r.sub || "").trim() || r.macro;
+        const targetLaneId = isExpanded ? `${r.macro}|||${subKey}` : r.macro;
 
+        let laneIdx = laneIndexMap.get(targetLaneId);
         if (laneIdx === undefined) {
-          laneIdx = macroFirstLaneMap.get(r.macro);
-          if (laneIdx === undefined) laneIdx = 0;
+          laneIdx = leafLanes.findIndex(l => l.macro === r.macro);
+          if (laneIdx === -1) laneIdx = 0;
         }
 
         let idealY = state.yMode === "chrono"
-          ? currentScaler.yearToY(r.yStart)
+          ? scaler.yearToY(r.yStart)
           : Math.round(40 * z) + idx * (CARD_HEIGHT + Math.round(14 * z));
 
         const actualY = Math.max(idealY, laneBottomTracker[laneIdx]);
         laneBottomTracker[laneIdx] = actualY + CARD_HEIGHT + CARD_GAP;
 
         const endY = state.yMode === "chrono"
-          ? Math.max(actualY + 16, currentScaler.yearToY(r.yEnd))
+          ? Math.max(actualY + 16, scaler.yearToY(r.yEnd))
           : actualY + CARD_HEIGHT;
 
         const laneLeft = timeAxisWidth + laneIdx * laneWidth;
@@ -1760,7 +1603,6 @@
           idealY,
           top: actualY,
           endY,
-          cardHeight: CARD_HEIGHT,
           left: cardLeft,
           width: cardWidth,
           centerX: cardLeft + cardWidth / 2,
@@ -1770,60 +1612,48 @@
         });
       });
 
-      state.positionedMap.clear();
-      positionedNodes.forEach(n => state.positionedMap.set(n.id, n));
-
       totalStageHeight = Math.max(totalStageHeight, Math.max(...laneBottomTracker) + 120);
       stage.style.height = `${totalStageHeight}px`;
 
+      state.positionedMap.clear();
+      positionedNodes.forEach(n => state.positionedMap.set(n.id, n));
+
+      // Background Swimlane Grid
       const bgGrid = document.createElement("div");
       bgGrid.className = "lane-bg-grid";
       bgGrid.style.gridTemplateColumns = gridTemplate;
       bgGrid.innerHTML = `<div class="lane-bg-col"></div>` + leafLanes.map(() => `<div class="lane-bg-col"></div>`).join("");
       stage.appendChild(bgGrid);
 
-      const highlightBand = document.createElement("div");
-      highlightBand.className = "timespan-highlight-band";
-      highlightBand.id = "timespanBand";
-      stage.appendChild(highlightBand);
-
+      // Left Chronology Rail & Option B Stage Epoch Dividers
       const stickyRail = document.createElement("div");
       stickyRail.className = "sticky-chrono-rail";
       stickyRail.style.width = `${timeAxisWidth}px`;
       stickyRail.style.height = `${totalStageHeight}px`;
 
-      const calloutStart = document.createElement("div");
-      calloutStart.className = "rail-span-callout";
-      calloutStart.id = "railCalloutStart";
-      stickyRail.appendChild(calloutStart);
-
-      const calloutEnd = document.createElement("div");
-      calloutEnd.className = "rail-span-callout";
-      calloutEnd.id = "railCalloutEnd";
-      stickyRail.appendChild(calloutEnd);
-
-      if (state.yMode === "chrono" && currentScaler) {
-        currentScaler.bands.forEach(b => {
+      if (state.yMode === "chrono" && scaler) {
+        scaler.bands.forEach(b => {
+          // Option B: Full-width stage divider behind cards
           const bandDiv = document.createElement("div");
           bandDiv.className = "time-tick epoch-divider";
           bandDiv.style.top = `${b.topPx}px`;
+          bandDiv.setAttribute("data-epoch-label", b.label);
           stage.appendChild(bandDiv);
 
+          // Pinned rail year tick
           const railEpoch = document.createElement("div");
           railEpoch.style.position = "absolute";
           railEpoch.style.top = `${b.topPx}px`;
           railEpoch.style.left = "0";
           railEpoch.style.width = "100%";
-          railEpoch.innerHTML = `
-            <span class="rail-tick-label epoch-start">${formatYearLabel(b.yMin)}</span>
-            <span class="rail-epoch-pill">${b.label}</span>
-          `;
+          railEpoch.innerHTML = `<span class="rail-tick-label epoch-start">${formatYearLabel(b.yMin)}</span>`;
           stickyRail.appendChild(railEpoch);
 
+          // Intermediate ticks
           const steps = 4;
           for (let s = 1; s < steps; s++) {
             const yVal = b.yMin + ((b.yMax - b.yMin) * s) / steps;
-            const yPx = currentScaler.yearToY(yVal);
+            const yPx = scaler.yearToY(yVal);
 
             const tickLine = document.createElement("div");
             tickLine.className = "time-tick";
@@ -1858,47 +1688,10 @@
 
       stage.appendChild(stickyRail);
 
-      const svgNS = "http://www.w3.org/2000/svg";
-      const svg = document.createElementNS(svgNS, "svg");
-      svg.setAttribute("class", "svg-overlay");
-      svg.setAttribute("id", "baseThreadSvg");
-      svg.setAttribute("width", totalWidth);
-      svg.setAttribute("height", totalStageHeight);
+      // SVG Connectors (Thread + Col V Paired Arcs)
+      renderSvgLayer(totalWidth, totalStageHeight, positionedNodes, z);
 
-      visibleSortedCache = positionedNodes
-        .filter(n => n.visible)
-        .sort((a, b) => a.readOrder - b.readOrder);
-
-      if (state.showThread && visibleSortedCache.length > 1) {
-        let d = "";
-        visibleSortedCache.forEach((pt, idx) => {
-          if (idx === 0) {
-            d += `M ${pt.centerX} ${pt.centerY} `;
-          } else {
-            const prev = visibleSortedCache[idx - 1];
-            const midY = (prev.centerY + pt.centerY) / 2;
-            d += `C ${prev.centerX} ${midY}, ${pt.centerX} ${midY}, ${pt.centerX} ${pt.centerY} `;
-          }
-        });
-        const path = document.createElementNS(svgNS, "path");
-        path.setAttribute("id", "masterThreadPath");
-        path.setAttribute("d", d);
-        path.setAttribute("fill", "none");
-        path.setAttribute("stroke", "rgba(245, 158, 11, 0.44)");
-        path.setAttribute("stroke-width", String(Math.max(1.5, 2.2 * z)));
-        path.setAttribute("stroke-dasharray", "5,4");
-        svg.appendChild(path);
-      }
-
-      stage.appendChild(svg);
-
-      const spotlightSvg = document.createElementNS(svgNS, "svg");
-      spotlightSvg.setAttribute("class", "svg-spotlight");
-      spotlightSvg.setAttribute("id", "spotlightSvg");
-      spotlightSvg.setAttribute("width", totalWidth);
-      spotlightSvg.setAttribute("height", totalStageHeight);
-      stage.appendChild(spotlightSvg);
-
+      // Cards & Duration Bars
       let visibleCount = 0;
       let readCount = 0;
       let ownedCount = 0;
@@ -1911,8 +1704,7 @@
         if (state.showSpans && state.yMode === "chrono" && n.endY - n.top > CARD_HEIGHT + 8) {
           const bar = document.createElement("div");
           bar.className = "duration-bar";
-          bar.dataset.rowId = n.id;
-          bar.style.left = `${n.left - 8}px`;
+          bar.style.left = `${n.left - 6}px`;
           bar.style.top = `${n.top}px`;
           bar.style.height = `${n.endY - n.top}px`;
           bar.style.background = n.tier.includes("History") ? "var(--tier-hist-border)" : "var(--tier-schol-border)";
@@ -1921,45 +1713,44 @@
         }
 
         const card = document.createElement("div");
-        const compactClass = z < 0.78 ? "compact-zoom" : "";
-        card.className = `book-card ${getTierClass(n.tier)} ${compactClass} ${n.visible ? "" : "dimmed"}`;
-        card.dataset.rowId = n.id;
+        card.id = `card-${n.id}`;
+        card.className = `book-card ${getTierClass(n.tier)} ${n.visible ? "" : "dimmed"}`;
         card.style.left = `${n.left}px`;
         card.style.top = `${n.top}px`;
         card.style.width = `${n.width}px`;
         card.style.height = `${CARD_HEIGHT}px`;
 
         const badgeLabel = n.visible ? `#${n.displaySeq}` : "—";
-        const badgeTooltip = n.visible
-          ? `Reading Sequence #${n.displaySeq} (Master Sheet Read Order: ${n.readOrder})`
-          : `Filtered Out (Master Sheet Read Order: ${n.readOrder})`;
-
-        const subLabel = n.scopeSubtitle && n.scopeSubtitle !== "—"
-          ? `${n.author} • ${n.scopeSubtitle}`
-          : `${n.author} • ${n.eraDate}`;
+        const hasPairs = n.pairedList && n.pairedList.length > 0;
 
         card.innerHTML = `
           <div class="card-top">
-            <span class="ro-badge" title="${badgeTooltip}">${badgeLabel}</span>
-            <span class="paired-pill">⇄ Paired</span>
+            <span class="ro-badge">${badgeLabel}</span>
+            ${hasPairs ? '<span class="paired-badge">⇄ Paired</span>' : ""}
             <span class="subregion-pill" title="${n.macro} > ${n.inter} > ${n.sub}">${n.sub || n.macro}</span>
-            <span class="status-dots">
-              ${n.readStatus ? '<span class="dot read" title="Read"></span>' : ""}
-              ${n.ownedStatus ? '<span class="dot owned" title="Owned"></span>' : ""}
-            </span>
           </div>
           <div class="card-title" title="${n.title.replace(/"/g, '&quot;')}">${n.title}</div>
-          <div class="card-meta">${subLabel}</div>
+          <div class="card-meta">${n.author} • ${n.eraDate}</div>
         `;
 
         card.addEventListener("mouseenter", () => {
           state.hoveredRowId = n.id;
-          updateActiveSpotlight();
+          showTimespanHighlight(n.top, n.endY, formatYearLabel(n.yStart), formatYearLabel(n.yEnd));
+          highlightPairedCards(n);
         });
 
         card.addEventListener("mouseleave", () => {
           state.hoveredRowId = null;
-          updateActiveSpotlight();
+          if (!state.selectedRowId) {
+            hideTimespanHighlight();
+            clearPairedHighlight();
+          } else {
+            const selNode = state.positionedMap.get(state.selectedRowId);
+            if (selNode) {
+              showTimespanHighlight(selNode.top, selNode.endY, formatYearLabel(selNode.yStart), formatYearLabel(selNode.yEnd));
+              highlightPairedCards(selNode);
+            }
+          }
         });
 
         card.addEventListener("click", (e) => {
@@ -1968,232 +1759,221 @@
             return;
           }
           state.selectedRowId = n.id;
-          updateActiveSpotlight();
+          showTimespanHighlight(n.top, n.endY, formatYearLabel(n.yStart), formatYearLabel(n.yEnd));
+          highlightPairedCards(n);
           openDrawer(n);
         });
 
         stage.appendChild(card);
       });
 
-      const quarantineNote = state.quarantinedCount > 0 && state.strictCoordsOnly
-        ? `<span>🛡️ Quarantined: <strong>${state.quarantinedCount} unmigrated rows hidden</strong></span>`
-        : "";
-
-      const expandedNames = Array.from(state.expandedMacros);
-      const accordionStatus = expandedNames.length > 0
-        ? `<span>📂 Expanded: <strong>${expandedNames.join(", ")}</strong></span>`
-        : `<span>📁 All Continents Collapsed</span>`;
-
+      const coordCount = rows.filter(r => r.hasExplicitCoords).length;
       document.getElementById("statsBar").innerHTML = `
         <span>Showing <strong>1–${visibleCount}</strong> of ${rows.length} Works</span>
         <span>Read: <strong>${readCount}</strong></span>
         <span>Owned: <strong>${ownedCount}</strong></span>
-        ${accordionStatus}
-        ${quarantineNote}
+        <span>Coords: <strong>${coordCount}/${rows.length}</strong></span>
         <span class="nav-hint">🖐️ Drag canvas to pan • Ctrl/Shift + Wheel to zoom</span>
       `;
-
-      updateActiveSpotlight();
     }
 
     /*************************************************************************
-     * 7. PHASE 3 INTERACTIVE SPOTLIGHT ENGINE
+     * 6. SVG CONNECTORS & BIDIRECTIONAL MAPPING ARCS
      *************************************************************************/
-    function updateActiveSpotlight() {
-      const activeId = state.hoveredRowId || state.selectedRowId;
-      const band = document.getElementById("timespanBand");
-      const calloutStart = document.getElementById("railCalloutStart");
-      const calloutEnd = document.getElementById("railCalloutEnd");
-      const spotlightSvg = document.getElementById("spotlightSvg");
-      const masterThreadPath = document.getElementById("masterThreadPath");
-
-      if (!band || !spotlightSvg) return;
-      spotlightSvg.innerHTML = "";
-
-      const allCards = document.querySelectorAll(".book-card");
-      const allBars = document.querySelectorAll(".duration-bar");
-
-      if (!activeId || !state.positionedMap.has(activeId)) {
-        band.style.display = "none";
-        if (calloutStart) calloutStart.style.display = "none";
-        if (calloutEnd) calloutEnd.style.display = "none";
-        if (masterThreadPath) masterThreadPath.setAttribute("stroke", "rgba(245, 158, 11, 0.44)");
-        allCards.forEach(c => c.classList.remove("selected-card", "paired-card", "neighbor-card"));
-        allBars.forEach(b => b.classList.remove("dimmed-bar", "active-bar"));
-        return;
-      }
-
-      const activeNode = state.positionedMap.get(activeId);
-
-      if (state.yMode === "chrono" && currentScaler) {
-        const yTop = currentScaler.yearToY(activeNode.yStart);
-        const yBot = Math.max(yTop + 26, currentScaler.yearToY(activeNode.yEnd));
-        band.style.display = "block";
-        band.style.top = `${yTop}px`;
-        band.style.height = `${yBot - yTop}px`;
-
-        if (calloutStart) {
-          calloutStart.style.display = "block";
-          calloutStart.style.top = `${yTop}px`;
-          calloutStart.textContent = formatYearLabel(activeNode.yStart);
-        }
-        if (calloutEnd) {
-          if (Math.abs(activeNode.yEnd - activeNode.yStart) > 0) {
-            calloutEnd.style.display = "block";
-            calloutEnd.style.top = `${yBot}px`;
-            calloutEnd.textContent = formatYearLabel(activeNode.yEnd);
-          } else {
-            calloutEnd.style.display = "none";
-          }
-        }
-      } else {
-        band.style.display = "block";
-        band.style.top = `${activeNode.top}px`;
-        band.style.height = `${activeNode.cardHeight}px`;
-      }
-
-      allBars.forEach(b => {
-        if (b.dataset.rowId === activeId) {
-          b.classList.add("active-bar");
-          b.classList.remove("dimmed-bar");
-        } else {
-          b.classList.add("dimmed-bar");
-          b.classList.remove("active-bar");
-        }
-      });
-
-      if (masterThreadPath) {
-        masterThreadPath.setAttribute("stroke", "rgba(245, 158, 11, 0.14)");
-      }
-
+    function renderSvgLayer(totalWidth, totalHeight, nodes, z) {
+      const stage = document.getElementById("chartStage");
       const svgNS = "http://www.w3.org/2000/svg";
-      const visIdx = visibleSortedCache.findIndex(n => n.id === activeId);
-      let prevNode = visIdx > 0 ? visibleSortedCache[visIdx - 1] : null;
-      let nextNode = visIdx >= 0 && visIdx < visibleSortedCache.length - 1 ? visibleSortedCache[visIdx + 1] : null;
+      const svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("class", "svg-overlay");
+      svg.setAttribute("width", totalWidth);
+      svg.setAttribute("height", totalHeight);
 
-      if (prevNode) {
-        const midY = (prevNode.centerY + activeNode.centerY) / 2;
-        const dPrev = `M ${prevNode.centerX} ${prevNode.centerY} C ${prevNode.centerX} ${midY}, ${activeNode.centerX} ${midY}, ${activeNode.centerX} ${activeNode.centerY}`;
-        const pPath = document.createElementNS(svgNS, "path");
-        pPath.setAttribute("d", dPrev);
-        pPath.setAttribute("fill", "none");
-        pPath.setAttribute("stroke", "#f59e0b");
-        pPath.setAttribute("stroke-width", "3");
-        pPath.setAttribute("stroke-dasharray", "6,4");
-        spotlightSvg.appendChild(pPath);
+      const visibleSorted = nodes
+        .filter(n => n.visible)
+        .sort((a, b) => a.readOrder - b.readOrder);
+
+      // Global Thread
+      if (state.showThread && visibleSorted.length > 1) {
+        let d = "";
+        visibleSorted.forEach((pt, idx) => {
+          if (idx === 0) {
+            d += `M ${pt.centerX} ${pt.centerY} `;
+          } else {
+            const prev = visibleSorted[idx - 1];
+            const midY = (prev.centerY + pt.centerY) / 2;
+            d += `C ${prev.centerX} ${midY}, ${pt.centerX} ${midY}, ${pt.centerX} ${pt.centerY} `;
+          }
+        });
+        const path = document.createElementNS(svgNS, "path");
+        path.setAttribute("d", d);
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", "rgba(245, 158, 11, 0.4)");
+        path.setAttribute("stroke-width", String(Math.max(1.5, 2.0 * z)));
+        path.setAttribute("stroke-dasharray", "5,4");
+        svg.appendChild(path);
       }
 
-      if (nextNode) {
-        const midY = (activeNode.centerY + nextNode.centerY) / 2;
-        const dNext = `M ${activeNode.centerX} ${activeNode.centerY} C ${activeNode.centerX} ${midY}, ${nextNode.centerX} ${midY}, ${nextNode.centerX} ${nextNode.centerY}`;
-        const nPath = document.createElementNS(svgNS, "path");
-        nPath.setAttribute("d", dNext);
-        nPath.setAttribute("fill", "none");
-        nPath.setAttribute("stroke", "#facc15");
-        nPath.setAttribute("stroke-width", "3.5");
-        nPath.setAttribute("stroke-dasharray", "8,6");
-        nPath.setAttribute("class", "animated-flow");
-        spotlightSvg.appendChild(nPath);
+      // Col V Paired Read Order Arcs
+      const activeId = state.hoveredRowId || state.selectedRowId;
+      if (activeId) {
+        const activeNode = state.positionedMap.get(activeId);
+        if (activeNode && activeNode.pairedList && activeNode.pairedList.length > 0) {
+          activeNode.pairedList.forEach(pairedRo => {
+            const target = nodes.find(n => Math.abs(n.readOrder - pairedRo) < 0.0001);
+            if (target) {
+              const midY = (activeNode.centerY + target.centerY) / 2;
+              const curveOffset = Math.min(180, Math.abs(activeNode.centerX - target.centerX) * 0.4);
+              const ctrlY = midY - curveOffset * 0.3;
+
+              const d = `M ${activeNode.centerX} ${activeNode.centerY} Q ${(activeNode.centerX + target.centerX)/2} ${ctrlY}, ${target.centerX} ${target.centerY}`;
+              const arc = document.createElementNS(svgNS, "path");
+              arc.setAttribute("d", d);
+              arc.setAttribute("fill", "none");
+              arc.setAttribute("stroke", "#38bdf8");
+              arc.setAttribute("stroke-width", "2.5");
+              arc.setAttribute("stroke-dasharray", "6,3");
+              svg.appendChild(arc);
+            }
+          });
+        }
       }
 
-      const pairedNodes = [];
-      state.positionedMap.forEach(candidate => {
-        if (candidate.id === activeId) return;
-        const isMatched =
-          activeNode.pairedList.includes(candidate.readOrder) ||
-          candidate.pairedList.includes(activeNode.readOrder);
-        if (isMatched) pairedNodes.push(candidate);
-      });
+      stage.appendChild(svg);
+    }
 
-      pairedNodes.forEach(target => {
-        const dx = target.centerX - activeNode.centerX;
-        const dy = target.centerY - activeNode.centerY;
-        const ctrlOffset = Math.max(60, Math.abs(dx) * 0.35);
-        const dArc = `M ${activeNode.centerX} ${activeNode.centerY} C ${activeNode.centerX + (dx >= 0 ? ctrlOffset : -ctrlOffset)} ${activeNode.centerY + dy * 0.25}, ${target.centerX - (dx >= 0 ? ctrlOffset : -ctrlOffset)} ${target.centerY - dy * 0.25}, ${target.centerX} ${target.centerY}`;
+    function highlightPairedCards(node) {
+      clearPairedHighlight();
+      if (!node.pairedList || node.pairedList.length === 0) return;
 
-        const arc = document.createElementNS(svgNS, "path");
-        arc.setAttribute("d", dArc);
-        arc.setAttribute("fill", "none");
-        arc.setAttribute("stroke", "#38bdf8");
-        arc.setAttribute("stroke-width", "2.6");
-        arc.setAttribute("stroke-dasharray", "4,4");
-        spotlightSvg.appendChild(arc);
-      });
-
-      const pairedIds = new Set(pairedNodes.map(p => p.id));
-      allCards.forEach(c => {
-        const cid = c.dataset.rowId;
-        c.classList.toggle("selected-card", cid === activeId);
-        c.classList.toggle("paired-card", pairedIds.has(cid));
-        c.classList.toggle("neighbor-card", (prevNode && cid === prevNode.id) || (nextNode && cid === nextNode.id));
+      node.pairedList.forEach(ro => {
+        const target = [...state.positionedMap.values()].find(n => Math.abs(n.readOrder - ro) < 0.0001);
+        if (target) {
+          const el = document.getElementById(`card-${target.id}`);
+          if (el) el.classList.add("paired-target");
+        }
       });
     }
 
-    function panToNode(node) {
-      if (!node) return;
-      state.selectedRowId = node.id;
-      updateActiveSpotlight();
-      openDrawer(node);
-      window.scrollTo({
-        left: Math.max(0, node.centerX - window.innerWidth / 2),
-        top: Math.max(0, node.centerY - window.innerHeight / 2),
-        behavior: "smooth"
+    function clearPairedHighlight() {
+      document.querySelectorAll(".book-card.paired-target").forEach(el => {
+        el.classList.remove("paired-target");
       });
     }
 
     /*************************************************************************
-     * 8. SLIDE-OUT SCHOLARLY INSPECTOR DRAWER
+     * 7. STICKY CLAMPED TIMESPAN CALLOUTS & SMOOTH JUMP-SCROLL
+     *************************************************************************/
+    function showTimespanHighlight(startY, endY, startLabel, endLabel) {
+      const band = document.getElementById("timespanBand");
+      const calloutStart = document.getElementById("timespanStartBadge");
+      const calloutEnd = document.getElementById("timespanEndBadge");
+      if (!band || !calloutStart || !calloutEnd) return;
+
+      const topPx = Math.min(startY, endY);
+      const heightPx = Math.max(18, Math.abs(endY - startY));
+
+      band.style.top = `${topPx}px`;
+      band.style.height = `${heightPx}px`;
+      band.style.display = "block";
+
+      activeTimespanData = {
+        topPx,
+        bottomPx: topPx + heightPx,
+        startLabel,
+        endLabel
+      };
+
+      updateTimespanClamping();
+    }
+
+    function hideTimespanHighlight() {
+      const band = document.getElementById("timespanBand");
+      const calloutStart = document.getElementById("timespanStartBadge");
+      const calloutEnd = document.getElementById("timespanEndBadge");
+      if (band) band.style.display = "none";
+      if (calloutStart) calloutStart.style.display = "none";
+      if (calloutEnd) calloutEnd.style.display = "none";
+      activeTimespanData = null;
+    }
+
+    function updateTimespanClamping() {
+      if (!activeTimespanData) return;
+      const calloutStart = document.getElementById("timespanStartBadge");
+      const calloutEnd = document.getElementById("timespanEndBadge");
+      if (!calloutStart || !calloutEnd) return;
+
+      const scrollY = window.scrollY;
+      const viewH = window.innerHeight;
+      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 93;
+
+      const { topPx, bottomPx, startLabel, endLabel } = activeTimespanData;
+
+      // Start Callout Clamping (Top edge)
+      if (topPx < scrollY + headerH) {
+        calloutStart.classList.add("is-clamped");
+        calloutStart.style.top = `${headerH + 6}px`;
+        calloutStart.innerHTML = `▲ ${startLabel} <span style="font-size:0.6rem;opacity:0.75;">(above)</span>`;
+        calloutStart.title = "Click to scroll up to timespan start";
+        calloutStart.onclick = () => window.scrollTo({ top: Math.max(0, topPx - headerH - 20), behavior: "smooth" });
+      } else {
+        calloutStart.classList.remove("is-clamped");
+        calloutStart.style.top = `${topPx}px`;
+        calloutStart.textContent = startLabel;
+        calloutStart.title = "";
+        calloutStart.onclick = null;
+      }
+      calloutStart.style.display = "block";
+
+      // End Callout Clamping (Bottom edge)
+      if (bottomPx > scrollY + viewH) {
+        calloutEnd.classList.add("is-clamped");
+        calloutEnd.style.top = "auto";
+        calloutEnd.style.bottom = "16px";
+        calloutEnd.innerHTML = `▼ ${endLabel} <span style="font-size:0.6rem;opacity:0.75;">(below)</span>`;
+        calloutEnd.title = "Click to scroll down to timespan end";
+        calloutEnd.onclick = () => window.scrollTo({ top: bottomPx - viewH + 40, behavior: "smooth" });
+      } else {
+        calloutEnd.classList.remove("is-clamped");
+        calloutEnd.style.bottom = "auto";
+        calloutEnd.style.top = `${bottomPx}px`;
+        calloutEnd.textContent = endLabel;
+        calloutEnd.title = "";
+        calloutEnd.onclick = null;
+      }
+      calloutEnd.style.display = "block";
+    }
+
+    window.addEventListener("scroll", updateTimespanClamping, { passive: true });
+
+    /*************************************************************************
+     * 8. INSPECTOR DRAWER
      *************************************************************************/
     function openDrawer(n) {
       const drawer = document.getElementById("drawer");
       const content = document.getElementById("drawerContent");
       const seqText = n.displaySeq ? `#${n.displaySeq}` : "Filtered";
 
-      const visIdx = visibleSortedCache.findIndex(item => item.id === n.id);
-      const prevNode = visIdx > 0 ? visibleSortedCache[visIdx - 1] : null;
-      const nextNode = visIdx >= 0 && visIdx < visibleSortedCache.length - 1 ? visibleSortedCache[visIdx + 1] : null;
-
-      const pairedNodes = [];
-      state.positionedMap.forEach(candidate => {
-        if (candidate.id === n.id) return;
-        if (n.pairedList.includes(candidate.readOrder) || candidate.pairedList.includes(n.readOrder)) {
-          pairedNodes.push(candidate);
-        }
-      });
-
-      const pairedHtml = pairedNodes.length > 0
-        ? `
-          <div style="font-size:0.75rem;text-transform:uppercase;color:#38bdf8;margin-bottom:6px;letter-spacing:0.05em;font-weight:700;">
-            ⇄ Bidirectional Paired Works (${pairedNodes.length})
+      let pairedHtml = "";
+      if (n.pairedList && n.pairedList.length > 0) {
+        pairedHtml = `
+          <div class="paired-section">
+            <h4>⇄ Paired Works (Col V)</h4>
+            ${n.pairedList.map(ro => {
+              const target = [...state.positionedMap.values()].find(p => Math.abs(p.readOrder - ro) < 0.0001);
+              if (!target) return `<div style="font-size:0.75rem;color:var(--muted);">Read Order ${ro} (Not Loaded)</div>`;
+              return `
+                <div class="paired-link" onclick="jumpToCard('${target.id}')">
+                  <div>
+                    <strong>${target.title}</strong>
+                    <div style="font-size:0.68rem;color:var(--muted);">${target.author} • ${target.tier}</div>
+                  </div>
+                  <span class="ro-badge">#${target.displaySeq || target.readOrder}</span>
+                </div>
+              `;
+            }).join("")}
           </div>
-          <div class="paired-list">
-            ${pairedNodes.map(p => `
-              <div class="paired-link" data-target-id="${p.id}">
-                <span><strong>#${p.displaySeq || p.readOrder}</strong> ${p.title}</span>
-                <span style="color:var(--muted);font-size:0.7rem;">${p.tier} →</span>
-              </div>
-            `).join("")}
-          </div>
-        `
-        : "";
-
-      const cleanIsbn = (n.isbn || "").replace(/[^0-9X]/gi, "");
-      const coverHtml = cleanIsbn
-        ? `<div style="margin-bottom:14px;text-align:center;">
-             <img src="https://covers.openlibrary.org/b/isbn/${cleanIsbn}-M.jpg?default=false" 
-                  alt="${n.title}" 
-                  style="max-height:160px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,0.6);"
-                  onerror="this.style.display='none'" />
-           </div>`
-        : "";
-
-      const tagPills = n.themeTags
-        ? n.themeTags.split(";").map(t => t.trim()).filter(Boolean).map(t => `
-            <span style="font-size:0.68rem;background:rgba(224,177,83,0.12);color:var(--accent);border:1px solid rgba(224,177,83,0.3);padding:2px 7px;border-radius:4px;display:inline-block;margin:2px;">
-              #${t}
-            </span>
-          `).join("")
-        : "";
+        `;
+      }
 
       content.innerHTML = `
         <div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -2203,18 +1983,8 @@
           </span>
           <span style="font-size:0.78rem;color:var(--muted);">${n.tier}</span>
         </div>
-        ${coverHtml}
         <h2>${n.title}</h2>
-        <div class="author">${n.author}${n.authorBio ? ` <span style="color:var(--muted);font-size:0.78rem;">— ${n.authorBio}</span>` : ""}</div>
-
-        <div class="drawer-nav">
-          <button id="btnDrawerPrev" ${prevNode ? "" : "disabled style='opacity:0.4;cursor:not-allowed;'"}>
-            ← Prev ${prevNode ? `(#${prevNode.displaySeq})` : ""}
-          </button>
-          <button id="btnDrawerNext" ${nextNode ? "" : "disabled style='opacity:0.4;cursor:not-allowed;'"}>
-            Next ${nextNode ? `(#${nextNode.displaySeq})` : ""} →
-          </button>
-        </div>
+        <div class="author">${n.author}</div>
 
         <div class="meta-grid">
           <div class="meta-cell">
@@ -2222,16 +1992,8 @@
             <div class="val">${n.eraDate || "—"}</div>
           </div>
           <div class="meta-cell">
-            <div class="label">Plot Window (Y-Axis)</div>
+            <div class="label">Coverage Window</div>
             <div class="val">${formatYearLabel(n.yStart)} → ${formatYearLabel(n.yEnd)}</div>
-          </div>
-          <div class="meta-cell">
-            <div class="label">Scope / Part Subtitle</div>
-            <div class="val">${n.scopeSubtitle || "Full Work"}</div>
-          </div>
-          <div class="meta-cell">
-            <div class="label">Source Sheet Tab</div>
-            <div class="val">${n.tabName || "—"}</div>
           </div>
           <div class="meta-cell">
             <div class="label">Primary Geoscheme</div>
@@ -2259,33 +2021,34 @@
           </div>
         </div>
 
-        ${tagPills ? `<div style="margin-bottom:14px;">${tagPills}</div>` : ""}
         ${pairedHtml}
 
-        <div style="font-size:0.75rem;text-transform:uppercase;color:var(--muted);margin-bottom:6px;letter-spacing:0.05em;">
+        <div style="font-size:0.74rem;text-transform:uppercase;color:var(--muted);margin-bottom:6px;letter-spacing:0.05em;">
           Curatorial &amp; Edition Notes
         </div>
         <div class="notes-box">${n.notes || "No curatorial notes recorded for this entry."}</div>
       `;
-
-      const btnPrev = document.getElementById("btnDrawerPrev");
-      if (btnPrev && prevNode) btnPrev.addEventListener("click", () => panToNode(prevNode));
-
-      const btnNext = document.getElementById("btnDrawerNext");
-      if (btnNext && nextNode) btnNext.addEventListener("click", () => panToNode(nextNode));
-
-      content.querySelectorAll(".paired-link").forEach(el => {
-        el.addEventListener("click", () => {
-          const target = state.positionedMap.get(el.getAttribute("data-target-id"));
-          if (target) panToNode(target);
-        });
-      });
-
       drawer.classList.add("open");
     }
 
+    function jumpToCard(nodeId) {
+      const node = state.positionedMap.get(nodeId);
+      if (!node) return;
+      state.selectedRowId = nodeId;
+      showTimespanHighlight(node.top, node.endY, formatYearLabel(node.yStart), formatYearLabel(node.yEnd));
+      highlightPairedCards(node);
+
+      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 93;
+      window.scrollTo({
+        left: Math.max(0, node.left - window.innerWidth / 3),
+        top: Math.max(0, node.top - headerH - 40),
+        behavior: "smooth"
+      });
+      openDrawer(node);
+    }
+
     /*************************************************************************
-     * 9. INTERACTIVE 2D PAN & CURSOR-CENTERED ZOOM
+     * 9. 2D PAN & CURSOR-CENTERED ZOOM
      *************************************************************************/
     function applyZoomAtPoint(newZoom, clientX, clientY) {
       const clamped = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Number(newZoom.toFixed(2))));
@@ -2295,13 +2058,14 @@
       const ratio = clamped / oldZoom;
 
       const timeAxisWidth = 115;
-      const headerOffset = 135;
+      const headerOffset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 93;
 
       const docX = window.scrollX + clientX;
       const docY = window.scrollY + clientY;
 
       state.zoom = clamped;
       renderChart();
+      updateStickyHeaderOffset();
 
       const newDocX = docX > timeAxisWidth
         ? timeAxisWidth + (docX - timeAxisWidth) * ratio
@@ -2322,7 +2086,7 @@
 
       viewport.addEventListener("mousedown", (e) => {
         if (e.button !== 0) return;
-        if (e.target.closest(".lane-headers")) return;
+        if (e.target.closest(".lane-headers") || e.target.closest(".timespan-callout")) return;
 
         panState.isDown = true;
         panState.hasMoved = false;
@@ -2393,24 +2157,23 @@
     }
 
     /*************************************************************************
-     * 10. UI EVENT LISTENERS & ACCORDION BUTTONS
+     * 10. UI EVENT LISTENERS
      *************************************************************************/
     function populateTabDropdown() {
       const sel = document.getElementById("tabSelect");
       const enabledCount = state.tabs.filter(t => t.enabled !== false).length;
-      const masterOption = `<option value="ALL_VALIDATED" ${state.activeTabKey === "ALL_VALIDATED" ? "selected" : ""}>
-        🌐 All Checked Eras — Master Chronology (${enabledCount} Tab${enabledCount === 1 ? "" : "s"})
+
+      let html = `<option value="ALL_VALIDATED" ${state.activeTabKey === "ALL_VALIDATED" ? "selected" : ""}>
+        🌐 All Validated Eras — Master Chronology (${enabledCount} Tabs)
       </option>`;
 
-      const individualOptions = state.tabs
-        .map((t, idx) => {
-          const statusTag = t.enabled === false ? " [Excluded from Master]" : "";
-          const isSel = String(idx) === String(state.activeTabKey) ? "selected" : "";
-          return `<option value="${idx}" ${isSel}>${t.name}${statusTag}</option>`;
-        })
-        .join("");
+      html += state.tabs.map((t, idx) => `
+        <option value="${idx}" ${state.activeTabKey === String(idx) ? "selected" : ""}>
+          ${t.enabled === false ? "⚠️ " : ""}${t.name}
+        </option>
+      `).join("");
 
-      sel.innerHTML = masterOption + individualOptions;
+      sel.innerHTML = html;
     }
 
     document.getElementById("tabSelect").addEventListener("change", (e) => {
@@ -2427,25 +2190,7 @@
     document.getElementById("yModeSelect").addEventListener("change", (e) => {
       state.yMode = e.target.value;
       renderChart();
-    });
-
-    document.getElementById("btnExpandAll").addEventListener("click", () => {
-      MACRO_DEFS.forEach(m => state.expandedMacros.add(m.id));
-      renderChart();
-    });
-
-    document.getElementById("btnCollapseAll").addEventListener("click", () => {
-      state.expandedMacros.clear();
-      renderChart();
-    });
-
-    document.getElementById("btnToggleEmptyLanes").addEventListener("click", (e) => {
-      state.showEmptySubregions = !state.showEmptySubregions;
-      e.currentTarget.classList.toggle("active", state.showEmptySubregions);
-      e.currentTarget.textContent = state.showEmptySubregions
-        ? "🌐 Empty Lanes: On"
-        : "🌐 Empty Lanes: Off";
-      renderChart();
+      updateStickyHeaderOffset();
     });
 
     document.getElementById("colorModeSelect").addEventListener("change", (e) => {
@@ -2463,6 +2208,26 @@
       state.showSpans = !state.showSpans;
       e.currentTarget.classList.toggle("active", state.showSpans);
       renderChart();
+    });
+
+    document.getElementById("btnExpandAll").addEventListener("click", () => {
+      MACRO_DEFS.forEach(m => state.expandedMacros.add(m.id));
+      renderChart();
+      updateStickyHeaderOffset();
+    });
+
+    document.getElementById("btnCollapseAll").addEventListener("click", () => {
+      state.expandedMacros.clear();
+      renderChart();
+      updateStickyHeaderOffset();
+    });
+
+    document.getElementById("btnToggleEmptyLanes").addEventListener("click", (e) => {
+      state.showEmptySubregions = !state.showEmptySubregions;
+      e.currentTarget.textContent = state.showEmptySubregions ? "🌐 Empty Lanes: On" : "🌐 Empty Lanes: Off";
+      e.currentTarget.classList.toggle("active", state.showEmptySubregions);
+      renderChart();
+      updateStickyHeaderOffset();
     });
 
     document.getElementById("searchInput").addEventListener("input", (e) => {
@@ -2485,86 +2250,57 @@
     });
 
     document.getElementById("drawerClose").addEventListener("click", () => {
-      state.selectedRowId = null;
       document.getElementById("drawer").classList.remove("open");
-      updateActiveSpotlight();
+      state.selectedRowId = null;
+      hideTimespanHighlight();
+      clearPairedHighlight();
     });
 
-    function renderModalChecklist() {
-      const checkContainer = document.getElementById("tabCheckList");
-      checkContainer.innerHTML = state.tabs.map((t, idx) => `
-        <div class="tab-check-item">
-          <label>
-            <input type="checkbox" data-tab-idx="${idx}" ${t.enabled !== false ? "checked" : ""} />
-            <span><strong>${t.name}</strong> <code style="color:var(--muted);">gid=${t.gid}</code></span>
-          </label>
-          <span style="font-size:0.72rem;color:${t.enabled !== false ? "#6ee7b7" : "var(--muted)"};">
-            ${t.enabled !== false ? "In Master View" : "Excluded"}
-          </span>
-        </div>
-      `).join("");
-
-      checkContainer.querySelectorAll("input[type='checkbox']").forEach(box => {
-        box.addEventListener("change", (e) => {
-          const idx = parseInt(e.target.getAttribute("data-tab-idx"), 10);
-          state.tabs[idx].enabled = e.target.checked;
-          syncTextareaFromTabs();
-          renderModalChecklist();
-        });
-      });
-    }
-
-    function syncTextareaFromTabs() {
-      document.getElementById("tabsConfigTextarea").value = state.tabs
-        .map(t => `${t.enabled === false ? "! " : ""}${t.name} | ${t.gid}`)
-        .join("\n");
-    }
-
+    // Sheet Tab Modal
     document.getElementById("btnManageTabs").addEventListener("click", () => {
       document.getElementById("baseCsvUrlInput").value = state.baseCsvUrl;
-      syncTextareaFromTabs();
-      renderModalChecklist();
+      document.getElementById("tabsConfigTextarea").value = state.tabs
+        .map(t => `${t.enabled === false ? "!" : ""}${t.name} | ${t.gid}`)
+        .join("\n");
       document.getElementById("modalBackdrop").classList.add("open");
+    });
+
+    document.getElementById("btnResetDefaultTabs").addEventListener("click", () => {
+      state.tabs = DEFAULT_TABS;
+      state.baseCsvUrl = DEFAULT_PUBLISHED_BASE;
+      localStorage.removeItem("ro_tabs_v2");
+      localStorage.removeItem("ro_base_csv");
+      document.getElementById("baseCsvUrlInput").value = DEFAULT_PUBLISHED_BASE;
+      document.getElementById("tabsConfigTextarea").value = DEFAULT_TABS
+        .map(t => `${t.enabled === false ? "!" : ""}${t.name} | ${t.gid}`)
+        .join("\n");
     });
 
     document.getElementById("btnCancelModal").addEventListener("click", () => {
       document.getElementById("modalBackdrop").classList.remove("open");
     });
 
-    document.getElementById("btnResetDefaultTabs").addEventListener("click", () => {
-      localStorage.removeItem("ro_tabs_v2");
-      state.tabs = JSON.parse(JSON.stringify(DEFAULT_TABS));
-      syncTextareaFromTabs();
-      renderModalChecklist();
-    });
-
     document.getElementById("btnSaveModal").addEventListener("click", () => {
       const base = document.getElementById("baseCsvUrlInput").value.trim();
       const lines = document.getElementById("tabsConfigTextarea").value.split("\n");
       const newTabs = [];
+
       lines.forEach(line => {
-        let raw = line.trim();
-        if (!raw) return;
-        let enabled = true;
-        if (raw.startsWith("!")) {
-          enabled = false;
-          raw = raw.slice(1).trim();
-        }
-        const parts = raw.split("|");
+        const trimmed = line.trim();
+        if (!trimmed) return;
+        const isExcluded = trimmed.startsWith("!");
+        const cleanLine = isExcluded ? trimmed.slice(1).trim() : trimmed;
+        const parts = cleanLine.split("|");
+
         if (parts.length >= 2) {
           newTabs.push({
             name: parts[0].trim(),
             gid: parts.slice(1).join("|").trim(),
-            enabled
-          });
-        } else {
-          newTabs.push({
-            name: `Tab (${raw})`,
-            gid: raw,
-            enabled
+            enabled: !isExcluded
           });
         }
       });
+
       if (base) {
         state.baseCsvUrl = base;
         localStorage.setItem("ro_base_csv", base);
@@ -2573,13 +2309,13 @@
         state.tabs = newTabs;
         localStorage.setItem("ro_tabs_v2", JSON.stringify(newTabs));
       }
+
       document.getElementById("modalBackdrop").classList.remove("open");
       populateTabDropdown();
       loadActiveSelection();
     });
 
-    window.addEventListener("resize", () => renderChart());
-
+    // Initialization
     populateTabDropdown();
     initViewportInteractions();
     loadActiveSelection();
