@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- THE READING ORDER SYNOPTIC COMPANION | Build: v1.5.0 (2026-11-15) | Branch: main -->
+<!-- THE READING ORDER SYNOPTIC COMPANION | Build: v1.5.1 (2026-11-15) | Branch: main -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1276,9 +1276,28 @@
       );
 
       const loadedRows = [];
-      settled.forEach(r => {
-        if (r.status === "fulfilled") loadedRows.push(...r.value);
+      const failedReasons = [];
+      settled.forEach((r, idx) => {
+        if (r.status === "fulfilled") {
+          loadedRows.push(...r.value);
+        } else {
+          failedReasons.push(r.reason ? r.reason.message : targetTabs[idx].name);
+        }
       });
+
+      if (loadedRows.length === 0) {
+        const isFileProto = window.location.protocol === "file:";
+        const hint = isFileProto
+          ? "Local file:// preview blocks live Google Sheets fetch in some browsers — push to GitHub Pages or use a local HTTP server."
+          : (failedReasons.length > 0
+              ? `Failed: ${failedReasons.slice(0, 3).join("; ")} — open ⚙️ Sheet Tabs and click ↺ Reset to Code Defaults.`
+              : "0 rows returned — check ⚙️ Sheet Tabs or toggle 🛡️ Validated Coords Only.");
+        document.getElementById("statsBar").innerHTML =
+          `<span style="color:#f87171;">⚠️ No entries loaded (${hint})</span>`;
+        state.rows = [];
+        renderChart();
+        return;
+      }
 
       loadedRows.sort((a, b) => a.readOrder - b.readOrder);
 
@@ -1292,6 +1311,11 @@
 
       renderChart();
       updateStickyHeaderOffset();
+
+      if (failedReasons.length > 0) {
+        document.getElementById("statsBar").innerHTML +=
+          ` <span style="color:#fbbf24;" title="${failedReasons.join(", ")}">⚠️ ${failedReasons.length} tab(s) skipped</span>`;
+      }
     }
 
     /*************************************************************************
