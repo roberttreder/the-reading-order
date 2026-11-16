@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- THE READING ORDER SYNOPTIC COMPANION | Build: v1.5.1 (2026-11-10) | Branch: main -->
+<!-- THE READING ORDER SYNOPTIC COMPANION | Build: v1.5.0 (2026-11-15) | Branch: main -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -430,8 +430,8 @@
       font-weight: 700;
     }
 
-    .rail-tick-label.milestone-major {
-      color: #facc15;
+    .rail-tick-label.milestone-tick {
+      color: #e8ecf4;
       font-weight: 700;
     }
 
@@ -462,8 +462,8 @@
       z-index: 5;
     }
 
-    .time-tick.milestone-major {
-      border-top: 1px solid rgba(224, 177, 83, 0.35);
+    .time-tick.milestone-line {
+      border-top: 1px dashed rgba(224, 177, 83, 0.22);
     }
 
     /* Dedicated Era Banner Corridor Gap (Entries Cannot Overlap) */
@@ -482,7 +482,7 @@
       box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.4);
     }
 
-    /* Horizontally Floating Sticky Era Title */
+    /* Horizontally Floating Sticky Era Title (Always Visible When Panned Right) */
     .epoch-divider-label {
       position: sticky;
       left: calc(var(--chrono-rail-width, 115px) + 24px);
@@ -1262,48 +1262,44 @@
 
       document.getElementById("statsBar").textContent = `Fetching live CSV for ${label}...`;
 
-      try {
-        const settled = await Promise.allSettled(
-          targetTabs.map(async (t) => {
-            const url = buildCsvUrl(t);
-            const res = await fetch(url, { cache: "no-store" });
-            if (!res.ok) throw new Error(`${t.name} (HTTP ${res.status})`);
-            const text = await res.text();
-            if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
-              throw new Error(`${t.name} (Tab not published)`);
-            }
-            return parseTabRows(text, t.name, t.idx);
-          })
-        );
+      const settled = await Promise.allSettled(
+        targetTabs.map(async (t) => {
+          const url = buildCsvUrl(t);
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) throw new Error(`${t.name} (HTTP ${res.status})`);
+          const text = await res.text();
+          if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
+            throw new Error(`${t.name} (Tab not published)`);
+          }
+          return parseTabRows(text, t.name, t.idx);
+        })
+      );
 
-        const loadedRows = [];
-        settled.forEach(r => {
-          if (r.status === "fulfilled") loadedRows.push(...r.value);
-        });
+      const loadedRows = [];
+      settled.forEach(r => {
+        if (r.status === "fulfilled") loadedRows.push(...r.value);
+      });
 
-        loadedRows.sort((a, b) => a.readOrder - b.readOrder);
+      loadedRows.sort((a, b) => a.readOrder - b.readOrder);
 
-        state.rows = state.strictCoordsOnly
-          ? loadedRows.filter(r => r.hasExplicitCoords)
-          : loadedRows;
+      state.rows = state.strictCoordsOnly
+        ? loadedRows.filter(r => r.hasExplicitCoords)
+        : loadedRows;
 
-        if (state.rows.length === 0 && loadedRows.length > 0) {
-          state.rows = loadedRows;
-        }
-
-        renderChart();
-        updateStickyHeaderOffset();
-      } catch (err) {
-        document.getElementById("statsBar").textContent = `Error loading Google Sheet tabs: ${err.message}`;
+      if (state.rows.length === 0 && loadedRows.length > 0) {
+        state.rows = loadedRows;
       }
+
+      renderChart();
+      updateStickyHeaderOffset();
     }
 
     /*************************************************************************
-     * 4. TIME SCALE & DEDICATED ERA BANNER CORRIDORS
+     * 4. TIME SCALE, DISCRETE ERA CORRIDORS & MILESTONE RAIL ENGINE
      *************************************************************************/
     function formatYearLabel(y) {
-      if (y <= -1e9) return `${(Math.abs(y) / 1e9).toFixed(1)} Ga`;
-      if (y <= -1e6) return `${(Math.abs(y) / 1e6).toFixed(0)} Ma`;
+      if (y <= -1e9) return `${(Math.abs(y) / 1e9).toFixed(2).replace(/\.00$/, "")} Ga`;
+      if (y <= -1e6) return `${Math.round(Math.abs(y) / 1e6)} Ma`;
       if (y < 0) return `${Math.abs(Math.round(y)).toLocaleString()} BCE`;
       if (y === 0) return `1 CE`;
       return `${Math.round(y)} CE`;
@@ -1318,29 +1314,29 @@
     ];
 
     const RAW_ERAS = [
-      { id: "cosmic", min: -15e9, max: -4.54e9, label: "Cosmic & Pre-Solar Origins (13.8 – 4.54 Ga)", isLog: true },
-      { id: "precambrian", min: -4.54e9, max: -541e6, label: "Precambrian Earth & Origins of Life (4.54 Ga – 541 Ma)", isLog: true },
-      { id: "paleozoic_mesozoic", min: -541e6, max: -66e6, label: "Paleozoic & Mesozoic Eras — Deep Paleobiology (541 – 66 Ma)", isLog: true },
-      { id: "cenozoic_pleistocene", min: -66e6, max: -10000, label: "Cenozoic Era & Pleistocene Epoch (66 Ma – 10,000 BCE)", isLog: true },
-      { id: "neolithic", min: -10000, max: -3500, label: "Neolithic & Early Horizon (10,000 – 3500 BCE)", isLog: false },
-      { id: "bronze_age", min: -3500, max: -1100, label: "Bronze Age Civilizations (3500 – 1100 BCE)", isLog: false },
-      { id: "classical", min: -1100, max: -200, label: "Axial & Classical Age (1100 – 200 BCE)", isLog: false },
-      { id: "late_antiquity", min: -200, max: 500, label: "Imperial Classical & Late Antiquity (200 BCE – 500 CE)", isLog: false },
-      { id: "early_middle_ages", min: 500, max: 1050, label: "Post-Classical & Early Middle Ages (500 – 1050 CE)", isLog: false },
-      { id: "high_middle_ages", min: 1050, max: 1450, label: "High & Late Middle Ages (1050 – 1450 CE)", isLog: false },
-      { id: "renaissance", min: 1450, max: 1600, label: "Renaissance & Age of Discovery (1450 – 1600 CE)", isLog: false },
-      { id: "17th_century", min: 1600, max: 1700, label: "17th Century & The Baroque (1600 – 1700 CE)", isLog: false },
-      { id: "enlightenment", min: 1700, max: 1800, label: "The Enlightenment & Revolutions (1700 – 1800 CE)", isLog: false },
-      { id: "romanticism", min: 1800, max: 1849, label: "Romanticism & The 19th Century (1800 – 1849 CE)", isLog: false },
-      { id: "victorian", min: 1849, max: 1900, label: "Victorian Realism & Imperial Zenith (1849 – 1900 CE)", isLog: false },
-      { id: "ww1", min: 1900, max: 1919, label: "Belle Époque & World War I (1900 – 1919 CE)", isLog: false },
-      { id: "modernism", min: 1919, max: 1930, label: "Roaring Twenties & High Modernism (1919 – 1930 CE)", isLog: false },
-      { id: "depression", min: 1930, max: 1939, label: "Depression & Totalitarianism (1930 – 1939 CE)", isLog: false },
-      { id: "ww2", min: 1939, max: 1950, label: "WWII & Postwar Dawn (1939 – 1950 CE)", isLog: false },
-      { id: "cold_war", min: 1950, max: 1962, label: "Early Cold War & Existentialism (1950 – 1962 CE)", isLog: false },
-      { id: "sixties", min: 1962, max: 1976, label: "The Long Sixties & Global Boom (1962 – 1976 CE)", isLog: false },
-      { id: "late_cold_war", min: 1976, max: 1990, label: "Late Cold War & Postmodernism (1976 – 1990 CE)", isLog: false },
-      { id: "contemporary", min: 1990, max: 2030, label: "Contemporary Era (1990 – Present)", isLog: false }
+      { id: "cosmic", min: -15e9, max: -4.54e9, label: "Cosmic & Pre-Solar Origins (13.8 – 4.54 Ga)", isLog: true, baseMin: 240 },
+      { id: "precambrian", min: -4.54e9, max: -541e6, label: "Precambrian Earth & Origins of Life (4.54 Ga – 541 Ma)", isLog: true, baseMin: 240 },
+      { id: "paleozoic_mesozoic", min: -541e6, max: -66e6, label: "Paleozoic & Mesozoic Eras — Deep Paleobiology (541 – 66 Ma)", isLog: true, baseMin: 280 },
+      { id: "cenozoic_pleistocene", min: -66e6, max: -10000, label: "Cenozoic Era & Pleistocene Epoch (66 Ma – 10,000 BCE)", isLog: true, baseMin: 280 },
+      { id: "neolithic", min: -10000, max: -3500, label: "Neolithic & Early Horizon (10,000 – 3500 BCE)", isLog: false, baseMin: 320 },
+      { id: "bronze_age", min: -3500, max: -1100, label: "Bronze Age Civilizations (3500 – 1100 BCE)", isLog: false, baseMin: 400 },
+      { id: "classical", min: -1100, max: -200, label: "Axial & Classical Age (1100 – 200 BCE)", isLog: false, baseMin: 440 },
+      { id: "late_antiquity", min: -200, max: 500, label: "Imperial Classical & Late Antiquity (200 BCE – 500 CE)", isLog: false, baseMin: 420 },
+      { id: "early_middle_ages", min: 500, max: 1050, label: "Post-Classical & Early Middle Ages (500 – 1050 CE)", isLog: false, baseMin: 420 },
+      { id: "high_middle_ages", min: 1050, max: 1450, label: "High & Late Middle Ages (1050 – 1450 CE)", isLog: false, baseMin: 420 },
+      { id: "renaissance", min: 1450, max: 1600, label: "Renaissance & Age of Discovery (1450 – 1600 CE)", isLog: false, baseMin: 460 },
+      { id: "17th_century", min: 1600, max: 1700, label: "17th Century & The Baroque (1600 – 1700 CE)", isLog: false, baseMin: 400 },
+      { id: "enlightenment", min: 1700, max: 1800, label: "The Enlightenment & Revolutions (1700 – 1800 CE)", isLog: false, baseMin: 460 },
+      { id: "romanticism", min: 1800, max: 1849, label: "Romanticism & The 19th Century (1800 – 1849 CE)", isLog: false, baseMin: 400 },
+      { id: "victorian", min: 1849, max: 1900, label: "Victorian Realism & Imperial Zenith (1849 – 1900 CE)", isLog: false, baseMin: 400 },
+      { id: "ww1", min: 1900, max: 1919, label: "Belle Époque & World War I (1900 – 1919 CE)", isLog: false, baseMin: 360 },
+      { id: "modernism", min: 1919, max: 1930, label: "Roaring Twenties & High Modernism (1919 – 1930 CE)", isLog: false, baseMin: 340 },
+      { id: "depression", min: 1930, max: 1939, label: "Depression & Totalitarianism (1930 – 1939 CE)", isLog: false, baseMin: 340 },
+      { id: "ww2", min: 1939, max: 1950, label: "WWII & Postwar Dawn (1939 – 1950 CE)", isLog: false, baseMin: 360 },
+      { id: "cold_war", min: 1950, max: 1962, label: "Early Cold War & Existentialism (1950 – 1962 CE)", isLog: false, baseMin: 360 },
+      { id: "sixties", min: 1962, max: 1976, label: "The Long Sixties & Global Boom (1962 – 1976 CE)", isLog: false, baseMin: 360 },
+      { id: "late_cold_war", min: 1976, max: 1990, label: "Late Cold War & Postmodernism (1976 – 1990 CE)", isLog: false, baseMin: 360 },
+      { id: "contemporary", min: 1990, max: 2030, label: "Contemporary Era (1990 – Present)", isLog: false, baseMin: 360 }
     ];
 
     function buildChronoScaler(rows, zoomFactor) {
@@ -1359,23 +1355,28 @@
       RAW_ERAS.forEach(era => {
         if (maxY < era.min || minY >= era.max) return;
 
+        // Rows belonging strictly to this era window [min, max)
         const eraRows = rows.filter(r => r.yStart >= era.min && r.yStart < era.max);
 
+        // Compute densest active visual swimlane in this era (respecting collapsed vs expanded state)
         const laneCounts = {};
         eraRows.forEach(r => {
-          const key = r.sub || r.macro || "Off-Grid";
+          const isExp = state.expandedMacros.has(r.macro);
+          const subKey = (r.sub || "").trim() || r.macro;
+          const key = isExp ? `${r.macro}|||${subKey}` : (r.macro || "Off-Grid");
           laneCounts[key] = (laneCounts[key] || 0) + 1;
         });
+
         const maxLaneCount = Math.max(1, ...Object.values(laneCounts));
-        const physicalNeeded = maxLaneCount * (CARD_HEIGHT + CARD_GAP);
-        const baseMin = Math.round((era.isLog ? 280 : 360) * zoomFactor);
-        const contentHeight = Math.max(baseMin, physicalNeeded + CARD_GAP * 2);
+        const physicalNeeded = maxLaneCount * (CARD_HEIGHT + CARD_GAP) + CARD_GAP;
+        const scaledMin = Math.round((era.baseMin || 360) * zoomFactor);
+        const contentHeight = Math.max(scaledMin, physicalNeeded + CARD_GAP);
 
         const bannerTop = currentStageTop;
         const bannerBottom = bannerTop + EPOCH_BANNER_HEIGHT;
         const contentTop = bannerBottom + CARD_GAP;
         const contentBottom = contentTop + contentHeight;
-        const availTravel = contentHeight - CARD_HEIGHT - CARD_GAP;
+        const availTravel = Math.max(CARD_HEIGHT, contentHeight - CARD_HEIGHT - CARD_GAP);
 
         activeBands.push({
           ...era,
@@ -1396,6 +1397,7 @@
 
       if (activeBands.length === 0) {
         const fallbackContent = Math.round(Math.max(800, rows.length * 76) * zoomFactor);
+        const bannerTop = Math.round(20 * zoomFactor);
         activeBands.push({
           id: "all",
           min: minY,
@@ -1405,13 +1407,13 @@
           label: "Chronology Timeline",
           isLog: false,
           eraRows: rows,
-          bannerTop: Math.round(20 * zoomFactor),
-          bannerBottom: Math.round(20 * zoomFactor) + EPOCH_BANNER_HEIGHT,
-          contentTop: Math.round(20 * zoomFactor) + EPOCH_BANNER_HEIGHT + CARD_GAP,
-          contentBottom: Math.round(20 * zoomFactor) + EPOCH_BANNER_HEIGHT + CARD_GAP + fallbackContent,
+          bannerTop,
+          bannerBottom: bannerTop + EPOCH_BANNER_HEIGHT,
+          contentTop: bannerTop + EPOCH_BANNER_HEIGHT + CARD_GAP,
+          contentBottom: bannerTop + EPOCH_BANNER_HEIGHT + CARD_GAP + fallbackContent,
           contentHeight: fallbackContent,
-          availTravel: fallbackContent - CARD_HEIGHT - CARD_GAP,
-          topPx: Math.round(20 * zoomFactor)
+          availTravel: Math.max(CARD_HEIGHT, fallbackContent - CARD_HEIGHT - CARD_GAP),
+          topPx: bannerTop
         });
         currentStageTop = activeBands[0].contentBottom + CARD_GAP;
       }
@@ -1653,90 +1655,66 @@
       const laneBottomTracker = new Array(leafLanes.length).fill(Math.round(24 * z));
       const positionedNodes = [];
 
+      const placeSingleRow = (r, idealY) => {
+        const isExpanded = state.expandedMacros.has(r.macro);
+        const subKey = (r.sub || "").trim() || r.macro;
+        const targetLaneId = isExpanded ? `${r.macro}|||${subKey}` : r.macro;
+
+        let laneIdx = laneIndexMap.get(targetLaneId);
+        if (laneIdx === undefined) {
+          laneIdx = leafLanes.findIndex(l => l.macro === r.macro);
+          if (laneIdx === -1) laneIdx = 0;
+        }
+
+        const actualY = Math.max(idealY, laneBottomTracker[laneIdx]);
+        laneBottomTracker[laneIdx] = actualY + CARD_HEIGHT + CARD_GAP;
+
+        const endY = state.yMode === "chrono"
+          ? Math.max(actualY + 16, scaler.yearToY(r.yEnd))
+          : actualY + CARD_HEIGHT;
+
+        const laneLeft = timeAxisWidth + laneIdx * laneWidth;
+        const sidePad = Math.max(8, Math.round(14 * z));
+        const cardLeft = laneLeft + sidePad;
+        const cardWidth = Math.max(110, laneWidth - sidePad * 2);
+
+        positionedNodes.push({
+          ...r,
+          laneIdx,
+          idealY,
+          top: actualY,
+          endY,
+          left: cardLeft,
+          width: cardWidth,
+          centerX: cardLeft + cardWidth / 2,
+          centerY: actualY + CARD_HEIGHT / 2,
+          visible: dynamicSeqMap.has(r.id),
+          displaySeq: dynamicSeqMap.get(r.id) || null
+        });
+      };
+
       if (state.yMode === "chrono" && scaler) {
-        // Place era by era with strict vertical boundaries and multi-lane clamping
+        // Era-by-Era Hard-Isolated Placement Loop
         scaler.bands.forEach(b => {
-          // Clamp all lane trackers to this era's contentTop
+          // Clamp all lane trackers to start strictly below this era's banner corridor
           for (let l = 0; l < leafLanes.length; l++) {
             laneBottomTracker[l] = Math.max(laneBottomTracker[l], b.contentTop);
           }
 
-          // Sort cards in this era chronologically
-          const eraSorted = [...b.eraRows].sort((a, b) => a.yStart - b.yStart || a.readOrder - b.readOrder);
-
+          const eraSorted = [...b.eraRows].sort((a, bRow) => a.yStart - bRow.yStart || a.readOrder - bRow.readOrder);
           eraSorted.forEach(r => {
-            const isExpanded = state.expandedMacros.has(r.macro);
-            const subKey = (r.sub || "").trim() || r.macro;
-            const targetLaneId = isExpanded ? `${r.macro}|||${subKey}` : r.macro;
-
-            let laneIdx = laneIndexMap.get(targetLaneId);
-            if (laneIdx === undefined) {
-              laneIdx = leafLanes.findIndex(l => l.macro === r.macro);
-              if (laneIdx === -1) laneIdx = 0;
-            }
-
-            const idealY = scaler.yearToY(r.yStart);
-            const actualY = Math.max(idealY, laneBottomTracker[laneIdx]);
-            laneBottomTracker[laneIdx] = actualY + CARD_HEIGHT + CARD_GAP;
-
-            const endY = Math.max(actualY + 16, scaler.yearToY(r.yEnd));
-
-            const laneLeft = timeAxisWidth + laneIdx * laneWidth;
-            const sidePad = Math.max(8, Math.round(14 * z));
-            const cardLeft = laneLeft + sidePad;
-            const cardWidth = Math.max(110, laneWidth - sidePad * 2);
-
-            positionedNodes.push({
-              ...r,
-              laneIdx,
-              idealY,
-              top: actualY,
-              endY,
-              left: cardLeft,
-              width: cardWidth,
-              centerX: cardLeft + cardWidth / 2,
-              centerY: actualY + CARD_HEIGHT / 2,
-              visible: dynamicSeqMap.has(r.id),
-              displaySeq: dynamicSeqMap.get(r.id) || null
-            });
+            placeSingleRow(r, scaler.yearToY(r.yStart));
           });
+
+          // Advance all lane trackers past this era's content floor before next banner
+          for (let l = 0; l < leafLanes.length; l++) {
+            laneBottomTracker[l] = Math.max(laneBottomTracker[l], b.contentBottom + CARD_GAP);
+          }
         });
       } else {
-        const placementOrder = [...rows];
-        placementOrder.forEach((r, idx) => {
-          const isExpanded = state.expandedMacros.has(r.macro);
-          const subKey = (r.sub || "").trim() || r.macro;
-          const targetLaneId = isExpanded ? `${r.macro}|||${subKey}` : r.macro;
-
-          let laneIdx = laneIndexMap.get(targetLaneId);
-          if (laneIdx === undefined) {
-            laneIdx = leafLanes.findIndex(l => l.macro === r.macro);
-            if (laneIdx === -1) laneIdx = 0;
-          }
-
-          let idealY = Math.round(40 * z) + idx * (CARD_HEIGHT + Math.round(14 * z));
-          const actualY = Math.max(idealY, laneBottomTracker[laneIdx]);
-          laneBottomTracker[laneIdx] = actualY + CARD_HEIGHT + CARD_GAP;
-
-          const endY = actualY + CARD_HEIGHT;
-          const laneLeft = timeAxisWidth + laneIdx * laneWidth;
-          const sidePad = Math.max(8, Math.round(14 * z));
-          const cardLeft = laneLeft + sidePad;
-          const cardWidth = Math.max(110, laneWidth - sidePad * 2);
-
-          positionedNodes.push({
-            ...r,
-            laneIdx,
-            idealY,
-            top: actualY,
-            endY,
-            left: cardLeft,
-            width: cardWidth,
-            centerX: cardLeft + cardWidth / 2,
-            centerY: actualY + CARD_HEIGHT / 2,
-            visible: dynamicSeqMap.has(r.id),
-            displaySeq: dynamicSeqMap.get(r.id) || null
-          });
+        rows.forEach((r, idx) => {
+          const idealY = Math.round(40 * z) + idx * (CARD_HEIGHT + Math.round(14 * z));
+          placeSingleRow(r, idealY);
         });
       }
 
@@ -1760,11 +1738,11 @@
       stickyRail.style.height = `${totalStageHeight}px`;
 
       if (state.yMode === "chrono" && scaler) {
-        // Collect & prioritize ticks: Priority 1 (Era Starts & Protected Milestones), Priority 2 (Book Anchors), Priority 3 (Grid Steps)
-        const rawTicks = [];
+        // 3-Tier Priority Rail Engine: P1 Milestones -> P2 Book Anchors -> P3 Grid Ticks
+        const candidateTicks = [];
 
-        // 1. Pinned Era Start Ticks & Stage Banners
         scaler.bands.forEach(b => {
+          // Dedicated Era Corridor Banner on Stage
           const banner = document.createElement("div");
           banner.className = "epoch-divider-band";
           banner.style.top = `${b.bannerTop}px`;
@@ -1776,45 +1754,31 @@
           `;
           stage.appendChild(banner);
 
-          rawTicks.push({
+          // Priority 1: Pinned epoch start tick
+          candidateTicks.push({
             yPx: b.bannerTop,
-            label: formatYearLabel(b.min),
+            label: formatYearLabel(b.yMin),
             isEpoch: true,
+            isMilestone: true,
             priority: 1
           });
-        });
 
-        // 2. Curated Historical Milestones (1000 BCE, 1492 CE, 1500 CE, 1776 CE, etc.)
-        HISTORIC_MILESTONES.forEach(mYear => {
-          const b = scaler.bands.find(band => mYear >= band.min && mYear < band.max);
-          if (b) {
-            const yPx = scaler.yearToY(mYear);
-            rawTicks.push({
-              yPx,
-              label: formatYearLabel(mYear),
-              isMilestone: true,
-              priority: 1
-            });
-          }
-        });
+          // Priority 1: Protected Historic Milestones inside this era
+          HISTORIC_MILESTONES.forEach(m => {
+            if (m > b.min && m < b.max) {
+              candidateTicks.push({
+                yPx: scaler.yearToY(m),
+                label: formatYearLabel(m),
+                isEpoch: false,
+                isMilestone: true,
+                priority: 1
+              });
+            }
+          });
 
-        // 3. Book Anchor Dates
-        rows.forEach(r => {
-          if (r.yStart) {
-            const yPx = scaler.yearToY(r.yStart);
-            rawTicks.push({
-              yPx,
-              label: formatYearLabel(r.yStart),
-              isBook: true,
-              priority: 2
-            });
-          }
-        });
-
-        // 4. Background Density Grid Ticks
-        scaler.bands.forEach(b => {
-          const TARGET_GAP = Math.round(75 * Math.max(0.7, z));
-          const numSteps = Math.max(2, Math.round(b.contentHeight / TARGET_GAP));
+          // Priority 3: Clean background grid intervals inside this era
+          const TARGET_PX_GAP = Math.round(80 * Math.max(0.75, z));
+          const numSteps = Math.max(2, Math.round(b.contentHeight / TARGET_PX_GAP));
           for (let s = 1; s <= numSteps; s++) {
             let yVal;
             if (b.isLog) {
@@ -1824,33 +1788,48 @@
               const logVal = logMin - t * (logMin - logMax);
               yVal = -Math.round(Math.pow(10, logVal));
             } else {
-              yVal = b.min + ((b.max - b.min) * s) / (numSteps + 1);
+              const rawY = b.min + ((b.max - b.min) * s) / (numSteps + 1);
+              const span = b.max - b.min;
+              const snapUnit = span >= 2000 ? 500 : span >= 500 ? 100 : span >= 100 ? 25 : 5;
+              yVal = Math.round(rawY / snapUnit) * snapUnit;
             }
-            const yPx = scaler.yearToY(yVal);
-            rawTicks.push({
-              yPx,
-              label: formatYearLabel(yVal),
-              isGrid: true,
-              priority: 3
+            if (yVal > b.min && yVal < b.max) {
+              candidateTicks.push({
+                yPx: scaler.yearToY(yVal),
+                label: formatYearLabel(yVal),
+                isEpoch: false,
+                isMilestone: false,
+                priority: 3
+              });
+            }
+          }
+        });
+
+        // Priority 2: Book composition year anchors
+        rows.forEach(r => {
+          if (r.yStart !== undefined && r.yStart !== null) {
+            candidateTicks.push({
+              yPx: scaler.yearToY(r.yStart),
+              label: formatYearLabel(r.yStart),
+              isEpoch: false,
+              isMilestone: false,
+              priority: 2
             });
           }
         });
 
-        // Smart Deduplication & Preservation
-        const labelMap = new Map();
-        rawTicks.forEach(t => {
-          if (!labelMap.has(t.label) || labelMap.get(t.label).priority > t.priority) {
-            labelMap.set(t.label, t);
-          }
-        });
-        const uniqueTicks = Array.from(labelMap.values());
+        // Sort by priority first, then vertical pixel coordinate
+        candidateTicks.sort((a, b) => a.priority - b.priority || a.yPx - b.yPx);
 
-        const acceptedTicks = uniqueTicks.filter(t => t.priority === 1);
-        acceptedTicks.sort((a, b) => a.yPx - b.yPx);
+        const seenLabels = new Set();
+        const acceptedTicks = [];
 
-        const nonP1 = uniqueTicks.filter(t => t.priority > 1).sort((a, b) => a.priority - b.priority || a.yPx - b.yPx);
-        nonP1.forEach(t => {
-          if (acceptedTicks.every(a => Math.abs(t.yPx - a.yPx) >= 22)) {
+        candidateTicks.forEach(t => {
+          if (seenLabels.has(t.label)) return;
+          const minClearance = t.priority === 1 ? 16 : t.priority === 2 ? 24 : 28;
+          const collides = acceptedTicks.some(acc => Math.abs(t.yPx - acc.yPx) < minClearance);
+          if (!collides) {
+            seenLabels.add(t.label);
             acceptedTicks.push(t);
           }
         });
@@ -1859,12 +1838,12 @@
 
         acceptedTicks.forEach(t => {
           const tickLine = document.createElement("div");
-          tickLine.className = `time-tick ${t.isMilestone ? "milestone-major" : ""}`;
+          tickLine.className = `time-tick ${t.isMilestone && !t.isEpoch ? "milestone-line" : ""}`;
           tickLine.style.top = `${t.yPx}px`;
           stage.appendChild(tickLine);
 
           const tickLbl = document.createElement("div");
-          tickLbl.className = `rail-tick-label ${t.isEpoch ? "epoch-start" : ""} ${t.isMilestone ? "milestone-major" : ""}`;
+          tickLbl.className = `rail-tick-label ${t.isEpoch ? "epoch-start" : t.isMilestone ? "milestone-tick" : ""}`;
           tickLbl.style.top = `${t.yPx}px`;
           tickLbl.textContent = t.label;
           stickyRail.appendChild(tickLbl);
