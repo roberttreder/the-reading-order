@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- THE READING ORDER SYNOPTIC COMPANION | Build: v1.6.0 (2026-11-17) | Branch: main | © 2026 Robert Treder -->
+<!-- THE READING ORDER SYNOPTIC COMPANION | Build: v1.7.0 (2026-11-17) | Branch: main | © 2026 Robert Treder -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1477,6 +1477,14 @@
       const minY = Math.min(...years);
       const maxY = Math.max(...years);
 
+      const getLaneKey = (r) => {
+        const isExp = state.expandedMacros.has(r.macro);
+        const subKey = (r.sub || "").trim() || r.macro;
+        return isExp ? `${r.macro}|||${subKey}` : (r.macro || "Off-Grid");
+      };
+
+      const logCoord = (val) => Math.log10(Math.max(1, Math.abs(val)) + 1);
+
       const activeBands = [];
       let currentStageTop = Math.round(20 * zoomFactor);
 
@@ -1484,35 +1492,103 @@
         if (maxY < era.min || minY >= era.max) return;
 
         const eraRows = rows.filter(r => r.yStart >= era.min && r.yStart < era.max);
+        const scaledMin = Math.round((era.baseMin || 360) * zoomFactor);
 
-        const laneCounts = {};
-        eraRows.forEach(r => {
-          const isExp = state.expandedMacros.has(r.macro);
-          const subKey = (r.sub || "").trim() || r.macro;
-          const key = isExp ? `${r.macro}|||${subKey}` : (r.macro || "Off-Grid");
-          laneCounts[key] = (laneCounts[key] || 0) + 1;
+        // Collect atomic breakpoints partitioning [era.min, era.max]
+        const breakSet = new Set([era.min, era.max]);
+        HISTORIC_MILESTONES.forEach(m => {
+          if (m > era.min && m < era.max) breakSet.add(m);
         });
 
-        const maxLaneCount = Math.max(1, ...Object.values(laneCounts));
-        const physicalNeeded = maxLaneCount * (CARD_HEIGHT + CARD_GAP) + CARD_GAP;
-        const scaledMin = Math.round((era.baseMin || 360) * zoomFactor);
-        const contentHeight = Math.max(scaledMin, physicalNeeded + CARD_GAP);
+        eraRows.forEach(r => {
+          breakSet.add(r.yStart);
+          if (!era.isLog) {
+            const nextYear = Math.min(era.max, Math.floor(r.yStart) + 1);
+            if (nextYear > r.yStart) breakSet.add(nextYear);
+          } else {
+            const step = Math.max(1, Math.round((era.max - era.min) * 0.0005));
+            const nextDeep = Math.min(era.max, r.yStart + step);
+            if (nextDeep > r.yStart) breakSet.add(nextDeep);
+          }
+          if (r.yEnd > r.yStart && r.yEnd < era.max) {
+            breakSet.add(r.yEnd);
+          }
+        });
+
+        const sortedBreaks = [...breakSet].sort((a, b) => a - b);
+        const totalEraSpan = era.isLog
+          ? Math.max(0.0001, logCoord(era.min) - logCoord(era.max))
+          : Math.max(1, era.max - era.min);
 
         const bannerTop = currentStageTop;
         const bannerBottom = bannerTop + EPOCH_BANNER_HEIGHT;
         const contentTop = bannerBottom + CARD_GAP;
-        const contentBottom = contentTop + contentHeight;
-        const availTravel = Math.max(CARD_HEIGHT, contentHeight - CARD_HEIGHT - CARD_GAP);
+
+        let cursorY = contentTop;
+        const slices = [];
+
+        for (let i = 0; i < sortedBreaks.length - 1; i++) {
+          const sStart = sortedBreaks[i];
+          const sEnd = sortedBreaks[i + 1];
+          if (sEnd <= sStart) continue;
+
+          const rawSpan = era.isLog
+            ? Math.max(0, logCoord(sStart) - logCoord(sEnd))
+            : (sEnd - sStart);
+          const rawFrac = rawSpan / totalEraSpan;
+          const baselineH = rawFrac * scaledMin;
+
+          // Count entries starting in [sStart, sEnd) per active swimlane
+          const sliceLaneCounts = {};
+          eraRows.forEach(r => {
+            if (r.yStart >= sStart && r.yStart < sEnd) {
+              const lk = getLaneKey(r);
+              sliceLaneCounts[lk] = (sliceLaneCounts[lk] || 0) + 1;
+            }
+          });
+
+          const maxStack = Math.max(0, ...Object.values(sliceLaneCounts));
+          const requiredStackH = maxStack > 0 ? maxStack * (CARD_HEIGHT + CARD_GAP) : 0;
+          const sliceH = Math.max(baselineH, requiredStackH);
+
+          slices.push({
+            start: sStart,
+            end: sEnd,
+            yTop: cursorY,
+            yBottom: cursorY + sliceH,
+            height: sliceH,
+            maxStack
+          });
+
+          cursorY += sliceH;
+        }
+
+        // Ensure trailing clearance below the last card in the era
+        if (slices.length === 0) {
+          cursorY = contentTop + scaledMin;
+        } else {
+          const lastSlice = slices[slices.length - 1];
+          if (lastSlice.maxStack === 0 && lastSlice.height < CARD_HEIGHT + CARD_GAP) {
+            const pad = (CARD_HEIGHT + CARD_GAP) - lastSlice.height;
+            lastSlice.height += pad;
+            lastSlice.yBottom += pad;
+            cursorY += pad;
+          }
+        }
+
+        const contentBottom = cursorY;
+        const contentHeight = contentBottom - contentTop;
 
         activeBands.push({
           ...era,
           eraRows,
+          slices,
           bannerTop,
           bannerBottom,
           contentTop,
           contentBottom,
           contentHeight,
-          availTravel,
+          availTravel: Math.max(CARD_HEIGHT, contentHeight - CARD_HEIGHT - CARD_GAP),
           topPx: bannerTop,
           yMin: era.min,
           yMax: era.max
@@ -1524,19 +1600,23 @@
       if (activeBands.length === 0) {
         const fallbackContent = Math.round(Math.max(800, rows.length * 76) * zoomFactor);
         const bannerTop = Math.round(20 * zoomFactor);
+        const eMin = minY;
+        const eMax = maxY === minY ? minY + 100 : maxY;
+        const cTop = bannerTop + EPOCH_BANNER_HEIGHT + CARD_GAP;
         activeBands.push({
           id: "all",
-          min: minY,
-          max: maxY === minY ? minY + 100 : maxY,
-          yMin: minY,
-          yMax: maxY === minY ? minY + 100 : maxY,
+          min: eMin,
+          max: eMax,
+          yMin: eMin,
+          yMax: eMax,
           label: "Chronology Timeline",
           isLog: false,
           eraRows: rows,
+          slices: [{ start: eMin, end: eMax, yTop: cTop, yBottom: cTop + fallbackContent, height: fallbackContent, maxStack: 0 }],
           bannerTop,
           bannerBottom: bannerTop + EPOCH_BANNER_HEIGHT,
-          contentTop: bannerTop + EPOCH_BANNER_HEIGHT + CARD_GAP,
-          contentBottom: bannerTop + EPOCH_BANNER_HEIGHT + CARD_GAP + fallbackContent,
+          contentTop: cTop,
+          contentBottom: cTop + fallbackContent,
           contentHeight: fallbackContent,
           availTravel: Math.max(CARD_HEIGHT, fallbackContent - CARD_HEIGHT - CARD_GAP),
           topPx: bannerTop
@@ -1544,19 +1624,32 @@
         currentStageTop = activeBands[0].contentBottom + CARD_GAP;
       }
 
-      const yearToY = (y) => {
+      const yearToY = (y, isEnd = false) => {
         for (const b of activeBands) {
-          if (y >= b.min && y < b.max) {
-            let t = 0;
-            if (b.isLog) {
-              const logMin = Math.log10(Math.abs(b.min) + 1);
-              const logMax = Math.log10(Math.abs(b.max) + 1);
-              const logVal = Math.log10(Math.max(1, Math.abs(y)) + 1);
-              t = (logMin - logVal) / Math.max(0.0001, logMin - logMax);
-            } else {
-              t = (y - b.min) / Math.max(1, b.max - b.min);
+          const inBand = isEnd
+            ? (y >= b.min && y <= b.max)
+            : (y >= b.min && y < b.max);
+          if (inBand) {
+            if (isEnd && y === b.max) {
+              return b.contentBottom;
             }
-            return b.contentTop + Math.max(0, Math.min(1, t)) * b.availTravel;
+            for (const s of b.slices) {
+              if (y >= s.start && y <= s.end) {
+                if (y === s.start) return s.yTop;
+                if (y === s.end) return s.yBottom;
+                let t = 0;
+                if (b.isLog) {
+                  const lStart = logCoord(s.start);
+                  const lEnd = logCoord(s.end);
+                  const lVal = logCoord(y);
+                  t = (lStart - lVal) / Math.max(0.0001, lStart - lEnd);
+                } else {
+                  t = (y - s.start) / Math.max(0.0001, s.end - s.start);
+                }
+                return s.yTop + Math.max(0, Math.min(1, t)) * s.height;
+              }
+            }
+            return b.contentTop;
           }
         }
         if (y < activeBands[0].min) return activeBands[0].contentTop;
@@ -1790,7 +1883,7 @@
         laneBottomTracker[laneIdx] = actualY + CARD_HEIGHT + CARD_GAP;
 
         const endY = state.yMode === "chrono"
-          ? Math.max(actualY + 16, scaler.yearToY(r.yEnd))
+          ? Math.max(actualY + CARD_HEIGHT, scaler.yearToY(r.yEnd, true))
           : actualY + CARD_HEIGHT;
 
         const laneLeft = timeAxisWidth + laneIdx * laneWidth;
