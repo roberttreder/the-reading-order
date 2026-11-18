@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- THE READING ORDER SYNOPTIC COMPANION | Build: v1.7.0 (2026-11-17) | Branch: main | © 2026 Robert Treder -->
+<!-- THE READING ORDER SYNOPTIC COMPANION | Build: v1.8.0 (2026-11-18) | Branch: main | © 2026 Robert Treder -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -510,14 +510,165 @@
       font-size: 0.75rem;
     }
 
-    /* SVG Overlay */
+    /* SVG Overlay & Interactive Connection Arcs */
     .svg-overlay {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 15;
+      z-index: 16;
+      overflow: visible;
+    }
+
+    @keyframes threadFlow {
+      to {
+        stroke-dashoffset: -24;
+      }
+    }
+
+    .conn-hit-path {
+      fill: none;
+      stroke: transparent;
+      stroke-width: 14;
+      pointer-events: stroke;
+      cursor: pointer;
+    }
+
+    .conn-vis-path {
+      fill: none;
+      pointer-events: none;
+      transition: opacity 0.2s ease, stroke-width 0.15s ease, filter 0.15s ease;
+    }
+
+    .conn-vis-path.is-flowing {
+      animation: threadFlow 0.9s linear infinite;
+    }
+
+    .conn-vis-path.is-edge-hovered {
+      filter: drop-shadow(0 0 6px currentColor);
+    }
+
+    /* Floating Connection Line Tooltip */
+    .edge-tooltip {
+      position: fixed;
+      z-index: 250;
+      pointer-events: none;
+      background: rgba(15, 17, 23, 0.96);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--accent);
+      border-radius: 7px;
+      padding: 6px 10px;
+      font-size: 0.74rem;
+      color: var(--text);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+      max-width: 310px;
+      line-height: 1.35;
+      display: none;
+    }
+
+    .edge-tooltip .edge-kind {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+    }
+
+    .edge-tooltip .edge-hint {
+      font-size: 0.64rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Floating Reading Order Stepper Pill */
+    .reading-stepper {
+      position: fixed;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 140;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(23, 26, 36, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 10px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.68);
+      max-width: calc(100vw - 32px);
+    }
+
+    .stepper-btn {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 4px 11px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      max-width: 210px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stepper-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: rgba(224, 177, 83, 0.16);
+      color: #fff;
+    }
+
+    .stepper-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .stepper-status {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--accent);
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(224, 177, 83, 0.1);
+      border: 1px solid rgba(224, 177, 83, 0.3);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .stepper-status:hover {
+      background: rgba(224, 177, 83, 0.22);
+    }
+
+    .drawer-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 10px 0 6px;
+      padding: 6px 8px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+    }
+
+    .drawer-nav-bar button {
+      font-size: 0.74rem;
+      padding: 4px 9px;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .drawer-nav-bar button:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
     }
 
     /* Duration Span Bars */
@@ -559,9 +710,31 @@
     .book-card.tier-ref { background: var(--tier-ref-bg); border-color: var(--tier-ref-border); }
 
     .book-card.dimmed { opacity: 0.18; filter: grayscale(80%); pointer-events: none; }
+    .book-card.soft-dimmed { opacity: 0.38; }
+    .book-card.is-focused {
+      border-color: #facc15 !important;
+      box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.45), 0 8px 24px rgba(0, 0, 0, 0.75) !important;
+      z-index: 45;
+    }
+    .book-card.is-neighbor-prev {
+      border-color: #f59e0b !important;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.45) !important;
+      z-index: 40;
+    }
+    .book-card.is-neighbor-next {
+      border-color: #facc15 !important;
+      box-shadow: 0 0 16px rgba(250, 204, 21, 0.5) !important;
+      z-index: 42;
+    }
     .book-card.paired-target {
       border-color: #38bdf8 !important;
       box-shadow: 0 0 14px rgba(56, 189, 248, 0.5) !important;
+      z-index: 40;
+    }
+    .book-card.sibling-target {
+      border-color: #c084fc !important;
+      box-shadow: 0 0 14px rgba(192, 132, 252, 0.5) !important;
+      z-index: 40;
     }
 
     .card-top {
@@ -946,7 +1119,11 @@
           <option value="owned">Highlight: Owned Status</option>
         </select>
 
-        <button id="btnToggleThread" class="active" title="Show/hide the Reading Order narrative thread">🧵 Read Thread</button>
+        <select id="threadModeSelect" title="Control Reading Order thread visibility: Focus Only spotlights #N-1 → #N → #N+1 on hover/select">
+          <option value="focus" selected>🧵 Thread: Focus Only</option>
+          <option value="full">🧵 Thread: Full Path</option>
+          <option value="off">🧵 Thread: Off</option>
+        </select>
         <button id="btnToggleSpans" class="active" title="Show/hide History duration bars">📏 Era Spans</button>
 
         <!-- Zoom Controls -->
@@ -995,6 +1172,16 @@
       <div id="timespanEndBadge" class="timespan-callout" style="display:none;"></div>
     </div>
   </div>
+
+  <!-- Floating Reading Order Stepper -->
+  <nav class="reading-stepper" id="readingStepper" aria-label="Reading order navigation">
+    <button class="stepper-btn" id="btnStepPrev" title="Previous in Reading Order (Left Arrow)">← Prev</button>
+    <span class="stepper-status" id="stepperStatus" title="Click to center active entry (or start at #1)">Start #1</span>
+    <button class="stepper-btn" id="btnStepNext" title="Next in Reading Order (Right Arrow)">Next →</button>
+  </nav>
+
+  <!-- Floating Connection Tooltip -->
+  <div class="edge-tooltip" id="edgeTooltip"></div>
 
   <!-- Copyright Colophon Badge -->
   <footer class="copyright-colophon" aria-label="Copyright notice">
@@ -1093,15 +1280,17 @@
       strictCoordsOnly: true,
       expandedMacros: new Set(),
       showEmptySubregions: false,
-      showThread: true,
+      threadMode: "focus",
       showSpans: true,
       searchQuery: "",
       hiddenTiers: new Set(),
       hoveredRowId: null,
+      hoveredEdge: null,
       selectedRowId: null,
       zoom: 1.0,
       directWheelZoom: false,
-      positionedMap: new Map()
+      positionedMap: new Map(),
+      visibleOrderedNodes: []
     };
 
     let activeTimespanData = null;
@@ -1933,6 +2122,9 @@
 
       state.positionedMap.clear();
       positionedNodes.forEach(n => state.positionedMap.set(n.id, n));
+      state.visibleOrderedNodes = positionedNodes
+        .filter(n => n.visible)
+        .sort((a, b) => a.readOrder - b.readOrder);
 
       const bgGrid = document.createElement("div");
       bgGrid.className = "lane-bg-grid";
@@ -2070,7 +2262,14 @@
 
       stage.appendChild(stickyRail);
 
-      renderSvgLayer(totalWidth, totalStageHeight, positionedNodes, z);
+      // Persistent SVG Overlay Container
+      const svgNS = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("id", "connectionsSvg");
+      svg.setAttribute("class", "svg-overlay");
+      svg.setAttribute("width", totalWidth);
+      svg.setAttribute("height", totalHeight);
+      stage.appendChild(svg);
 
       let visibleCount = 0;
       let readCount = 0;
@@ -2109,27 +2308,24 @@
             ${hasPairs ? '<span class="paired-badge">⇄ Paired</span>' : ""}
             <span class="subregion-pill" title="${n.macro} > ${n.inter} > ${n.sub}">${n.sub || n.macro}</span>
           </div>
-          <div class="card-title" title="${n.title.replace(/\"/g, '&quot;')}">${n.title}</div>
+          <div class="card-title" title="${n.title.replace(/"/g, '&quot;')}">${n.title}</div>
           <div class="card-meta">${n.author} • ${n.eraDate}</div>
         `;
 
         card.addEventListener("mouseenter", () => {
-          state.hoveredRowId = n.id;
-          showTimespanHighlight(n.top, n.endY, formatYearLabel(n.yStart), formatYearLabel(n.yEnd));
-          highlightPairedCards(n);
+          scheduleHoverIntent(() => {
+            state.hoveredRowId = n.id;
+            state.hoveredEdge = null;
+            hideEdgeTooltip();
+            applyFocusState();
+          });
         });
 
         card.addEventListener("mouseleave", () => {
-          state.hoveredRowId = null;
-          if (!state.selectedRowId) {
-            hideTimespanHighlight();
-            clearPairedHighlight();
-          } else {
-            const selNode = state.positionedMap.get(state.selectedRowId);
-            if (selNode) {
-              showTimespanHighlight(selNode.top, selNode.endY, formatYearLabel(selNode.yStart), formatYearLabel(selNode.yEnd));
-              highlightPairedCards(selNode);
-            }
+          cancelHoverIntent();
+          if (state.hoveredRowId === n.id) {
+            state.hoveredRowId = null;
+            applyFocusState();
           }
         });
 
@@ -2138,14 +2334,20 @@
             e.stopPropagation();
             return;
           }
+          cancelHoverIntent();
+          state.hoveredRowId = null;
+          state.hoveredEdge = null;
+          hideEdgeTooltip();
           state.selectedRowId = n.id;
-          showTimespanHighlight(n.top, n.endY, formatYearLabel(n.yStart), formatYearLabel(n.yEnd));
-          highlightPairedCards(n);
+          applyFocusState();
           openDrawer(n);
         });
 
         stage.appendChild(card);
       });
+
+      applyFocusState();
+      updateReadingStepper();
 
       const coordCount = rows.filter(r => r.hasExplicitCoords).length;
       document.getElementById("statsBar").innerHTML = `
@@ -2153,88 +2355,476 @@
         <span>Read: <strong>${readCount}</strong></span>
         <span>Owned: <strong>${ownedCount}</strong></span>
         <span>Coords: <strong>${coordCount}/${rows.length}</strong></span>
-        <span class="nav-hint">🖐️ Drag canvas to pan • Ctrl/Shift + Wheel to zoom</span>
+        <span class="nav-hint">🖐️ Drag pan • Ctrl/Shift+Wheel zoom • ←/→ Step order</span>
       `;
     }
 
     /*************************************************************************
-     * 6. SVG CONNECTORS & BIDIRECTIONAL MAPPING ARCS
+     * 6. INTERACTIVE SVG CONNECTIONS, HOVER DWELL & SMOOTH CAMERA GLIDE
      *************************************************************************/
-    function renderSvgLayer(totalWidth, totalHeight, nodes, z) {
-      const stage = document.getElementById("chartStage");
-      const svgNS = "http://www.w3.org/2000/svg";
-      const svg = document.createElementNS(svgNS, "svg");
-      svg.setAttribute("class", "svg-overlay");
-      svg.setAttribute("width", totalWidth);
-      svg.setAttribute("height", totalHeight);
+    const HOVER_INTENT_MS = 320;
+    let hoverIntentTimer = null;
+    let activeCameraAnimId = null;
 
-      const visibleSorted = nodes
-        .filter(n => n.visible)
-        .sort((a, b) => a.readOrder - b.readOrder);
+    function scheduleHoverIntent(fn) {
+      clearTimeout(hoverIntentTimer);
+      hoverIntentTimer = setTimeout(fn, HOVER_INTENT_MS);
+    }
 
-      if (state.showThread && visibleSorted.length > 1) {
-        let d = "";
-        visibleSorted.forEach((pt, idx) => {
-          if (idx === 0) {
-            d += `M ${pt.centerX} ${pt.centerY} `;
-          } else {
-            const prev = visibleSorted[idx - 1];
-            const midY = (prev.centerY + pt.centerY) / 2;
-            d += `C ${prev.centerX} ${midY}, ${pt.centerX} ${midY}, ${pt.centerX} ${pt.centerY} `;
-          }
-        });
-        const path = document.createElementNS(svgNS, "path");
-        path.setAttribute("d", d);
-        path.setAttribute("fill", "none");
-        path.setAttribute("stroke", "rgba(245, 158, 11, 0.4)");
-        path.setAttribute("stroke-width", String(Math.max(1.5, 2.0 * z)));
-        path.setAttribute("stroke-dasharray", "5,4");
-        svg.appendChild(path);
+    function cancelHoverIntent() {
+      clearTimeout(hoverIntentTimer);
+      hoverIntentTimer = null;
+    }
+
+    function cancelCameraGlide() {
+      if (activeCameraAnimId !== null) {
+        cancelAnimationFrame(activeCameraAnimId);
+        activeCameraAnimId = null;
+      }
+    }
+
+    function smoothPanToCard(node, durationMs = 480) {
+      if (!node) return;
+      cancelCameraGlide();
+
+      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 96;
+      const laneHeadersEl = document.getElementById("laneHeaders");
+      const laneHeaderH = laneHeadersEl ? laneHeadersEl.offsetHeight : 64;
+      const topClearance = headerH + laneHeaderH;
+
+      const drawerEl = document.getElementById("drawer");
+      const drawerOpen = drawerEl && drawerEl.classList.contains("open");
+      const rightObstruction = drawerOpen ? Math.min(470, window.innerWidth * 0.92) : 0;
+      const usableViewW = Math.max(260, window.innerWidth - rightObstruction);
+      const usableViewH = Math.max(240, window.innerHeight - topClearance - 60);
+
+      const timeAxisWidth = 115;
+      const targetLeft = Math.max(0, node.centerX - timeAxisWidth - (usableViewW - timeAxisWidth) * 0.45);
+      const targetTop = Math.max(0, node.centerY - topClearance - usableViewH * 0.42);
+
+      const startLeft = window.scrollX;
+      const startTop = window.scrollY;
+      const deltaX = targetLeft - startLeft;
+      const deltaY = targetTop - startTop;
+
+      if (Math.hypot(deltaX, deltaY) < 4) {
+        window.scrollTo({ left: targetLeft, top: targetTop, behavior: "instant" });
+        return;
       }
 
-      const activeId = state.hoveredRowId || state.selectedRowId;
-      if (activeId) {
-        const activeNode = state.positionedMap.get(activeId);
-        if (activeNode && activeNode.pairedList && activeNode.pairedList.length > 0) {
-          activeNode.pairedList.forEach(pairedRo => {
-            const target = nodes.find(n => Math.abs(n.readOrder - pairedRo) < 0.0001);
-            if (target) {
-              const midY = (activeNode.centerY + target.centerY) / 2;
-              const curveOffset = Math.min(180, Math.abs(activeNode.centerX - target.centerX) * 0.4);
-              const ctrlY = midY - curveOffset * 0.3;
+      const startTime = performance.now();
+      const easeInOutCubic = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-              const d = `M ${activeNode.centerX} ${activeNode.centerY} Q ${(activeNode.centerX + target.centerX)/2} ${ctrlY}, ${target.centerX} ${target.centerY}`;
-              const arc = document.createElementNS(svgNS, "path");
-              arc.setAttribute("d", d);
-              arc.setAttribute("fill", "none");
-              arc.setAttribute("stroke", "#38bdf8");
-              arc.setAttribute("stroke-width", "2.5");
-              arc.setAttribute("stroke-dasharray", "6,3");
-              svg.appendChild(arc);
-            }
+      const step = (now) => {
+        const elapsed = now - startTime;
+        const rawT = Math.min(1, elapsed / durationMs);
+        const eased = easeInOutCubic(rawT);
+        window.scrollTo({
+          left: startLeft + deltaX * eased,
+          top: startTop + deltaY * eased,
+          behavior: "instant"
+        });
+        if (rawT < 1) {
+          activeCameraAnimId = requestAnimationFrame(step);
+        } else {
+          activeCameraAnimId = null;
+        }
+      };
+
+      activeCameraAnimId = requestAnimationFrame(step);
+    }
+
+    function showEdgeTooltip(clientX, clientY, kindLabel, kindColor, mainText, hintText) {
+      const tip = document.getElementById("edgeTooltip");
+      if (!tip) return;
+      tip.innerHTML = `
+        <div class="edge-kind" style="color:${kindColor};">${kindLabel}</div>
+        <div>${mainText}</div>
+        <div class="edge-hint">${hintText}</div>
+      `;
+      tip.style.display = "block";
+      const pad = 14;
+      const rect = tip.getBoundingClientRect();
+      const left = Math.min(window.innerWidth - rect.width - pad, clientX + 14);
+      const top = Math.min(window.innerHeight - rect.height - pad, Math.max(12, clientY - rect.height - 10));
+      tip.style.left = `${Math.max(12, left)}px`;
+      tip.style.top = `${top}px`;
+    }
+
+    function hideEdgeTooltip() {
+      const tip = document.getElementById("edgeTooltip");
+      if (tip) tip.style.display = "none";
+    }
+
+    function getNeighborNodes(node) {
+      if (!node) return { prev: null, next: null };
+      const list = state.visibleOrderedNodes;
+      if (!list || list.length === 0) return { prev: null, next: null };
+      let idx = list.findIndex(n => n.id === node.id);
+      if (idx === -1) {
+        idx = list.findIndex(n => n.readOrder >= node.readOrder);
+        if (idx === -1) return { prev: list[list.length - 1], next: null };
+        return { prev: idx > 0 ? list[idx - 1] : null, next: list[idx] };
+      }
+      return {
+        prev: idx > 0 ? list[idx - 1] : null,
+        next: idx < list.length - 1 ? list[idx + 1] : null
+      };
+    }
+
+    function getSiblingParts(node) {
+      if (!node || !node.workGroupId) return [];
+      return [...state.positionedMap.values()]
+        .filter(n => n.workGroupId && n.workGroupId === node.workGroupId && n.id !== node.id)
+        .sort((a, b) => a.yStart - b.yStart || a.readOrder - b.readOrder);
+    }
+
+    function buildCurvedEdgePath(fromNode, toNode, archBias = 0) {
+      const dx = toNode.centerX - fromNode.centerX;
+      const dy = toNode.centerY - fromNode.centerY;
+      if (Math.abs(dx) < 8) {
+        // Same swimlane: bow outward into the lane gutter so vertical lines don't slice through card text
+        const gutterBow = Math.min(85, Math.max(36, Math.abs(dy) * 0.16)) * (archBias >= 0 ? 1 : -1);
+        const cx = fromNode.centerX + gutterBow;
+        const cy = (fromNode.centerY + toNode.centerY) / 2;
+        return `M ${fromNode.centerX} ${fromNode.centerY} Q ${cx} ${cy}, ${toNode.centerX} ${toNode.centerY}`;
+      }
+      const midX = (fromNode.centerX + toNode.centerX) / 2;
+      const midY = (fromNode.centerY + toNode.centerY) / 2;
+      const arcLift = Math.min(120, Math.abs(dx) * 0.18) * (archBias >= 0 ? -1 : 1);
+      return `M ${fromNode.centerX} ${fromNode.centerY} Q ${midX} ${midY + arcLift}, ${toNode.centerX} ${toNode.centerY}`;
+    }
+
+    function applyFocusState() {
+      const activeId = state.hoveredRowId || state.selectedRowId;
+      const activeNode = activeId ? state.positionedMap.get(activeId) : null;
+      const hoveredEdge = state.hoveredEdge;
+
+      // 1. Update Timespan Highlight Band
+      if (activeNode) {
+        showTimespanHighlight(activeNode.top, activeNode.endY, formatYearLabel(activeNode.yStart), formatYearLabel(activeNode.yEnd));
+      } else {
+        hideTimespanHighlight();
+      }
+
+      // 2. Compute Related Card Sets
+      const { prev, next } = activeNode ? getNeighborNodes(activeNode) : { prev: null, next: null };
+      const pairedIds = new Set();
+      if (activeNode && activeNode.pairedList) {
+        activeNode.pairedList.forEach(ro => {
+          const target = [...state.positionedMap.values()].find(n => Math.abs(n.readOrder - ro) < 0.0001);
+          if (target) pairedIds.add(target.id);
+        });
+      }
+      const siblingNodes = activeNode ? getSiblingParts(activeNode) : [];
+      const siblingIds = new Set(siblingNodes.map(s => s.id));
+
+      const edgeEndpoints = new Set();
+      if (hoveredEdge) {
+        edgeEndpoints.add(hoveredEdge.from.id);
+        edgeEndpoints.add(hoveredEdge.to.id);
+      }
+
+      const hasFocus = Boolean(activeNode || hoveredEdge);
+
+      document.querySelectorAll(".book-card").forEach(el => {
+        el.classList.remove("is-focused", "is-neighbor-prev", "is-neighbor-next", "paired-target", "sibling-target", "soft-dimmed");
+        if (el.classList.contains("dimmed")) return;
+        const cid = el.id.replace(/^card-/, "");
+
+        if (activeNode && cid === activeNode.id) {
+          el.classList.add("is-focused");
+        } else if (edgeEndpoints.has(cid)) {
+          el.classList.add("is-focused");
+        } else if (prev && cid === prev.id && state.threadMode !== "off") {
+          el.classList.add("is-neighbor-prev");
+        } else if (next && cid === next.id && state.threadMode !== "off") {
+          el.classList.add("is-neighbor-next");
+        } else if (pairedIds.has(cid)) {
+          el.classList.add("paired-target");
+        } else if (siblingIds.has(cid)) {
+          el.classList.add("sibling-target");
+        } else if (hasFocus) {
+          el.classList.add("soft-dimmed");
+        }
+      });
+
+      // 3. Render Interactive SVG Connections
+      renderConnectionsSvg(activeNode, prev, next, pairedIds, siblingNodes);
+    }
+
+    function renderConnectionsSvg(activeNode, prevNode, nextNode, pairedIds, siblingNodes) {
+      const svg = document.getElementById("connectionsSvg");
+      if (!svg) return;
+      const svgNS = "http://www.w3.org/2000/svg";
+      const z = state.zoom;
+
+      // Clear previous SVG children and install directional arrowhead markers
+      svg.innerHTML = `
+        <defs>
+          <marker id="arrow-prev" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#f59e0b" />
+          </marker>
+          <marker id="arrow-next" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#facc15" />
+          </marker>
+          <marker id="arrow-paired" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#38bdf8" />
+          </marker>
+          <marker id="arrow-sibling" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#c084fc" />
+          </marker>
+        </defs>
+      `;
+
+      const visibleSorted = state.visibleOrderedNodes;
+
+      const appendInteractiveEdge = ({ key, from, to, d, color, width, dasharray, markerId, flowing, kindLabel, mainText, jumpTarget }) => {
+        const isEdgeHovered = state.hoveredEdge && state.hoveredEdge.key === key;
+
+        const vis = document.createElementNS(svgNS, "path");
+        vis.setAttribute("d", d);
+        vis.setAttribute("class", `conn-vis-path ${flowing ? "is-flowing" : ""} ${isEdgeHovered ? "is-edge-hovered" : ""}`);
+        vis.setAttribute("stroke", color);
+        vis.setAttribute("stroke-width", String(isEdgeHovered ? width + 1.5 : width));
+        if (dasharray) vis.setAttribute("stroke-dasharray", dasharray);
+        if (markerId) vis.setAttribute("marker-end", `url(#${markerId})`);
+        svg.appendChild(vis);
+
+        const hit = document.createElementNS(svgNS, "path");
+        hit.setAttribute("d", d);
+        hit.setAttribute("class", "conn-hit-path");
+
+        hit.addEventListener("mouseenter", (e) => {
+          const cx = e.clientX;
+          const cy = e.clientY;
+          scheduleHoverIntent(() => {
+            state.hoveredEdge = { key, from, to };
+            vis.classList.add("is-edge-hovered");
+            vis.setAttribute("stroke-width", String(width + 1.5));
+            showEdgeTooltip(cx, cy, kindLabel, color, mainText, `Click line to glide to #${jumpTarget.displaySeq || jumpTarget.readOrder}`);
+          });
+        });
+
+        hit.addEventListener("mousemove", (e) => {
+          if (state.hoveredEdge && state.hoveredEdge.key === key) {
+            showEdgeTooltip(e.clientX, e.clientY, kindLabel, color, mainText, `Click line to glide to #${jumpTarget.displaySeq || jumpTarget.readOrder}`);
+          }
+        });
+
+        hit.addEventListener("mouseleave", () => {
+          cancelHoverIntent();
+          if (state.hoveredEdge && state.hoveredEdge.key === key) {
+            state.hoveredEdge = null;
+            vis.classList.remove("is-edge-hovered");
+            vis.setAttribute("stroke-width", String(width));
+            hideEdgeTooltip();
+          }
+        });
+
+        hit.addEventListener("click", (e) => {
+          if (Date.now() < panState.suppressClickUntil) return;
+          e.stopPropagation();
+          cancelHoverIntent();
+          state.hoveredEdge = null;
+          hideEdgeTooltip();
+          navigateToNode(jumpTarget, true);
+        });
+
+        svg.appendChild(hit);
+      };
+
+      // A. Full Reading Order Thread (only when threadMode === "full")
+      if (state.threadMode === "full" && visibleSorted.length > 1) {
+        const bgOpacity = activeNode ? "0.10" : "0.36";
+        for (let i = 0; i < visibleSorted.length - 1; i++) {
+          const a = visibleSorted[i];
+          const b = visibleSorted[i + 1];
+          // Skip segments rendered as highlighted spotlight edges below
+          if (activeNode && ((prevNode && a.id === prevNode.id && b.id === activeNode.id) || (nextNode && a.id === activeNode.id && b.id === nextNode.id))) {
+            continue;
+          }
+          const midY = (a.centerY + b.centerY) / 2;
+          const d = `M ${a.centerX} ${a.centerY} C ${a.centerX} ${midY}, ${b.centerX} ${midY}, ${b.centerX} ${b.centerY}`;
+          appendInteractiveEdge({
+            key: `seq-${a.id}-${b.id}`,
+            from: a,
+            to: b,
+            d,
+            color: `rgba(245, 158, 11, ${bgOpacity})`,
+            width: Math.max(1.4, 1.8 * z),
+            dasharray: "4,4",
+            markerId: null,
+            flowing: false,
+            kindLabel: "Reading Order Sequence",
+            mainText: `#${a.displaySeq} ${a.title} → #${b.displaySeq} ${b.title}`,
+            jumpTarget: b
           });
         }
       }
 
-      stage.appendChild(svg);
+      // B. Focused Reading Order Spotlight (#N-1 -> #N -> #N+1)
+      if (activeNode && state.threadMode !== "off") {
+        if (prevNode) {
+          const dPrev = buildCurvedEdgePath(prevNode, activeNode, -1);
+          appendInteractiveEdge({
+            key: `focus-prev-${prevNode.id}-${activeNode.id}`,
+            from: prevNode,
+            to: activeNode,
+            d: dPrev,
+            color: "#f59e0b",
+            width: Math.max(2.2, 2.5 * z),
+            dasharray: "6,4",
+            markerId: "arrow-prev",
+            flowing: false,
+            kindLabel: "← Previous in Reading Order",
+            mainText: `#${prevNode.displaySeq} ${prevNode.title} → #${activeNode.displaySeq} ${activeNode.title}`,
+            jumpTarget: prevNode
+          });
+        }
+        if (nextNode) {
+          const dNext = buildCurvedEdgePath(activeNode, nextNode, 1);
+          appendInteractiveEdge({
+            key: `focus-next-${activeNode.id}-${nextNode.id}`,
+            from: activeNode,
+            to: nextNode,
+            d: dNext,
+            color: "#facc15",
+            width: Math.max(2.6, 3.0 * z),
+            dasharray: "7,5",
+            markerId: "arrow-next",
+            flowing: true,
+            kindLabel: "Next in Reading Order →",
+            mainText: `#${activeNode.displaySeq} ${activeNode.title} → #${nextNode.displaySeq} ${nextNode.title}`,
+            jumpTarget: nextNode
+          });
+        }
+      }
+
+      // C. Paired Works (Col V: Primary <-> History / Scholarly)
+      if (activeNode && pairedIds.size > 0) {
+        pairedIds.forEach(pid => {
+          const target = state.positionedMap.get(pid);
+          if (!target) return;
+          const dPair = buildCurvedEdgePath(activeNode, target, 1);
+          appendInteractiveEdge({
+            key: `pair-${activeNode.id}-${target.id}`,
+            from: activeNode,
+            to: target,
+            d: dPair,
+            color: "#38bdf8",
+            width: Math.max(2.2, 2.5 * z),
+            dasharray: "6,3",
+            markerId: "arrow-paired",
+            flowing: false,
+            kindLabel: "⇄ Paired Context Work (Col V)",
+            mainText: `${activeNode.title} ⇄ ${target.title} (${target.tier})`,
+            jumpTarget: target
+          });
+        });
+      }
+
+      // D. Multi-Era Sibling Parts (Col U: Shared Work Group ID)
+      if (activeNode && siblingNodes.length > 0) {
+        siblingNodes.forEach((sib, sIdx) => {
+          const dSib = buildCurvedEdgePath(activeNode, sib, sIdx % 2 === 0 ? -1 : 1);
+          const partTag = sib.scopeSubtitle && sib.scopeSubtitle !== "—" ? ` (${sib.scopeSubtitle})` : "";
+          appendInteractiveEdge({
+            key: `sib-${activeNode.id}-${sib.id}`,
+            from: activeNode,
+            to: sib,
+            d: dSib,
+            color: "#c084fc",
+            width: Math.max(2.2, 2.5 * z),
+            dasharray: "3,3",
+            markerId: "arrow-sibling",
+            flowing: false,
+            kindLabel: "◈ Multi-Era Work Part (Col U)",
+            mainText: `${sib.title}${partTag} • ${formatYearLabel(sib.yStart)}`,
+            jumpTarget: sib
+          });
+        });
+      }
     }
 
-    function highlightPairedCards(node) {
-      clearPairedHighlight();
-      if (!node.pairedList || node.pairedList.length === 0) return;
+    function updateReadingStepper() {
+      const list = state.visibleOrderedNodes || [];
+      const btnPrev = document.getElementById("btnStepPrev");
+      const btnNext = document.getElementById("btnStepNext");
+      const statusEl = document.getElementById("stepperStatus");
+      if (!btnPrev || !btnNext || !statusEl) return;
 
-      node.pairedList.forEach(ro => {
-        const target = [...state.positionedMap.values()].find(n => Math.abs(n.readOrder - ro) < 0.0001);
-        if (target) {
-          const el = document.getElementById(`card-${target.id}`);
-          if (el) el.classList.add("paired-target");
-        }
-      });
+      if (list.length === 0) {
+        btnPrev.disabled = true;
+        btnNext.disabled = true;
+        statusEl.textContent = "0 Works";
+        return;
+      }
+
+      const selNode = state.selectedRowId ? state.positionedMap.get(state.selectedRowId) : null;
+      if (!selNode) {
+        btnPrev.disabled = true;
+        btnPrev.innerHTML = "← Prev";
+        btnNext.disabled = false;
+        btnNext.innerHTML = `Start #1: ${list[0].title} →`;
+        statusEl.textContent = `Reading Order (1–${list.length})`;
+        return;
+      }
+
+      const { prev, next } = getNeighborNodes(selNode);
+      const curNum = selNode.displaySeq || "—";
+
+      btnPrev.disabled = !prev;
+      btnPrev.innerHTML = prev ? `← #${prev.displaySeq} ${prev.title}` : "← Start";
+      btnPrev.title = prev ? `Step back to #${prev.displaySeq}: ${prev.title} (Left Arrow)` : "At first entry";
+
+      statusEl.textContent = `#${curNum} of ${list.length}`;
+      statusEl.title = `Center #${curNum}: ${selNode.title}`;
+
+      btnNext.disabled = !next;
+      btnNext.innerHTML = next ? `#${next.displaySeq} ${next.title} →` : "End →";
+      btnNext.title = next ? `Step forward to #${next.displaySeq}: ${next.title} (Right Arrow)` : "At last entry";
+    }
+
+    function navigateToNode(node, keepDrawerSynced = true) {
+      if (!node) return;
+      cancelHoverIntent();
+      state.hoveredRowId = null;
+      state.hoveredEdge = null;
+      hideEdgeTooltip();
+      state.selectedRowId = node.id;
+
+      applyFocusState();
+      updateReadingStepper();
+      smoothPanToCard(node);
+
+      const drawerOpen = document.getElementById("drawer").classList.contains("open");
+      if (keepDrawerSynced || drawerOpen) {
+        openDrawer(node);
+      }
+    }
+
+    function stepReadingOrder(delta) {
+      const list = state.visibleOrderedNodes || [];
+      if (list.length === 0) return;
+
+      const selNode = state.selectedRowId ? state.positionedMap.get(state.selectedRowId) : null;
+      if (!selNode) {
+        navigateToNode(delta > 0 ? list[0] : list[list.length - 1], false);
+        return;
+      }
+
+      const { prev, next } = getNeighborNodes(selNode);
+      const target = delta > 0 ? next : prev;
+      if (target) {
+        const drawerOpen = document.getElementById("drawer").classList.contains("open");
+        navigateToNode(target, drawerOpen);
+      }
     }
 
     function clearPairedHighlight() {
-      document.querySelectorAll(".book-card.paired-target").forEach(el => {
-        el.classList.remove("paired-target");
+      document.querySelectorAll(".book-card").forEach(el => {
+        el.classList.remove("is-focused", "is-neighbor-prev", "is-neighbor-next", "paired-target", "sibling-target", "soft-dimmed");
       });
     }
 
@@ -2409,6 +2999,8 @@
       const content = document.getElementById("drawerContent");
       const seqText = n.displaySeq ? `#${n.displaySeq}` : "Filtered";
       const isbnInfo = extractIsbn(n);
+      const { prev, next } = getNeighborNodes(n);
+      const siblings = getSiblingParts(n);
 
       const tagPills = n.themeTags
         ? n.themeTags.split(";").map(t => t.trim()).filter(Boolean).map(t =>
@@ -2442,6 +3034,24 @@
         `;
       }
 
+      let siblingsHtml = "";
+      if (siblings.length > 0) {
+        siblingsHtml = `
+          <div class="paired-section" style="background:rgba(192,132,252,0.07);border-color:rgba(192,132,252,0.35);">
+            <h4 style="color:#c084fc;">◈ Other Parts of This Work (Col U)</h4>
+            ${siblings.map(sib => `
+              <div class="paired-link" onclick="jumpToCard('${sib.id}')">
+                <div>
+                  <strong>${sib.title}</strong>
+                  <div style="font-size:0.68rem;color:var(--muted);">${sib.scopeSubtitle && sib.scopeSubtitle !== "—" ? sib.scopeSubtitle + " • " : ""}${formatYearLabel(sib.yStart)}</div>
+                </div>
+                <span class="ro-badge">#${sib.displaySeq || sib.readOrder}</span>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      }
+
       content.innerHTML = `
         <div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
           <span class="ro-badge" style="font-size:0.82rem;padding:3px 9px;">Reading # ${seqText}</span>
@@ -2451,9 +3061,18 @@
           <span style="font-size:0.78rem;color:var(--muted);">${n.tier}</span>
         </div>
 
+        <div class="drawer-nav-bar">
+          <button ${prev ? `onclick="jumpToCard('${prev.id}')"` : "disabled"} title="${prev ? `Previous: ${prev.title}` : "First entry"}">
+            ${prev ? `← #${prev.displaySeq} ${prev.title}` : "← Start"}
+          </button>
+          <button ${next ? `onclick="jumpToCard('${next.id}')"` : "disabled"} title="${next ? `Next: ${next.title}` : "Last entry"}">
+            ${next ? `#${next.displaySeq} ${next.title} →` : "End →"}
+          </button>
+        </div>
+
         <div class="drawer-hero">
           <div class="drawer-cover-wrap" id="drawerCoverWrap">
-            <img id="drawerCoverImg" alt="Cover of ${n.title.replace(/\"/g, '&quot;')}" />
+            <img id="drawerCoverImg" alt="Cover of ${n.title.replace(/"/g, '&quot;')}" />
           </div>
           <div class="drawer-title-block">
             <h2>${n.title}</h2>
@@ -2504,6 +3123,7 @@
         </div>
 
         ${pairedHtml}
+        ${siblingsHtml}
 
         <div style="font-size:0.74rem;text-transform:uppercase;color:var(--muted);margin-bottom:6px;letter-spacing:0.05em;">
           Curatorial &amp; Edition Notes
@@ -2520,17 +3140,7 @@
     function jumpToCard(nodeId) {
       const node = state.positionedMap.get(nodeId);
       if (!node) return;
-      state.selectedRowId = nodeId;
-      showTimespanHighlight(node.top, node.endY, formatYearLabel(node.yStart), formatYearLabel(node.yEnd));
-      highlightPairedCards(node);
-
-      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-stack-height')) || 96;
-      window.scrollTo({
-        left: Math.max(0, node.left - window.innerWidth / 3),
-        top: Math.max(0, node.top - headerH - 80),
-        behavior: "smooth"
-      });
-      openDrawer(node);
+      navigateToNode(node, true);
     }
 
     /*************************************************************************
@@ -2574,6 +3184,7 @@
         if (e.button !== 0) return;
         if (e.target.closest(".lane-headers") || e.target.closest(".timespan-callout") || e.target.closest(".epoch-divider-label")) return;
 
+        cancelCameraGlide();
         panState.isDown = true;
         panState.hasMoved = false;
         panState.startX = e.clientX;
@@ -2614,6 +3225,7 @@
 
       window.addEventListener("wheel", (e) => {
         if (e.target.closest(".drawer") || e.target.closest(".modal")) return;
+        cancelCameraGlide();
 
         const shouldZoom = e.ctrlKey || e.metaKey || e.shiftKey || state.directWheelZoom;
         if (!shouldZoom) return;
@@ -2684,10 +3296,45 @@
       renderChart();
     });
 
-    document.getElementById("btnToggleThread").addEventListener("click", (e) => {
-      state.showThread = !state.showThread;
-      e.currentTarget.classList.toggle("active", state.showThread);
-      renderChart();
+    document.getElementById("threadModeSelect").addEventListener("change", (e) => {
+      state.threadMode = e.target.value;
+      applyFocusState();
+    });
+
+    document.getElementById("btnStepPrev").addEventListener("click", () => stepReadingOrder(-1));
+    document.getElementById("btnStepNext").addEventListener("click", () => stepReadingOrder(1));
+    document.getElementById("stepperStatus").addEventListener("click", () => {
+      const list = state.visibleOrderedNodes || [];
+      if (list.length === 0) return;
+      const selNode = state.selectedRowId ? state.positionedMap.get(state.selectedRowId) : null;
+      if (selNode) {
+        smoothPanToCard(selNode);
+      } else {
+        navigateToNode(list[0], false);
+      }
+    });
+
+    window.addEventListener("keydown", (e) => {
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toUpperCase() : "";
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (document.getElementById("modalBackdrop").classList.contains("open")) return;
+
+      if (e.key === "ArrowRight" || e.key === "]") {
+        e.preventDefault();
+        stepReadingOrder(1);
+      } else if (e.key === "ArrowLeft" || e.key === "[") {
+        e.preventDefault();
+        stepReadingOrder(-1);
+      } else if (e.key === "Escape") {
+        cancelHoverIntent();
+        state.selectedRowId = null;
+        state.hoveredRowId = null;
+        state.hoveredEdge = null;
+        hideEdgeTooltip();
+        document.getElementById("drawer").classList.remove("open");
+        applyFocusState();
+        updateReadingStepper();
+      }
     });
 
     document.getElementById("btnToggleSpans").addEventListener("click", (e) => {
@@ -2738,8 +3385,8 @@
     document.getElementById("drawerClose").addEventListener("click", () => {
       document.getElementById("drawer").classList.remove("open");
       state.selectedRowId = null;
-      hideTimespanHighlight();
-      clearPairedHighlight();
+      applyFocusState();
+      updateReadingStepper();
     });
 
     // Sheet Tab Modal
