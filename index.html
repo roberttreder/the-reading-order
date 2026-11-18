@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- THE READING ORDER SYNOPTIC COMPANION | Build: v1.8.0 (2026-11-18) | Branch: main | © 2026 Robert Treder -->
+<!-- THE READING ORDER SYNOPTIC COMPANION | Build: v1.8.1 (2026-11-18) | Branch: main | © 2026 Robert Treder -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1533,6 +1533,29 @@
       return `${base}?gid=${encodeURIComponent(tab.gid)}&single=true&output=csv`;
     }
 
+    async function fetchTabWithTimeout(t, timeoutMs = 12000) {
+      const url = buildCsvUrl(t);
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        // Simple GET (no custom Cache-Control headers) avoids 16x CORS OPTIONS preflights
+        const res = await fetch(url, { signal: controller.signal });
+        if (!res.ok) throw new Error(`${t.name} (HTTP ${res.status})`);
+        const text = await res.text();
+        if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
+          throw new Error(`${t.name} (Tab not published)`);
+        }
+        return parseTabRows(text, t.name, t.idx);
+      } catch (err) {
+        if (err && err.name === "AbortError") {
+          throw new Error(`${t.name} (Timed out after ${Math.round(timeoutMs / 1000)}s)`);
+        }
+        throw err;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
     async function loadActiveSelection() {
       let targetTabs = [];
 
@@ -1540,7 +1563,7 @@
         targetTabs = state.tabs
           .map((t, idx) => ({ ...t, idx }))
           .filter(t => t.enabled !== false);
-        if (targetTabs.length === 0 && state.tabs.length === 0) {
+        if (targetTabs.length === 0 && state.tabs.length > 0) {
           targetTabs = [{ ...state.tabs[0], idx: 0 }];
         }
       } else {
@@ -1553,30 +1576,37 @@
         ? `Master Chronology (${targetTabs.length} validated tabs)`
         : targetTabs[0].name;
 
-      document.getElementById("statsBar").textContent = `Fetching live CSV for ${label}...`;
-
-      const settled = await Promise.allSettled(
-        targetTabs.map(async (t) => {
-          const url = buildCsvUrl(t);
-          const res = await fetch(url, { cache: "no-store" });
-          if (!res.ok) throw new Error(`${t.name} (HTTP ${res.status})`);
-          const text = await res.text();
-          if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
-            throw new Error(`${t.name} (Tab not published)`);
-          }
-          return parseTabRows(text, t.name, t.idx);
-        })
-      );
+      const statsBar = document.getElementById("statsBar");
+      statsBar.textContent = `Fetching live CSV for ${label} (0/${targetTabs.length})...`;
 
       const loadedRows = [];
       const failedReasons = [];
-      settled.forEach((r, idx) => {
-        if (r.status === "fulfilled") {
-          loadedRows.push(...r.value);
-        } else {
-          failedReasons.push(r.reason ? r.reason.message : targetTabs[idx].name);
-        }
-      });
+      let completedCount = 0;
+
+      // Fetch in staggered waves of 4 to prevent Google Sheets CSV throttling
+      const CONCURRENCY = 4;
+      for (let i = 0; i < targetTabs.length; i += CONCURRENCY) {
+        const wave = targetTabs.slice(i, i + CONCURRENCY);
+        const waveResults = await Promise.allSettled(
+          wave.map(async (t) => {
+            try {
+              const rows = await fetchTabWithTimeout(t, 12000);
+              return rows;
+            } finally {
+              completedCount++;
+              statsBar.textContent = `Fetching live CSV for ${label} (${completedCount}/${targetTabs.length})...`;
+            }
+          })
+        );
+
+        waveResults.forEach((r, wIdx) => {
+          if (r.status === "fulfilled") {
+            loadedRows.push(...r.value);
+          } else {
+            failedReasons.push(r.reason ? r.reason.message : wave[wIdx].name);
+          }
+        });
+      }
 
       if (loadedRows.length === 0) {
         const isFileProto = window.location.protocol === "file:";
@@ -1585,7 +1615,7 @@
           : (failedReasons.length > 0
               ? `Failed: ${failedReasons.slice(0, 3).join("; ")} — open ⚙️ Sheet Tabs and click ↺ Reset to Code Defaults.`
               : "0 rows returned — check ⚙️ Sheet Tabs or toggle 🛡️ Validated Coords Only.");
-        document.getElementById("statsBar").innerHTML =
+        statsBar.innerHTML =
           `<span style="color:#f87171;">⚠️ No entries loaded (${hint})</span>`;
         state.rows = [];
         renderChart();
@@ -1602,11 +1632,18 @@
         state.rows = loadedRows;
       }
 
-      renderChart();
-      updateStickyHeaderOffset();
+      try {
+        renderChart();
+        updateStickyHeaderOffset();
+      } catch (renderErr) {
+        console.error("Chart render error:", renderErr);
+        statsBar.innerHTML =
+          `<span style="color:#f87171;">⚠️ Render error: ${renderErr.message}</span>`;
+        return;
+      }
 
       if (failedReasons.length > 0) {
-        document.getElementById("statsBar").innerHTML +=
+        statsBar.innerHTML +=
           ` <span style="color:#fbbf24;" title="${failedReasons.join(", ")}">⚠️ ${failedReasons.length} tab(s) skipped</span>`;
       }
     }
